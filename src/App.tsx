@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Index from "./pages/Index";
+import AdminPage from "./pages/Admin";
+import ProviderPage from "./pages/Provider";
 import NotFound from "./pages/NotFound";
 import StaffDashboard from "./components/dashboards/StaffDashboard"; // Import StaffDashboard
 import ProviderDashboard from "./components/dashboards/ProviderDashboard"; // Import ProviderDashboard
@@ -56,11 +58,10 @@ const App = () => (
       <BrowserRouter>
         <AnalyticsTracker />
         <Routes>
-          <Route path="/login" element={<Login />} /> {/* Add login route */}
           <Route path="/" element={<Index />} />
-          <Route path="/admin" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} /> {/* Protect admin route */}
-          <Route path="/provider" element={<ProtectedRoute><ProviderDashboard /></ProtectedRoute>} /> {/* Protect provider route */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/provider/:id" element={<ProviderPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

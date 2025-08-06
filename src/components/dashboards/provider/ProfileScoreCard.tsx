@@ -1,9 +1,10 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { UserProfile, calculateProfileScore } from "@/lib/membershipTiers";
+import { FullProviderProfile } from "@/types";
+import { calculateProfileScore } from "@/lib/membershipTiers";
 
 interface ProfileScoreCardProps {
-  user: UserProfile;
+  user: FullProviderProfile;
 }
 
 const ProfileScoreCard = ({ user }: ProfileScoreCardProps) => {

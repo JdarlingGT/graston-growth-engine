@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FullProviderProfile } from "@/types";
 
 // Define the Provider interface
 export type Provider = {
@@ -25,7 +27,7 @@ export type Provider = {
   churnRisk: boolean;
 };
 
-export const columns: ColumnDef<Provider>[] = [
+export const columns: ColumnDef<FullProviderProfile>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -107,6 +109,7 @@ export const columns: ColumnDef<Provider>[] = [
     id: "actions",
     cell: ({ row }) => {
       const provider = row.original;
+      const navigate = useNavigate();
 
       return (
         <DropdownMenu>
@@ -124,7 +127,9 @@ export const columns: ColumnDef<Provider>[] = [
               Copy provider ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View provider details</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate(`/provider/${provider.id}`)}>
+              View provider details
+            </DropdownMenuItem>
             <DropdownMenuItem>Send Slack Alert</DropdownMenuItem>
             <DropdownMenuItem>Apply Tags</DropdownMenuItem>
           </DropdownMenuContent>
