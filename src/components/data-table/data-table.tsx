@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center space-x-2">
           <Label htmlFor="tier-filter">Tier:</Label>
           <Select
-            value={(table.getColumn("tier")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("tier")?.getFilterValue() as string) ?? "all"}
             onValueChange={(value) =>
               table.getColumn("tier")?.setFilterValue(value === "all" ? undefined : value)
             }
@@ -107,7 +107,7 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center space-x-2">
           <Label htmlFor="trial-status-filter">Trial Status:</Label>
           <Select
-            value={(table.getColumn("trialStatus")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("trialStatus")?.getFilterValue() as string) ?? "all"}
             onValueChange={(value) =>
               table.getColumn("trialStatus")?.setFilterValue(value === "all" ? undefined : value)
             }
@@ -120,6 +120,25 @@ export function DataTable<TData, TValue>({
               <SelectItem value="Active">Active</SelectItem>
               <SelectItem value="Expired">Expired</SelectItem>
               <SelectItem value="N/A">N/A</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="churn-risk-filter">Churn Risk:</Label>
+          <Select
+            value={(table.getColumn("churnRisk")?.getFilterValue() as string) ?? "all"}
+            onValueChange={(value) =>
+              table.getColumn("churnRisk")?.setFilterValue(value === "all" ? undefined : value === "High" ? true : false)
+            }
+          >
+            <SelectTrigger id="churn-risk-filter" className="w-[180px]">
+              <SelectValue placeholder="Select Risk" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="High">High</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
             </SelectContent>
           </Select>
         </div>
