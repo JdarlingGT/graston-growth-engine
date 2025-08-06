@@ -1,11 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns, Provider } from "@/components/data-table/columns";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 
 const StaffDashboard = () => {
   // Dummy data for demonstration
@@ -27,25 +23,6 @@ const StaffDashboard = () => {
             <CardDescription>View and manage all providers.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col md:flex-row gap-4 mb-4 items-center">
-              <Input placeholder="Search providers..." className="max-w-sm" />
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter by Tier" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Tiers</SelectItem>
-                  <SelectItem value="free">Free</SelectItem>
-                  <SelectItem value="preferred">Preferred</SelectItem>
-                  <SelectItem value="premier">Premier</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="trial-status" />
-                <Label htmlFor="trial-status">Show Trial Expired</Label>
-              </div>
-              <Button variant="outline">Export Report</Button>
-            </div>
             <DataTable columns={columns} data={providers} />
           </CardContent>
         </Card>
