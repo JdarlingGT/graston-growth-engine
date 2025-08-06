@@ -89,14 +89,14 @@ export function DataTable<TData, TValue>({
           <Select
             value={(table.getColumn("tier")?.getFilterValue() as string) ?? ""}
             onValueChange={(value) =>
-              table.getColumn("tier")?.setFilterValue(value === "" ? undefined : value)
+              table.getColumn("tier")?.setFilterValue(value === "all" ? undefined : value)
             }
           >
             <SelectTrigger id="tier-filter" className="w-[180px]">
               <SelectValue placeholder="Select Tier" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All</SelectItem>
+              <SelectItem value="all">All</SelectItem>
               <SelectItem value="Free">Free</SelectItem>
               <SelectItem value="Preferred">Preferred</SelectItem>
               <SelectItem value="Premier">Premier</SelectItem>
@@ -109,14 +109,14 @@ export function DataTable<TData, TValue>({
           <Select
             value={(table.getColumn("trialStatus")?.getFilterValue() as string) ?? ""}
             onValueChange={(value) =>
-              table.getColumn("trialStatus")?.setFilterValue(value === "" ? undefined : value)
+              table.getColumn("trialStatus")?.setFilterValue(value === "all" ? undefined : value)
             }
           >
             <SelectTrigger id="trial-status-filter" className="w-[180px]">
               <SelectValue placeholder="Select Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All</SelectItem>
+              <SelectItem value="all">All</SelectItem>
               <SelectItem value="Active">Active</SelectItem>
               <SelectItem value="Expired">Expired</SelectItem>
               <SelectItem value="N/A">N/A</SelectItem>
