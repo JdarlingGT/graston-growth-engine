@@ -42,7 +42,7 @@ const ProviderCard = ({ provider }: ProviderCardProps) => {
           {provider.tier}
         </Badge>
         <Button asChild>
-          <Link to={`/provider/${provider.id}`}>View Profile</Link>
+          <Link to={`/directory/provider/${provider.id}`}>View Profile</Link>
         </Button>
       </CardFooter>
     </Card>

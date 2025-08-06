@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import MarketingToolkitPage from "./pages/MarketingToolkit";
 import Directory from "./pages/Directory";
+import PublicProviderProfilePage from "./pages/PublicProviderProfilePage"; // New import
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
           <Route path="/provider/:id" element={<ProviderPage />} />
           <Route path="/provider/:id/update" element={<UpdateProfile />} />
           <Route path="/provider/:id/toolkit" element={<MarketingToolkitPage />} />
+          <Route path="/directory/provider/:id" element={<PublicProviderProfilePage />} /> {/* New route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
