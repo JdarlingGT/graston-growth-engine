@@ -19,24 +19,24 @@ const tierColors: { [key: string]: string } = {
 const ProviderCard = ({ provider }: ProviderCardProps) => {
   return (
     <Card className="flex flex-col h-full transition-shadow hover:shadow-lg">
-      <CardHeader className="flex flex-row items-start gap-4 p-4">
-        <Avatar className="h-16 w-16 border">
+      <CardHeader className="flex flex-row items-start gap-3 p-3">
+        <Avatar className="h-12 w-12 border">
           <AvatarImage src={provider.profileImage} alt={provider.name} />
           <AvatarFallback>{provider.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
-          <h3 className="text-lg font-bold">{provider.name}</h3>
+          <h3 className="font-bold leading-tight">{provider.name}</h3>
           <p className="text-sm text-muted-foreground">{provider.specialty}</p>
-          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-            <MapPin className="h-4 w-4" />
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+            <MapPin className="h-3 w-3" />
             <span>{provider.location}</span>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-grow p-4 pt-0">
-        <p className="text-sm text-muted-foreground line-clamp-3">{provider.bio}</p>
+      <CardContent className="flex-grow p-3 pt-0">
+        <p className="text-sm text-muted-foreground line-clamp-2">{provider.bio}</p>
       </CardContent>
-      <CardFooter className="flex justify-between items-center p-4 pt-0">
+      <CardFooter className="flex justify-between items-center p-3 pt-0">
         <Badge className={tierColors[provider.tier]}>
           <Star className="h-3 w-3 mr-1" />
           {provider.tier}

@@ -43,7 +43,7 @@ export const mockProviders: FullProviderProfile[] = [
     contactInfo: {
       phone: "555-987-6543",
       email: "bob.johnson@example.com",
-      website: "https://www.bobjohnsonchiro.com",
+      website: "https://www.bobjohnsondental.com",
     },
     servicesOffered: ["Cleanings", "Fillings", "Crowns", "Teeth whitening"],
     galleryImages: [

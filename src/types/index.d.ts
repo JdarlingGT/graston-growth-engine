@@ -6,8 +6,8 @@ export interface ProviderProfile {
   bio: string;
   profileImage: string;
   tier: 'Free' | 'Preferred' | 'Premier';
-  trainingLevel?: 'Essential' | 'Advanced' | 'GTS'; // New field for Graston training level
-  coordinates?: { // New field for map location
+  trainingLevel?: 'Essential' | 'Advanced' | 'GTS';
+  coordinates?: {
     lat: number;
     lng: number;
   };

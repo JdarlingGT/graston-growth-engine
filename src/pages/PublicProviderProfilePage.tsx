@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Phone, Mail, Globe, Star } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { FullProviderProfile, ContactInfo, Testimonial, FAQ } from "@/types"; // Import necessary types
 
 const tierColors: { [key: string]: string } = {
   Premier: "bg-purple-600 hover:bg-purple-700 text-white",
@@ -115,7 +116,7 @@ const PublicProviderProfilePage = () => {
             <>
               <h2 className="text-2xl font-semibold mt-6 mb-3">Testimonials</h2>
               <div className="grid gap-4">
-                {provider.testimonials.map((testimonial: { quote: string; author: string }, index: number) => (
+                {provider.testimonials.map((testimonial: Testimonial, index: number) => (
                   <Card key={index} className="p-4">
                     <p className="text-muted-foreground italic">"{testimonial.quote}"</p>
                     <p className="text-sm font-semibold mt-2">- {testimonial.author}</p>
@@ -129,7 +130,7 @@ const PublicProviderProfilePage = () => {
             <>
               <h2 className="text-2xl font-semibold mt-6 mb-3">FAQs</h2>
               <div className="grid gap-4">
-                {provider.faqs.map((faq: { question: string; answer: string }, index: number) => (
+                {provider.faqs.map((faq: FAQ, index: number) => (
                   <Card key={index} className="p-4">
                     <CardTitle className="text-lg mb-2">{faq.question}</CardTitle>
                     <CardContent className="p-0 text-muted-foreground">{faq.answer}</CardContent>
