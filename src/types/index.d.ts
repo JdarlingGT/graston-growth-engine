@@ -31,7 +31,7 @@ export interface FullProviderProfile {
   profileImage: string;
   tier: Tier;
 
-  // Optional fields used elsewhere in the codebase
+  // newly included optional fields
   trainingLevel?: TrainingLevel;
   coordinates?: Coordinates;
   contactInfo?: ContactInfo;
