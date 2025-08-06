@@ -13,6 +13,7 @@ const Directory = () => {
   const [selectedTier, setSelectedTier] = useState<Tier | "All">("All");
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | "All">("All");
   const [selectedTrainingLevel, setSelectedTrainingLevel] = useState<TrainingLevel | "All">("All");
+  const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
 
   // Ensure specialties are always strings
   const specialties = [...new Set(mockProviders.map(p => p.specialty).filter((s): s is string => typeof s === 'string'))];
@@ -103,7 +104,13 @@ const Directory = () => {
             <div className="p-2 space-y-2">
               {filteredProviders.length > 0 ? (
                 filteredProviders.map((provider) => (
-                  <ProviderCard key={provider.id} provider={provider} />
+                  <div
+                    key={provider.id}
+                    onMouseEnter={() => setHoveredProviderId(provider.id)}
+                    onMouseLeave={() => setHoveredProviderId(null)}
+                  >
+                    <ProviderCard provider={provider} />
+                  </div>
                 ))
               ) : (
                 <div className="text-center py-16 px-4">
@@ -117,7 +124,7 @@ const Directory = () => {
 
         {/* Right Column: Map */}
         <div className="lg:col-span-2 rounded-lg overflow-hidden h-full w-full">
-          <DirectoryMap providers={filteredProviders} apiKey={googleMapsApiKey} />
+          <DirectoryMap providers={filteredProviders} apiKey={googleMapsApiKey} hoveredProviderId={hoveredProviderId} />
         </div>
       </div>
     </div>

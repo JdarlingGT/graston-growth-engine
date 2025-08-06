@@ -18,9 +18,10 @@ const center = {
 interface DirectoryMapProps {
   providers: FullProviderProfile[];
   apiKey: string;
+  hoveredProviderId: string | null;
 }
 
-const DirectoryMap = ({ providers, apiKey }: DirectoryMapProps) => {
+const DirectoryMap = ({ providers, apiKey, hoveredProviderId }: DirectoryMapProps) => {
   const navigate = useNavigate();
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -46,16 +47,21 @@ const DirectoryMap = ({ providers, apiKey }: DirectoryMapProps) => {
         fullscreenControl: false,
       }}
     >
-      {providers.map(provider => (
-        provider.coordinates && (
-          <Marker 
-            key={provider.id} 
-            position={provider.coordinates} 
-            title={provider.name}
-            onClick={() => handleMarkerClick(provider.id)}
-          />
+      {providers.map(provider => {
+        const isHovered = provider.id === hoveredProviderId;
+        return (
+          provider.coordinates && (
+            <Marker 
+              key={provider.id} 
+              position={provider.coordinates} 
+              title={provider.name}
+              onClick={() => handleMarkerClick(provider.id)}
+              icon={isHovered ? { url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png" } : undefined}
+              zIndex={isHovered ? 1000 : 1}
+            />
+          )
         )
-      ))}
+      })}
     </GoogleMap>
   );
 };
