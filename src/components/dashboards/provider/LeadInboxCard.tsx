@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Define the structure of a lead from FluentCRM
 interface Lead {
@@ -32,7 +33,7 @@ const fetchLeads = async () => {
 };
 
 const LeadInboxCard = () => {
-  const { data: leads, isLoading, isError, error } = useQuery<Lead[], Error>({
+  const { data: leads, isLoading, isError, error, refetch } = useQuery<Lead[], Error>({
     queryKey: ['fluentCrmLeads'],
     queryFn: fetchLeads,
     retry: false, // Don't retry on failure, to avoid spamming the API
@@ -62,6 +63,9 @@ const LeadInboxCard = () => {
                 {error.message}
                </pre>
              </AlertDescription>
+             <div className="mt-4">
+                <Button variant="outline" onClick={() => refetch()}>Try Again</Button>
+             </div>
            </Alert>
         )}
         {!isLoading && !isError && (
