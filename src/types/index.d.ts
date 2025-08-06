@@ -30,6 +30,8 @@ export interface FullProviderProfile {
   bio: string;
   profileImage: string;
   tier: Tier;
+
+  // Optional fields used elsewhere in the codebase
   trainingLevel?: TrainingLevel;
   coordinates?: Coordinates;
   contactInfo?: ContactInfo;
