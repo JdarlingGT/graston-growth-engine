@@ -7,6 +7,7 @@ import RoiCalculatorCard from "./provider/RoiCalculatorCard";
 import UpgradeCtaCard from "./provider/UpgradeCtaCard";
 import ContentAssistantCard from "./provider/ContentAssistantCard";
 import { FullProviderProfile } from "@/types";
+import MarketingToolkitCtaCard from "./provider/MarketingToolkitCtaCard";
 
 interface ProviderDashboardProps {
   provider: FullProviderProfile;
@@ -21,7 +22,7 @@ const ProviderDashboard = ({ provider }: ProviderDashboardProps) => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <ProfileScoreCard user={provider} />
         <MembershipTierCard />
-        <AudienceOverviewCard />
+        <MarketingToolkitCtaCard providerId={provider.id} />
         
         <PerformanceAnalyticsCard />
 

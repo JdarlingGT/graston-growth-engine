@@ -13,6 +13,7 @@ import Login from "./pages/Login"; // Import the new Login component
 import { supabase } from "./lib/supabaseClient"; // Import supabase client
 import { useEffect, useState } from "react"; // Import useState and useEffect
 import AnalyticsTracker from "./components/AnalyticsTracker";
+import MarketingToolkitPage from "./pages/MarketingToolkit";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/provider/:id" element={<ProviderPage />} />
+          <Route path="/provider/:id/toolkit" element={<MarketingToolkitPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

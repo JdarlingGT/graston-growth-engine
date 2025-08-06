@@ -25,3 +25,13 @@ export interface FullProviderProfile {
     instagram?: string;
   };
 }
+
+export type MarketingResource = {
+  id: string;
+  title: string;
+  description: string;
+  category: 'Social Media' | 'Paid Ads' | 'In-Clinic' | 'Email' | 'SEO' | 'General';
+  image: string;
+  tier: Tier;
+  filePath: string;
+};

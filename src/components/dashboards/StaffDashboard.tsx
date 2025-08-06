@@ -1,16 +1,17 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { DataTable } from "@/components/data-table/data-table";
-import { columns, Provider } from "@/components/data-table/columns";
+import { columns } from "@/components/data-table/columns";
 import { Button } from "@/components/ui/button";
+import { FullProviderProfile } from "@/types"; // Import FullProviderProfile
 
 const StaffDashboard = () => {
-  // Dummy data for demonstration
-  const providers: Provider[] = [
-    { id: "1", name: "John Doe", email: "john@example.com", tier: "Premier", trialStatus: "N/A", activity: 1200, churnRisk: false },
-    { id: "2", name: "Jane Smith", email: "jane@example.com", tier: "Preferred", trialStatus: "Active", activity: 350, churnRisk: false },
-    { id: "3", name: "Peter Jones", email: "peter@example.com", tier: "Free", trialStatus: "Expired", activity: 50, churnRisk: true },
-    { id: "4", name: "Alice Brown", email: "alice@example.com", tier: "Premier", trialStatus: "N/A", activity: 800, churnRisk: false },
-    { id: "5", name: "Bob White", email: "bob@example.com", tier: "Preferred", trialStatus: "Active", activity: 200, churnRisk: true },
+  // Dummy data for demonstration, now using FullProviderProfile
+  const providers: FullProviderProfile[] = [
+    { id: "1", name: "John Doe", email: "john@example.com", tier: "Premier", trialStatus: "N/A", activity: 1200, churnRisk: false, first_name: "John", last_name: "Doe" },
+    { id: "2", name: "Jane Smith", email: "jane@example.com", tier: "Preferred", trialStatus: "Active", activity: 350, churnRisk: false, first_name: "Jane", last_name: "Smith" },
+    { id: "3", name: "Peter Jones", email: "peter@example.com", tier: "Free", trialStatus: "Expired", activity: 50, churnRisk: true, first_name: "Peter", last_name: "Jones" },
+    { id: "4", name: "Alice Brown", email: "alice@example.com", tier: "Premier", trialStatus: "N/A", activity: 800, churnRisk: false, first_name: "Alice", last_name: "Brown" },
+    { id: "5", name: "Bob White", email: "bob@example.com", tier: "Preferred", trialStatus: "Active", activity: 200, churnRisk: true, first_name: "Bob", last_name: "White" },
   ];
 
   return (
