@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Users, Star, Gem, AlertTriangle } from "lucide-react";
+import { Users, Star, Gem, AlertTriangle, Hourglass } from "lucide-react";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "@/components/data-table/columns";
 import { FullProviderProfile } from "@/types";
@@ -25,11 +25,12 @@ const AdminPage = () => {
         <div className="container mx-auto py-10">
             <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mb-6">
                 <MetricCard title="Free Tier" value={freeProviders} icon={<Users className="h-4 w-4 text-muted-foreground" />} />
                 <MetricCard title="Preferred Tier" value={preferredProviders} icon={<Star className="h-4 w-4 text-muted-foreground" />} />
                 <MetricCard title="Premier Tier" value={premierProviders} icon={<Gem className="h-4 w-4 text-muted-foreground" />} />
                 <MetricCard title="High Churn Risk" value={highChurnRisk} icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />} />
+                <MetricCard title="Active Trials" value={activeTrials} icon={<Hourglass className="h-4 w-4 text-muted-foreground" />} />
             </div>
 
             <Card>
