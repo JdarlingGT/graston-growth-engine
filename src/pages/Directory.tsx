@@ -17,7 +17,7 @@ import {
   ClinicianType,
 } from "@/types";
 import { Search, Filter, RefreshCw, List, Map } from "lucide-react";
-import DirectoryMap from "@/components/directory/DirectoryMap";
+import LeafletDirectoryMap from "@/components/directory/LeafletDirectoryMap";
 import FilterPanel from "@/components/directory/FilterPanel";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -424,13 +424,11 @@ const Directory: React.FC = () => {
             {googleMapsApiKey && (
               <Card className="h-[600px] w-full"> {/* Increased height for better map view */}
                 <CardContent className="p-0 h-full w-full rounded-lg overflow-hidden">
-                  <DirectoryMap
+                  <LeafletDirectoryMap
                     providers={filteredAndSortedProviders}
-                    apiKey={googleMapsApiKey}
                     center={mapCenter}
                     zoom={mapZoom}
                     onBoundsChanged={setMapBounds}
-                    hoveredProviderId={hoveredProviderId} // Pass hovered ID to map
                   />
                 </CardContent>
               </Card>
