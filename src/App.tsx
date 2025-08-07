@@ -16,7 +16,7 @@ import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
 import Reports from "./pages/Reports";
 import Support from "./pages/Support";
-import { supabase } from "./lib/supabaseClient";
+import { supabase } from "./integrations/supabase/client";
 import { useEffect, useState } from "react";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 

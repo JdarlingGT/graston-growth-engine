@@ -12,6 +12,8 @@ import ProfileSidebar from "@/components/provider/ProfileSidebar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { showSuccess, showError, showLoading, dismissToast } from "@/utils/toast";
 
 const tierColors: { [key: string]: string } = {
   Premier: "bg-purple-600 hover:bg-purple-700 text-white",
@@ -25,14 +27,11 @@ const PublicProviderProfilePage = () => {
     mockProviders.find((p) => p.id === id)
   );
 
-  if (!provider) {
-    return (
-      <div className="container mx-auto p-8 text-center">
-        <h1 className="text-2xl font-bold">Provider not found</h1>
-        <p>The provider you are looking for does not exist.</p>
-      </div>
-    );
-  }
+  // State for the contact form
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleToggleFavorite = (providerId: string) => {
     setProvider(prev => {
@@ -43,6 +42,55 @@ const PublicProviderProfilePage = () => {
       };
     });
   };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactName || !contactEmail || !contactMessage || !provider?.email) {
+      showError("Please fill out all fields.");
+      return;
+    }
+  
+    setIsSubmitting(true);
+    const toastId = showLoading("Sending your message...");
+  
+    try {
+      const { error } = await supabase.functions.invoke('contact-provider', {
+        body: {
+          providerEmail: provider.email,
+          name: contactName,
+          email: contactEmail,
+          message: contactMessage,
+        },
+      });
+  
+      dismissToast(toastId);
+  
+      if (error) {
+        throw new Error(error.message);
+      }
+  
+      showSuccess("Your message has been sent!");
+      // Clear the form
+      setContactName('');
+      setContactEmail('');
+      setContactMessage('');
+    } catch (error: any) {
+      dismissToast(toastId);
+      console.error("Error sending message:", error);
+      showError(`Failed to send message: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!provider) {
+    return (
+      <div className="container mx-auto p-8 text-center">
+        <h1 className="text-2xl font-bold">Provider not found</h1>
+        <p>The provider you are looking for does not exist.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-muted/20">
@@ -202,12 +250,34 @@ const PublicProviderProfilePage = () => {
                     <CardDescription>Send a direct message to {provider.name}.</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      <Input placeholder="Your Name" />
-                      <Input type="email" placeholder="Your Email" />
-                      <Textarea placeholder="Your Message" rows={4} />
-                      <Button className="w-full" size="lg">Send Message</Button>
-                    </div>
+                    <form onSubmit={handleContactSubmit} className="space-y-4">
+                      <Input
+                        placeholder="Your Name"
+                        value={contactName}
+                        onChange={(e) => setContactName(e.target.value)}
+                        disabled={isSubmitting}
+                        required
+                      />
+                      <Input
+                        type="email"
+                        placeholder="Your Email"
+                        value={contactEmail}
+                        onChange={(e) => setContactEmail(e.target.value)}
+                        disabled={isSubmitting}
+                        required
+                      />
+                      <Textarea
+                        placeholder="Your Message"
+                        rows={4}
+                        value={contactMessage}
+                        onChange={(e) => setContactMessage(e.target.value)}
+                        disabled={isSubmitting}
+                        required
+                      />
+                      <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                      </Button>
+                    </form>
                   </CardContent>
                 </Card>
               )}

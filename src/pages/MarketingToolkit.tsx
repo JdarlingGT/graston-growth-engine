@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Star } from "lucide-react";
 import { MarketingResource } from "@/types";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 import ResourceCardSkeleton from "@/components/dashboards/provider/ResourceCardSkeleton";
 
 const categories = ['All', ...new Set(marketingResources.map((r: MarketingResource) => r.category))];
