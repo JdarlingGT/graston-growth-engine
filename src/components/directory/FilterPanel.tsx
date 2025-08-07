@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch"; // Imported Switch
 import { 
   ClinicianType, 
   DirectoryFilters, 
@@ -29,14 +30,18 @@ import {
   RadiusOption, 
   SortOption, 
   Tier, 
-  TrainingLevel 
+  TrainingLevel,
+  Condition,
+  PatientDemographic
 } from "@/types";
 import { 
   states, 
   clinicianTypes, 
   languages, 
   radiusOptions, 
-  sortOptions 
+  sortOptions,
+  conditions,
+  patientDemographics
 } from "@/lib/mockData";
 import { MapPin, Filter, X } from "lucide-react";
 
@@ -47,8 +52,9 @@ interface FilterPanelProps {
 }
 
 const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedLanguages, setSelectedLanguages] = useState<Language[]>(filters.languages || []);
+  const [selectedConditions, setSelectedConditions] = useState<Condition[]>(filters.conditionsTreated || []);
+  const [selectedPatientTypes, setSelectedPatientTypes] = useState<PatientDemographic[]>(filters.patientTypes || []);
 
   const handleFilterChange = (key: keyof DirectoryFilters, value: any) => {
     onFilterChange({
@@ -57,17 +63,24 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
     });
   };
 
-  const handleLanguageToggle = (language: Language) => {
-    const updatedLanguages = selectedLanguages.includes(language)
-      ? selectedLanguages.filter(l => l !== language)
-      : [...selectedLanguages, language];
+  const handleMultiSelectToggle = <T extends string>(
+    currentSelection: T[],
+    item: T,
+    setter: React.Dispatch<React.SetStateAction<T[]>>,
+    filterKey: keyof DirectoryFilters
+  ) => {
+    const updatedSelection = currentSelection.includes(item)
+      ? currentSelection.filter(l => l !== item)
+      : [...currentSelection, item];
     
-    setSelectedLanguages(updatedLanguages);
-    handleFilterChange('languages', updatedLanguages);
+    setter(updatedSelection);
+    handleFilterChange(filterKey, updatedSelection.length > 0 ? updatedSelection : undefined);
   };
 
   const clearFilters = () => {
     setSelectedLanguages([]);
+    setSelectedConditions([]);
+    setSelectedPatientTypes([]);
     onFilterChange({
       sortBy: 'premier-first'
     });
@@ -77,6 +90,10 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
     return Object.keys(filters).some(key => {
       if (key === 'sortBy') return false; // Don't count sort as a filter
       if (key === 'languages') return filters.languages && filters.languages.length > 0;
+      if (key === 'conditionsTreated') return filters.conditionsTreated && filters.conditionsTreated.length > 0;
+      if (key === 'patientTypes') return filters.patientTypes && filters.patientTypes.length > 0;
+      if (key === 'searchTerm') return filters.searchTerm && filters.searchTerm.length > 0;
+      if (key === 'favoritesOnly') return filters.favoritesOnly;
       return filters[key as keyof DirectoryFilters] !== undefined && 
              filters[key as keyof DirectoryFilters] !== 'All';
     });
@@ -167,7 +184,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                       <SelectContent>
                         <SelectItem value="all">Any Distance</SelectItem>
                         {radiusOptions.map(radius => (
-                          <SelectItem key={radius} value={radius.toString()}>{radius} miles</SelectItem>
+                          <SelectItem key={radius} value={radius.toString()}>{`${radius} miles`}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -257,6 +274,58 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
           </AccordionItem>
         </Accordion>
 
+        {/* Conditions Treated */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="conditions">
+            <AccordionTrigger className="text-sm font-medium">Conditions Treated</AccordionTrigger>
+            <AccordionContent>
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                {conditions.map((condition) => (
+                  <div key={condition} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`condition-${condition}`} 
+                      checked={selectedConditions.includes(condition)}
+                      onCheckedChange={() => handleMultiSelectToggle(selectedConditions, condition, setSelectedConditions, 'conditionsTreated')}
+                    />
+                    <Label 
+                      htmlFor={`condition-${condition}`}
+                      className="text-sm cursor-pointer"
+                    >
+                      {condition}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Patient Types */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="patient-types">
+            <AccordionTrigger className="text-sm font-medium">Patient Types</AccordionTrigger>
+            <AccordionContent>
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                {patientDemographics.map((type) => (
+                  <div key={type} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`patient-type-${type}`} 
+                      checked={selectedPatientTypes.includes(type)}
+                      onCheckedChange={() => handleMultiSelectToggle(selectedPatientTypes, type, setSelectedPatientTypes, 'patientTypes')}
+                    />
+                    <Label 
+                      htmlFor={`patient-type-${type}`}
+                      className="text-sm cursor-pointer"
+                    >
+                      {type}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
         {/* Languages Spoken */}
         <Accordion type="single" collapsible>
           <AccordionItem value="languages">
@@ -268,7 +337,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                     <Checkbox 
                       id={`language-${language}`} 
                       checked={selectedLanguages.includes(language)}
-                      onCheckedChange={() => handleLanguageToggle(language)}
+                      onCheckedChange={() => handleMultiSelectToggle(selectedLanguages, language, setSelectedLanguages, 'languages')}
                     />
                     <Label 
                       htmlFor={`language-${language}`}
@@ -283,6 +352,16 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
           </AccordionItem>
         </Accordion>
 
+        {/* Favorites Only Toggle */}
+        <div className="flex items-center space-x-2 pt-2">
+          <Switch
+            id="favorites-only"
+            checked={filters.favoritesOnly || false}
+            onCheckedChange={(checked: boolean) => handleFilterChange('favoritesOnly', checked)}
+          />
+          <Label htmlFor="favorites-only" className="text-sm">Show Favorites Only</Label>
+        </div>
+
         {/* Sort Options */}
         <div className="space-y-1 pt-2">
           <Label htmlFor="sortBy" className="text-xs">Sort Results By</Label>
@@ -291,7 +370,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
             onValueChange={(value) => handleFilterChange('sortBy', value as SortOption)}
           >
             <SelectTrigger id="sortBy" className="h-8 text-sm">
-              <SelectValue placeholder="Sort by" />
+              <SelectValue placeholder="Select sort option" />
             </SelectTrigger>
             <SelectContent>
               {sortOptions.map(option => (

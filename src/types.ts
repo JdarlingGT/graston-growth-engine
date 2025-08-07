@@ -4,6 +4,8 @@ export type Language = "English" | "Spanish" | "French" | "Hindi" | "Mandarin";
 export type RadiusOption = 10 | 25 | 50 | 100;
 export type SortOption = "premier-first" | "top-rated" | "most-reviewed";
 export type TrainingLevel = "GTS" | "Advanced" | "Essential";
+export type Condition = "Back Pain" | "Neck Pain" | "Shoulder Injuries" | "Knee Pain" | "Headaches" | "Plantar Fasciitis" | "Carpal Tunnel Syndrome" | "TMJ Dysfunction" | "Sciatica" | "Sports Injuries" | "Post-Surgical Rehab" | "Chronic Pain";
+export type PatientDemographic = "Adults" | "Children" | "Adolescents" | "Geriatric" | "Athletes" | "Pregnant Women" | "Post-Surgical";
 
 export interface ContactInfo {
   phone?: string;
@@ -42,7 +44,7 @@ export interface MarketingResource {
   title: string;
   description: string;
   category: string;
-  tags?: string[]; // Added tags property
+  tags?: string[];
   tier: Tier;
   image: string;
   filePath: string;
@@ -72,7 +74,8 @@ export interface FullProviderProfile {
   verificationBadges?: string[]; // e.g., "Background Checked", "Licensed"
   accreditationLogos?: Accreditation[]; // Logos for accreditations
   languagesSpoken?: Language[];
-  patientTypes?: string[]; // e.g., "Adults", "Children", "Athletes"
+  patientTypes?: PatientDemographic[];
+  conditionsTreated?: Condition[];
   galleryImages?: string[];
   galleryVideos?: string[]; // URLs for embedded videos
   testimonials?: Testimonial[];
@@ -95,7 +98,8 @@ export interface DirectoryFilters {
   tier?: Tier | 'All';
   trainingLevel?: TrainingLevel | 'All';
   languages?: Language[];
-  patientTypes?: string[];
+  patientTypes?: PatientDemographic[];
+  conditionsTreated?: Condition[];
   sortBy?: SortOption;
   favoritesOnly?: boolean;
 }

@@ -5,6 +5,8 @@ import type {
   SortOption,
   FullProviderProfile,
   TrainingLevel,
+  Condition,
+  PatientDemographic,
 } from "@/types";
 
 // Sample/mock clinicians
@@ -22,7 +24,7 @@ export const languages: Language[] = [
   "Spanish",
   "French",
   "Hindi",
-  "Mandarin", // Added Mandarin
+  "Mandarin",
 ] as Language[];
 
 // Map radius options
@@ -35,6 +37,18 @@ export const states: string[] = [
   "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ",
   "NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
   "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY",
+];
+
+// Common conditions treated
+export const conditions: Condition[] = [
+  "Back Pain", "Neck Pain", "Shoulder Injuries", "Knee Pain", "Headaches",
+  "Plantar Fasciitis", "Carpal Tunnel Syndrome", "TMJ Dysfunction", "Sciatica",
+  "Sports Injuries", "Post-Surgical Rehab", "Chronic Pain"
+];
+
+// Patient demographics
+export const patientDemographics: PatientDemographic[] = [
+  "Adults", "Children", "Adolescents", "Geriatric", "Athletes", "Pregnant Women", "Post-Surgical"
 ];
 
 // Sort options for directory
@@ -77,6 +91,7 @@ export const mockProviders: FullProviderProfile[] = [
     ],
     languagesSpoken: ["English", "Spanish"],
     patientTypes: ["Athletes", "Adults", "Geriatric"],
+    conditionsTreated: ["Knee Pain", "Shoulder Injuries", "Plantar Fasciitis", "Sports Injuries"],
     galleryImages: [
       "https://images.unsplash.com/photo-1576091160550-fd428796c875?fit=crop&w=600&q=80",
       "https://images.unsplash.com/photo-1576091160399-c50494367d25?fit=crop&w=600&q=80",
@@ -126,8 +141,9 @@ export const mockProviders: FullProviderProfile[] = [
     gtCertifications: ["Essential"],
     verificationBadges: ["Licensed DC"],
     accreditationLogos: [],
-    languagesSpoken: ["English", "Mandarin"], // Corrected type
-    patientTypes: ["Adults", "Athletes"],
+    languagesSpoken: ["English", "Mandarin"],
+    patientTypes: ["Adults", "Adolescents"],
+    conditionsTreated: ["Back Pain", "Neck Pain", "Headaches", "Sciatica"],
     galleryImages: [
       "https://images.unsplash.com/photo-1584820927478-b00bce69d128?fit=crop&w=600&q=80",
     ],
@@ -170,6 +186,7 @@ export const mockProviders: FullProviderProfile[] = [
     accreditationLogos: [],
     languagesSpoken: ["English"],
     patientTypes: ["Adults"],
+    conditionsTreated: ["Neck Pain", "Shoulder Injuries", "Chronic Pain"],
     galleryImages: [],
     testimonials: [],
     faqs: [],
@@ -212,6 +229,7 @@ export const mockProviders: FullProviderProfile[] = [
     ],
     languagesSpoken: ["English"],
     patientTypes: ["Adults", "Athletes", "Post-Surgical"],
+    conditionsTreated: ["Knee Pain", "Back Pain", "Shoulder Injuries", "Post-Surgical Rehab"],
     galleryImages: [
       "https://images.unsplash.com/photo-1576091160550-fd428796c875?fit=crop&w=600&q=80",
       "https://images.unsplash.com/photo-1576091160399-c50494367d25?fit=crop&w=600&q=80",

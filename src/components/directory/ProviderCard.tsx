@@ -2,15 +2,18 @@ import { FullProviderProfile } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Star, Phone, Globe } from "lucide-react";
+import { MapPin, Star, Phone, Globe, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 interface ProviderCardProps {
   provider: FullProviderProfile;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  onToggleFavorite: (providerId: string) => void;
 }
 
-const ProviderCard = ({ provider }: ProviderCardProps) => {
+const ProviderCard = ({ provider, onMouseEnter, onMouseLeave, onToggleFavorite }: ProviderCardProps) => {
   const navigate = useNavigate();
 
   const tierColors: Record<string, string> = {
@@ -27,6 +30,8 @@ const ProviderCard = ({ provider }: ProviderCardProps) => {
     <Card 
       className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
       onClick={handleClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
@@ -91,7 +96,7 @@ const ProviderCard = ({ provider }: ProviderCardProps) => {
         <div className="flex justify-between items-center mt-3 pt-3 border-t">
           <div className="flex gap-2">
             {provider.contactInfo?.phone && (
-              <Button variant="ghost" size="sm" className="h-8 text-xs">
+              <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={(e) => e.stopPropagation()}>
                 <Phone className="h-3 w-3 mr-1" />
                 Call
               </Button>
@@ -113,8 +118,16 @@ const ProviderCard = ({ provider }: ProviderCardProps) => {
               </Button>
             )}
           </div>
-          <Button size="sm" className="h-8 text-xs">
-            View Profile
+          <Button 
+            size="sm" 
+            className="h-8 text-xs"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent card click from navigating
+              onToggleFavorite(provider.id);
+            }}
+          >
+            <Heart className={`h-3 w-3 mr-1 ${provider.isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+            {provider.isFavorite ? 'Favorited' : 'Favorite'}
           </Button>
         </div>
       </CardContent>
