@@ -106,7 +106,6 @@ export interface FullProviderProfile {
   churnRisk?: boolean;
   trialStatus?: 'Active' | 'Expired' | 'N/A';
   certifications?: string[];
-  accreditations?: string[]; // Provider accreditations (fsbpt, nata, etc.)
   
   // New fields for enhanced filtering
   clinicianType?: ClinicianType;

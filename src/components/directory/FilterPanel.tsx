@@ -47,6 +47,7 @@ interface FilterPanelProps {
 }
 
 const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedLanguages, setSelectedLanguages] = useState<Language[]>(filters.languages || []);
 
   const handleFilterChange = (key: keyof DirectoryFilters, value: any) => {
@@ -74,7 +75,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
 
   const hasActiveFilters = () => {
     return Object.keys(filters).some(key => {
-      if (key === 'sortBy') return false;
+      if (key === 'sortBy') return false; // Don't count sort as a filter
       if (key === 'languages') return filters.languages && filters.languages.length > 0;
       return filters[key as keyof DirectoryFilters] !== undefined && 
              filters[key as keyof DirectoryFilters] !== 'All';
@@ -128,14 +129,14 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                   <div className="space-y-1">
                     <Label htmlFor="state" className="text-xs">State</Label>
                     <Select 
-                      value={filters.state || 'All'} 
-                      onValueChange={(value) => handleFilterChange('state', value === 'All' ? undefined : value)}
+                      value={filters.state || ''} 
+                      onValueChange={(value) => handleFilterChange('state', value)}
                     >
                       <SelectTrigger id="state" className="h-8 text-sm">
                         <SelectValue placeholder="Select state" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="All">All States</SelectItem>
+                        <SelectItem value="">All States</SelectItem>
                         {states.map(state => (
                           <SelectItem key={state} value={state}>{state}</SelectItem>
                         ))}
@@ -157,14 +158,14 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                   <div className="space-y-1">
                     <Label htmlFor="radius" className="text-xs">Search Radius</Label>
                     <Select 
-                      value={filters.radius?.toString() || 'All'} 
-                      onValueChange={(value) => handleFilterChange('radius', value === 'All' ? undefined : parseInt(value) as RadiusOption)}
+                      value={filters.radius?.toString() || ''} 
+                      onValueChange={(value) => handleFilterChange('radius', value ? parseInt(value) as RadiusOption : undefined)}
                     >
                       <SelectTrigger id="radius" className="h-8 text-sm">
                         <SelectValue placeholder="Select radius" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="All">Any Distance</SelectItem>
+                        <SelectItem value="">Any Distance</SelectItem>
                         {radiusOptions.map(radius => (
                           <SelectItem key={radius} value={radius.toString()}>{radius} miles</SelectItem>
                         ))}
@@ -187,7 +188,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                   <Label htmlFor="clinicianType" className="text-xs">Clinician Type</Label>
                   <Select 
                     value={filters.clinicianType || 'All'} 
-                    onValueChange={(value) => handleFilterChange('clinicianType', value === 'All' ? undefined : value as ClinicianType)}
+                    onValueChange={(value) => handleFilterChange('clinicianType', value === 'All' ? 'All' : value as ClinicianType)}
                   >
                     <SelectTrigger id="clinicianType" className="h-8 text-sm">
                       <SelectValue placeholder="Select type" />
@@ -221,7 +222,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                   <Label htmlFor="tier" className="text-xs">Membership Tier</Label>
                   <Select 
                     value={filters.tier || 'All'} 
-                    onValueChange={(value) => handleFilterChange('tier', value === 'All' ? undefined : value as Tier)}
+                    onValueChange={(value) => handleFilterChange('tier', value === 'All' ? 'All' : value as Tier)}
                   >
                     <SelectTrigger id="tier" className="h-8 text-sm">
                       <SelectValue placeholder="Select tier" />
@@ -238,7 +239,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                   <Label htmlFor="trainingLevel" className="text-xs">Training Level</Label>
                   <Select 
                     value={filters.trainingLevel || 'All'} 
-                    onValueChange={(value) => handleFilterChange('trainingLevel', value === 'All' ? undefined : value as TrainingLevel)}
+                    onValueChange={(value) => handleFilterChange('trainingLevel', value === 'All' ? 'All' : value as TrainingLevel)}
                   >
                     <SelectTrigger id="trainingLevel" className="h-8 text-sm">
                       <SelectValue placeholder="Select level" />
