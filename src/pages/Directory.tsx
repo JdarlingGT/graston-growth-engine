@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { mockProviders } from "@/lib/mockData";
 import ProviderCard from "@/components/directory/ProviderCard";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,7 +14,7 @@ import {
   RadiusOption,
   ClinicianType,
 } from "@/types";
-import { Search, Filter, X, RefreshCw } from "lucide-react";
+import { Search, Filter, RefreshCw } from "lucide-react";
 import DirectoryMap from "@/components/directory/DirectoryMap";
 import FilterPanel from "@/components/directory/FilterPanel";
 import { Button } from "@/components/ui/button";
@@ -26,6 +25,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { mapProfileToFullProviderProfile } from "@/lib/dataMapping";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const fetchAllProviders = async (): Promise<FullProviderProfile[]> => {
+  const { data, error } = await supabase.from('profiles').select('*');
+  if (error) {
+    console.error("Error fetching all providers:", error);
+    throw new Error(error.message);
+  }
+  return data.map(mapProfileToFullProviderProfile);
+};
 
 const Directory: React.FC = () => {
   const navigate = useNavigate();
@@ -33,24 +45,30 @@ const Directory: React.FC = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-  const [filters, setFilters] = useState<DirectoryFilters>({
-    sortBy: "premier-first",
-  });
+  const [filters, setFilters] = useState<DirectoryFilters>({ sortBy: "premier-first" });
   const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
-  const [providers, setProviders] = useState<FullProviderProfile[]>(mockProviders);
+  const [localProviders, setLocalProviders] = useState<FullProviderProfile[]>([]);
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 });
   const [mapZoom, setMapZoom] = useState(4);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchOnMapMove, setSearchOnMapMove] = useState(false);
   const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
 
-  // Sync filters with URL parameters
+  const { data: providers, isLoading, isError } = useQuery<FullProviderProfile[], Error>({
+    queryKey: ['allProviders'],
+    queryFn: fetchAllProviders,
+  });
+
+  useEffect(() => {
+    if (providers) {
+      setLocalProviders(providers);
+    }
+  }, [providers]);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const newFilters: DirectoryFilters = {
-      sortBy: "premier-first",
-    };
+    const newFilters: DirectoryFilters = { sortBy: "premier-first" };
     const urlSearchTerm = params.get('searchTerm');
 
     if (urlSearchTerm) {
@@ -74,7 +92,6 @@ const Directory: React.FC = () => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   }, [location.search]);
 
-  // Update URL parameters when filters change
   useEffect(() => {
     const params = new URLSearchParams();
     if (filters.searchTerm) params.set('searchTerm', filters.searchTerm);
@@ -100,12 +117,12 @@ const Directory: React.FC = () => {
   };
 
   const handleToggleFavorite = (providerId: string) => {
-    setProviders(prevProviders =>
+    setLocalProviders(prevProviders =>
       prevProviders.map(p =>
         p.id === providerId ? { ...p, isFavorite: !p.isFavorite } : p
       )
     );
-    showSuccess("Favorite status updated!");
+    showSuccess("Favorite status updated! (This is a demo and won't be saved)");
   };
 
   const handleGeocodeSearch = async () => {
@@ -122,16 +139,19 @@ const Directory: React.FC = () => {
     }
   };
 
-  const specialties: string[] = useMemo(() => Array.from(
-    new Set<string>(
-      mockProviders.flatMap(
-        (p: FullProviderProfile) => (p.specialty ? [p.specialty] : [])
+  const specialties: string[] = useMemo(() => {
+    if (!providers) return [];
+    return Array.from(
+      new Set<string>(
+        providers.flatMap(
+          (p: FullProviderProfile) => (p.specialty ? [p.specialty] : [])
+        )
       )
-    )
-  ), []);
+    );
+  }, [providers]);
 
   const filteredAndSortedProviders = useMemo(() => {
-    let filtered = providers;
+    let filtered = localProviders;
 
     if (filters.searchTerm) {
       const searchTermLower = filters.searchTerm.toLowerCase();
@@ -184,7 +204,6 @@ const Directory: React.FC = () => {
       filtered = filtered.filter(p => p.isFavorite);
     }
 
-    // Apply map bounds filter if enabled
     if (searchOnMapMove && mapBounds) {
       filtered = filtered.filter(p =>
         p.coordinates && mapBounds.contains(p.coordinates)
@@ -204,7 +223,39 @@ const Directory: React.FC = () => {
     });
 
     return filtered;
-  }, [providers, filters, searchOnMapMove, mapBounds]);
+  }, [localProviders, filters, searchOnMapMove, mapBounds]);
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 md:p-8">
+        <Skeleton className="h-10 w-1/2 mb-6" />
+        <Skeleton className="h-12 w-full mb-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-1">
+            <Skeleton className="h-96 w-full" />
+          </div>
+          <div className="lg:col-span-2 space-y-6">
+            <Skeleton className="h-[400px] w-full" />
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container mx-auto p-8 text-center">
+        <h1 className="text-2xl font-bold text-destructive">Failed to load providers</h1>
+        <p className="text-muted-foreground">There was an error fetching the directory data. Please try again later.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-8">
