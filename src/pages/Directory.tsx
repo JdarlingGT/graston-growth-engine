@@ -110,7 +110,6 @@ const Directory = () => {
         });
         
       case 'closest':
-        // In a real app, this would use geolocation to sort by actual distance
         return sortedProviders;
         
       case 'top-rated':
@@ -212,7 +211,7 @@ const Directory = () => {
 
           {/* Results Count */}
           <div className="text-sm text-muted-foreground">
-            Found {visibleProviders.length} provider{visibleProviders.length !== 1 ? 's' : ''}
+            Total providers: {filteredProviders.length}. {mapBounds && `Showing ${visibleProviders.length} within current map view.`}
           </div>
 
           {/* Results List */}
