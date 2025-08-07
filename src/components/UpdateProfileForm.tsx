@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,98 +9,248 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { FullProviderProfile, ContactInfo } from "@/types";
+import { FullProviderProfile } from "@/types";
 import { showSuccess, showError } from "@/utils/toast";
 import { User, Mail, Phone, MapPin, Globe, Plus, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UpdateProfileFormProps {
-  provider: FullProviderProfile;
+  providerId: string; // Pass providerId instead of full provider object
   onUpdate: (updatedProvider: FullProviderProfile) => void;
 }
 
-export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps) => {
-  const [formData, setFormData] = useState<FullProviderProfile>(provider);
-  const [isLoading, setIsLoading] = useState(false);
+export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormProps) => {
+  const [formData, setFormData] = useState<FullProviderProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [newService, setNewService] = useState("");
   const [newCertification, setNewCertification] = useState("");
 
+  useEffect(() => {
+    const fetchProvider = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', providerId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching provider:", error);
+        showError("Failed to load profile data.");
+        setFormData(null);
+      } else if (data) {
+        // Map DB fields to FullProviderProfile type
+        const providerData: FullProviderProfile = {
+          id: data.id,
+          name: data.name || '',
+          email: data.email || '',
+          specialty: data.specialty || undefined,
+          bio: data.bio || undefined,
+          experience: data.experience || undefined,
+          education: data.education || undefined,
+          profileImage: data.profile_image || undefined,
+          phone: data.phone || undefined,
+          website: data.website || undefined,
+          linkedin: data.linkedin || undefined,
+          facebook: data.facebook || undefined,
+          instagram: data.instagram || undefined,
+          twitter: data.twitter || undefined,
+          services: data.services || [],
+          certifications: data.certifications || [],
+          location: data.location || undefined,
+          clinicAddress: data.clinic_address || undefined,
+          coordinates: data.coordinates || undefined,
+          gtCertifications: data.gt_certifications || [],
+          verificationBadges: data.verification_badges || [],
+          accreditationLogos: data.accreditation_logos || [],
+          languagesSpoken: data.languages_spoken || [],
+          patientTypes: data.patient_types || [],
+          conditionsTreated: data.conditions_treated || [],
+          rating: data.rating || undefined,
+          reviewCount: data.review_count || undefined,
+          isFavorite: data.is_favorite || false,
+          tier: data.tier || 'Free', // Default to 'Free' if not set
+          clinicianType: data.clinician_type || undefined,
+          // trialStatus and activity/churnRisk are not in DB for now, keep as mock or derive
+          trialStatus: "N/A", 
+          activity: 0,
+          churnRisk: false,
+        };
+        setFormData(providerData);
+      }
+      setIsLoading(false);
+    };
+
+    fetchProvider();
+  }, [providerId]);
+
   const handleInputChange = (field: keyof FullProviderProfile, value: any) => {
-    setFormData(prev => ({
+    setFormData(prev => prev ? ({
       ...prev,
       [field]: value
-    }));
-  };
-
-  const handleContactInfoChange = (field: keyof ContactInfo, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      contactInfo: {
-        ...prev.contactInfo,
-        [field]: value
-      }
-    }));
-  };
-
-  const handleSocialMediaChange = (platform: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      socialMedia: {
-        ...prev.socialMedia,
-        [platform]: value
-      }
-    }));
+    }) : null);
   };
 
   const addService = () => {
-    if (newService.trim() && formData.services) {
-      setFormData(prev => ({
+    if (newService.trim() && formData) {
+      setFormData(prev => prev ? ({
         ...prev,
         services: [...(prev.services || []), newService.trim()]
-      }));
+      }) : null);
       setNewService("");
     }
   };
 
   const removeService = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      services: prev.services?.filter((_, i) => i !== index) || []
-    }));
+    if (formData) {
+      setFormData(prev => prev ? ({
+        ...prev,
+        services: prev.services?.filter((_, i) => i !== index) || []
+      }) : null);
+    }
   };
 
   const addCertification = () => {
-    if (newCertification.trim() && formData.certifications) {
-      setFormData(prev => ({
+    if (newCertification.trim() && formData) {
+      setFormData(prev => prev ? ({
         ...prev,
         certifications: [...(prev.certifications || []), newCertification.trim()]
-      }));
+      }) : null);
       setNewCertification("");
     }
   };
 
   const removeCertification = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      certifications: prev.certifications?.filter((_, i) => i !== index) || []
-    }));
+    if (formData) {
+      setFormData(prev => prev ? ({
+        ...prev,
+        certifications: prev.certifications?.filter((_, i) => i !== index) || []
+      }) : null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (!formData) return;
+
+    setIsSaving(true);
+
+    // Map FullProviderProfile to DB fields
+    const { 
+      id, name, email, specialty, bio, experience, education, profileImage, 
+      phone, website, linkedin, facebook, instagram, twitter, services, 
+      certifications, location, clinicAddress, coordinates, gtCertifications,
+      verificationBadges, accreditationLogos, languagesSpoken, patientTypes,
+      conditionsTreated, rating, reviewCount, isFavorite, tier, clinicianType
+    } = formData;
+
+    const updateData = {
+      name,
+      email,
+      specialty,
+      bio,
+      experience,
+      education,
+      profile_image: profileImage,
+      phone,
+      website,
+      linkedin,
+      facebook,
+      instagram,
+      twitter,
+      services,
+      certifications,
+      location,
+      clinic_address: clinicAddress,
+      coordinates,
+      gt_certifications: gtCertifications,
+      verification_badges: verificationBadges,
+      accreditation_logos: accreditationLogos,
+      languages_spoken: languagesSpoken,
+      patient_types: patientTypes,
+      conditions_treated: conditionsTreated,
+      rating,
+      review_count: reviewCount,
+      is_favorite: isFavorite,
+      tier,
+      clinician_type: clinicianType,
+      updated_at: new Date().toISOString(),
+    };
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      onUpdate(formData);
-      showSuccess("Profile updated successfully!");
-    } catch (error) {
-      showError("Failed to update profile. Please try again.");
+      const { data, error } = await supabase
+        .from('profiles')
+        .upsert(updateData, { onConflict: 'id' })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Supabase update error:", error);
+        showError("Failed to update profile: " + error.message);
+      } else if (data) {
+        // Re-map updated data back to FullProviderProfile for consistency
+        const updatedProvider: FullProviderProfile = {
+          id: data.id,
+          name: data.name || '',
+          email: data.email || '',
+          specialty: data.specialty || undefined,
+          bio: data.bio || undefined,
+          experience: data.experience || undefined,
+          education: data.education || undefined,
+          profileImage: data.profile_image || undefined,
+          phone: data.phone || undefined,
+          website: data.website || undefined,
+          linkedin: data.linkedin || undefined,
+          facebook: data.facebook || undefined,
+          instagram: data.instagram || undefined,
+          twitter: data.twitter || undefined,
+          services: data.services || [],
+          certifications: data.certifications || [],
+          location: data.location || undefined,
+          clinicAddress: data.clinic_address || undefined,
+          coordinates: data.coordinates || undefined,
+          gtCertifications: data.gt_certifications || [],
+          verificationBadges: data.verification_badges || [],
+          accreditationLogos: data.accreditation_logos || [],
+          languagesSpoken: data.languages_spoken || [],
+          patientTypes: data.patient_types || [],
+          conditionsTreated: data.conditions_treated || [],
+          rating: data.rating || undefined,
+          reviewCount: data.review_count || undefined,
+          isFavorite: data.is_favorite || false,
+          tier: data.tier || 'Free',
+          clinicianType: data.clinician_type || undefined,
+          trialStatus: "N/A", // These are not managed by the form/DB directly
+          activity: 0,
+          churnRisk: false,
+        };
+        onUpdate(updatedProvider);
+        showSuccess("Profile updated successfully!");
+      }
+    } catch (error: any) {
+      console.error("Unexpected error during update:", error);
+      showError("An unexpected error occurred: " + error.message);
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 text-center">
+        <p>Loading profile data...</p>
+      </div>
+    );
+  }
+
+  if (!formData) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 text-center">
+        <p>No profile data found for this ID.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -179,8 +329,8 @@ export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps
                       <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="phone"
-                        value={formData.contactInfo?.phone || ""}
-                        onChange={(e) => handleContactInfoChange("phone", e.target.value)}
+                        value={formData.phone || ""}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
                         className="pl-10"
                         placeholder="(555) 123-4567"
                       />
@@ -253,8 +403,8 @@ export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps
                   <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="website"
-                    value={formData.contactInfo?.website || ""}
-                    onChange={(e) => handleContactInfoChange("website", e.target.value)}
+                    value={formData.website || ""}
+                    onChange={(e) => handleInputChange("website", e.target.value)}
                     className="pl-10"
                     placeholder="https://yourwebsite.com"
                   />
@@ -266,8 +416,8 @@ export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps
                   <Label htmlFor="linkedin">LinkedIn</Label>
                   <Input
                     id="linkedin"
-                    value={formData.socialMedia?.linkedin || ""}
-                    onChange={(e) => handleSocialMediaChange("linkedin", e.target.value)}
+                    value={formData.linkedin || ""}
+                    onChange={(e) => handleInputChange("linkedin", e.target.value)}
                     placeholder="https://linkedin.com/in/yourprofile"
                   />
                 </div>
@@ -275,8 +425,8 @@ export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps
                   <Label htmlFor="facebook">Facebook</Label>
                   <Input
                     id="facebook"
-                    value={formData.socialMedia?.facebook || ""}
-                    onChange={(e) => handleSocialMediaChange("facebook", e.target.value)}
+                    value={formData.facebook || ""}
+                    onChange={(e) => handleInputChange("facebook", e.target.value)}
                     placeholder="https://facebook.com/yourpage"
                   />
                 </div>
@@ -284,8 +434,8 @@ export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps
                   <Label htmlFor="instagram">Instagram</Label>
                   <Input
                     id="instagram"
-                    value={formData.socialMedia?.instagram || ""}
-                    onChange={(e) => handleSocialMediaChange("instagram", e.target.value)}
+                    value={formData.instagram || ""}
+                    onChange={(e) => handleInputChange("instagram", e.target.value)}
                     placeholder="https://instagram.com/youraccount"
                   />
                 </div>
@@ -293,8 +443,8 @@ export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps
                   <Label htmlFor="twitter">Twitter</Label>
                   <Input
                     id="twitter"
-                    value={formData.socialMedia?.twitter || ""}
-                    onChange={(e) => handleSocialMediaChange("twitter", e.target.value)}
+                    value={formData.twitter || ""}
+                    onChange={(e) => handleInputChange("twitter", e.target.value)}
                     placeholder="https://twitter.com/youraccount"
                   />
                 </div>
@@ -363,8 +513,8 @@ export const UpdateProfileForm = ({ provider, onUpdate }: UpdateProfileFormProps
 
             {/* Submit Button */}
             <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading} className="min-w-32">
-                {isLoading ? "Updating..." : "Update Profile"}
+              <Button type="submit" disabled={isSaving} className="min-w-32">
+                {isSaving ? "Updating..." : "Update Profile"}
               </Button>
             </div>
           </form>

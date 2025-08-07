@@ -1,25 +1,22 @@
 export type Tier = "Free" | "Preferred" | "Premier";
-export type ClinicianType = "Physical Therapist" | "Chiropractor" | "Massage Therapist" | "Athletic Trainer" | "Other";
-export type Language = "English" | "Spanish" | "French" | "Hindi" | "Mandarin";
-export type RadiusOption = 10 | 25 | 50 | 100;
-export type SortOption = "premier-first" | "top-rated" | "most-reviewed";
-export type TrainingLevel = "GTS" | "Advanced" | "Essential";
-export type Condition = "Back Pain" | "Neck Pain" | "Shoulder Injuries" | "Knee Pain" | "Headaches" | "Plantar Fasciitis" | "Carpal Tunnel Syndrome" | "TMJ Dysfunction" | "Sciatica" | "Sports Injuries" | "Post-Surgical Rehab" | "Chronic Pain";
-export type PatientDemographic = "Adults" | "Children" | "Adolescents" | "Geriatric" | "Athletes" | "Pregnant Women" | "Post-Surgical";
+export type TrainingLevel = "Essential" | "Advanced" | "GTS";
+export type Language = "English" | "Spanish" | "French" | "German" | "Mandarin" | "Cantonese" | "Hindi" | "Arabic" | "Portuguese" | "Russian" | "Japanese" | "Korean" | "Italian" | "Vietnamese";
+export type Condition = "Back Pain" | "Neck Pain" | "Shoulder Pain" | "Knee Pain" | "Headaches" | "Plantar Fasciitis" | "Tennis Elbow" | "Golfers Elbow" | "Carpal Tunnel Syndrome" | "Shin Splints" | "Rotator Cuff Tendinopathy" | "Achilles Tendinopathy" | "IT Band Syndrome" | "Sciatica" | "TMJ Dysfunction";
+export type PatientDemographic = "Adults" | "Children" | "Adolescents" | "Seniors" | "Athletes" | "Pregnant Women" | "Post-Surgical Patients";
+export type RadiusOption = 5 | 10 | 25 | 50 | 100;
+export type ClinicianType = "Physical Therapist" | "Chiropractor" | "Occupational Therapist" | "Athletic Trainer" | "Massage Therapist" | "Medical Doctor" | "Other";
 
 export interface ContactInfo {
   phone?: string;
   email?: string;
   website?: string;
-  bookingUrl?: string;
 }
 
 export interface SocialMedia {
-  facebook?: string;
-  twitter?: string;
   linkedin?: string;
+  facebook?: string;
   instagram?: string;
-  youtube?: string;
+  twitter?: string;
 }
 
 export interface Testimonial {
@@ -36,7 +33,7 @@ export interface FAQ {
 export interface Accreditation {
   name: string;
   logoUrl: string;
-  url?: string;
+  url: string;
 }
 
 export interface MarketingResource {
@@ -44,47 +41,45 @@ export interface MarketingResource {
   title: string;
   description: string;
   category: string;
-  tags?: string[];
-  tier: Tier;
   image: string;
   filePath: string;
+  tier: Tier;
 }
 
 export interface FullProviderProfile {
   id: string;
   name: string;
-  email: string;
-  profileImage?: string;
+  email: string; // Directly from profiles table
   specialty?: string;
-  clinicianType?: ClinicianType;
-  location?: string; // City, State
-  clinicAddress?: string; // Full clinic address
-  coordinates?: { lat: number; lng: number; }; // For map
-  tier: Tier;
-  trialStatus: "Active" | "Expired" | "N/A";
-  activity: number; // e.g., views, clicks
-  churnRisk: boolean;
   bio?: string;
-  experience?: string; // e.g., "10 years"
-  education?: string; // e.g., "MD, Harvard"
-  socialMedia?: SocialMedia;
-  services?: string[]; // Services offered
-  certifications?: string[]; // Other certifications
-  gtCertifications?: TrainingLevel[]; // Graston Technique specific certifications
-  verificationBadges?: string[]; // e.g., "Background Checked", "Licensed"
-  accreditationLogos?: Accreditation[]; // Logos for accreditations
+  experience?: string;
+  education?: string;
+  profileImage?: string; // profile_image in DB
+  phone?: string; // Directly from profiles table
+  website?: string; // Directly from profiles table
+  linkedin?: string; // Directly from profiles table
+  facebook?: string; // Directly from profiles table
+  instagram?: string; // Directly from profiles table
+  twitter?: string; // Directly from profiles table
+  services?: string[];
+  certifications?: string[];
+  location?: string;
+  clinicAddress?: string;
+  coordinates?: { lat: number; lng: number };
+  gtCertifications?: TrainingLevel[]; // gt_certifications in DB
+  verificationBadges?: string[];
+  accreditationLogos?: Accreditation[];
   languagesSpoken?: Language[];
   patientTypes?: PatientDemographic[];
   conditionsTreated?: Condition[];
-  galleryImages?: string[];
-  galleryVideos?: string[]; // URLs for embedded videos
-  testimonials?: Testimonial[];
-  faqs?: FAQ[];
-  rating?: number; // 1-5
+  rating?: number;
   reviewCount?: number;
-  contactInfo?: ContactInfo; // Consolidated contact info (phone and website are here)
-  isFavorite?: boolean; // For favorite toggle
-  canCompare?: boolean; // For compare button
+  isFavorite?: boolean;
+  tier: Tier;
+  trialStatus?: "Active" | "Expired" | "N/A";
+  activity?: number;
+  churnRisk?: boolean;
+  clinicianType?: ClinicianType;
 }
 
 export interface DirectoryFilters {
@@ -98,8 +93,10 @@ export interface DirectoryFilters {
   tier?: Tier | 'All';
   trainingLevel?: TrainingLevel | 'All';
   languages?: Language[];
-  patientTypes?: PatientDemographic[];
   conditionsTreated?: Condition[];
+  patientTypes?: PatientDemographic[];
   sortBy?: SortOption;
   favoritesOnly?: boolean;
 }
+
+export type SortOption = 'premier-first' | 'top-rated' | 'most-reviewed';
