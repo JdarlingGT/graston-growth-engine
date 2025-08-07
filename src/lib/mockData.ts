@@ -43,7 +43,8 @@ export const mockProviders: FullProviderProfile[] = [
     faqs: [
       { question: "What insurance plans do you accept?", answer: "We accept most major insurance plans, including Blue Cross, Aetna, and Medicare." },
       { question: "How long is the typical recovery from knee surgery?", answer: "Recovery varies by patient, but most can return to normal activities within 6-8 weeks." }
-    ]
+    ],
+    accreditations: ["fsbpt", "apta", "nata"]
   },
   {
     id: "2",
@@ -84,7 +85,8 @@ export const mockProviders: FullProviderProfile[] = [
     ],
     faqs: [
       { question: "How often should I get a skin cancer screening?", answer: "We recommend annual screenings for most patients, but those with a history of skin cancer or significant sun exposure may need more frequent checks." }
-    ]
+    ],
+    accreditations: ["apta"]
   },
   {
     id: "3",
@@ -125,7 +127,8 @@ export const mockProviders: FullProviderProfile[] = [
     ],
     faqs: [
       { question: "What is your after-hours policy?", answer: "We have a nurse triage line available 24/7 for urgent concerns, and same-day appointments are often available for sick visits." }
-    ]
+    ],
+    accreditations: []
   },
   {
     id: "4",
@@ -166,7 +169,8 @@ export const mockProviders: FullProviderProfile[] = [
     ],
     faqs: [
       { question: "How can I reduce my risk of heart disease?", answer: "Regular exercise, a heart-healthy diet, not smoking, and managing stress are key factors in reducing heart disease risk." }
-    ]
+    ],
+    accreditations: ["fsbpt", "apta"]
   },
   {
     id: "5",
@@ -207,7 +211,8 @@ export const mockProviders: FullProviderProfile[] = [
     ],
     faqs: [
       { question: "Do you offer telehealth appointments?", answer: "Yes, we offer secure video appointments for both new and established patients." }
-    ]
+    ],
+    accreditations: ["nata"]
   },
   {
     id: "6",
@@ -238,7 +243,8 @@ export const mockProviders: FullProviderProfile[] = [
       "Post-Surgical Rehabilitation",
       "Manual Therapy",
       "Injury Prevention"
-    ]
+    ],
+    accreditations: ["fsbpt", "apta", "nata"]
   },
   {
     id: "7",
@@ -269,7 +275,8 @@ export const mockProviders: FullProviderProfile[] = [
       "Therapeutic Exercise",
       "Posture Correction",
       "Pain Management"
-    ]
+    ],
+    accreditations: ["ica", "aca"]
   },
   {
     id: "8",
@@ -300,7 +307,8 @@ export const mockProviders: FullProviderProfile[] = [
       "Deep Tissue Massage",
       "Myofascial Release",
       "Recovery Techniques"
-    ]
+    ],
+    accreditations: ["amta"]
   }
 ];
 

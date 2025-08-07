@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Star, Phone, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { TierBadge } from "@/components/TierBadge";
 
 interface ProviderCardProps {
   provider: FullProviderProfile;
@@ -38,8 +39,11 @@ const ProviderCard = ({ provider }: ProviderCardProps) => {
           </Avatar>
           
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-base truncate">{provider.name}</h3>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <h3 className="font-semibold text-base truncate">{provider.name}</h3>
+                <TierBadge tier={provider.tier} size="sm" />
+              </div>
               <Badge className={tierColors[provider.tier]}>
                 {provider.tier}
               </Badge>

@@ -12,6 +12,7 @@ import StaffDashboard from "@/components/dashboards/StaffDashboard";
 import MarketingToolkitPage from "./pages/MarketingToolkit";
 import Directory from "./pages/Directory";
 import PublicProviderProfilePage from "./pages/PublicProviderProfilePage";
+import BadgeShowcase from "./pages/BadgeShowcase";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
 import Reports from "./pages/Reports";
@@ -68,6 +69,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/directory" element={<Directory />} />
           <Route path="/directory/provider/:id" element={<PublicProviderProfilePage />} />
+          <Route path="/badges" element={<BadgeShowcase />} />
           <Route path="/login" element={<Login />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/reports" element={<Reports />} />
