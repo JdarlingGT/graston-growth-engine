@@ -81,6 +81,7 @@ export interface FullProviderProfile {
   testimonials?: Testimonial[];
   faqs?: FAQ[];
   engagementScore?: number;
+  views?: number;
 }
 
 export interface MarketingResource {

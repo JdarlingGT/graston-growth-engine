@@ -43,6 +43,7 @@ export const mapProfileToFullProviderProfile = (data: any): FullProviderProfile 
     galleryVideos: data.gallery_videos || [],
     testimonials: data.testimonials || [],
     faqs: data.faqs || [],
+    views: data.views || 0,
     // These fields are not in the DB and are used for client-side logic or mock data.
     // They will need to be derived or handled separately in the future.
     trialStatus: "N/A", 
