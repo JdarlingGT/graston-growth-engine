@@ -20,13 +20,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { showSuccess } from "@/utils/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 const Support = () => {
+  const { toast } = useToast();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you would handle form submission to Supabase here.
-    showSuccess("Ticket Submitted! Our support team will get back to you shortly.");
+    toast({
+      title: "Ticket Submitted!",
+      description: "Our support team will get back to you shortly. (This is a demo)",
+    });
   };
 
   return (
