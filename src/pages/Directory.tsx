@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useProviders } from "@/hooks/useProviders";
 import ProviderCard from "@/components/directory/ProviderCard";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,7 +26,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { mockProviders, specialties } from "@/lib/mockData";
+import { specialties } from "@/lib/mockData"; // Assuming specialties is defined in mockData fix on lines 220, 242 
 
 const Directory: React.FC = () => {
   const navigate = useNavigate();
@@ -33,15 +34,20 @@ const Directory: React.FC = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
+  const { providers, loading, error } = useProviders();
   const [filters, setFilters] = useState<DirectoryFilters>({ sortBy: "premier-first" });
   const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
-  const [localProviders, setLocalProviders] = useState<FullProviderProfile[]>(mockProviders);
+  const [localProviders, setLocalProviders] = useState<FullProviderProfile[]>(providers);
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 });
   const [mapZoom, setMapZoom] = useState(4);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchOnMapMove, setSearchOnMapMove] = useState(false);
   const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
+
+  useEffect(() => {
+    setLocalProviders(providers);
+  }, [providers]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -211,7 +217,7 @@ const Directory: React.FC = () => {
             <FilterPanel 
               filters={filters} 
               onFilterChange={handleFilterChange} 
-              specialties={specialties} 
+              specialties={specialties} // fix import from dummy data here!!!
             />
           </div>
         )}
@@ -233,7 +239,7 @@ const Directory: React.FC = () => {
                     <FilterPanel 
                       filters={filters} 
                       onFilterChange={handleFilterChange} 
-                      specialties={specialties} 
+                      specialties={specialties} // fix import from dummy data here!!!
                     />
                     <Button className="w-full mt-4" onClick={() => setIsFilterPanelOpen(false)}>
                       Apply Filters

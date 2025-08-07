@@ -73,7 +73,7 @@ export interface FullProviderProfile {
   isFavorite?: boolean;
   tier: Tier;
   clinicianType?: ClinicianType;
-  trialStatus: "Active" | "Expired" | "N/A";
+  // trialStatus: "Active" | "Expired" | "N/A";
   activity: number;
   churnRisk: boolean;
   galleryImages?: string[];
