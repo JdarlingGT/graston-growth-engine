@@ -95,18 +95,18 @@ const ProviderCard = ({ provider, onMouseEnter, onMouseLeave, onToggleFavorite }
         
         <div className="flex justify-between items-center mt-3 pt-3 border-t">
           <div className="flex gap-2">
-            {provider.contactInfo?.phone && (
+            {provider.phone && (
               <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={(e) => e.stopPropagation()}>
                 <Phone className="h-3 w-3 mr-1" />
                 Call
               </Button>
             )}
-            {provider.contactInfo?.website && (
+            {provider.website && (
               <Button variant="ghost" size="sm" className="h-8 text-xs" asChild>
                 <a 
-                  href={provider.contactInfo.website.startsWith('http') 
-                    ? provider.contactInfo.website 
-                    : `https://${provider.contactInfo.website}`
+                  href={provider.website.startsWith('http') 
+                    ? provider.website 
+                    : `https://${provider.website}`
                   } 
                   target="_blank" 
                   rel="noopener noreferrer"

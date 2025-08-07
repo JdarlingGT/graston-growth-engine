@@ -52,26 +52,26 @@ const ProfileSidebar = ({ provider, onToggleFavorite }: ProfileSidebarProps) => 
         <CardTitle className="text-lg">Contact & Location</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {provider.contactInfo?.phone && (
+        {provider.phone && (
           <div className="flex items-center gap-2 text-sm">
             <Phone className="h-4 w-4 text-muted-foreground" />
-            <a href={`tel:${provider.contactInfo.phone}`} className="hover:underline">
-              {provider.contactInfo.phone}
+            <a href={`tel:${provider.phone}`} className="hover:underline">
+              {provider.phone}
             </a>
           </div>
         )}
-        {provider.contactInfo?.email && (
+        {provider.email && (
           <div className="flex items-center gap-2 text-sm">
             <Mail className="h-4 w-4 text-muted-foreground" />
-            <a href={`mailto:${provider.contactInfo.email}`} className="hover:underline">
-              {provider.contactInfo.email}
+            <a href={`mailto:${provider.email}`} className="hover:underline">
+              {provider.email}
             </a>
           </div>
         )}
-        {provider.contactInfo?.website && (
+        {provider.website && (
           <div className="flex items-center gap-2 text-sm">
             <Globe className="h-4 w-4 text-muted-foreground" />
-            <a href={provider.contactInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+            <a href={provider.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
               Visit Website
             </a>
           </div>
