@@ -1,46 +1,36 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { corsHeaders } from '../_shared/cors.ts'
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 
-// These environment variables must be set in your Supabase project settings
-const FLUENTCRM_API_URL = Deno.env.get('FLUENTCRM_API_URL')
-const FLUENTCRM_API_KEY = Deno.env.get('FLUENTCRM_API_KEY')
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
-serve(async (req: Request) => { // Added type annotation for 'req'
-  // This is needed for CORS preflight requests
+// Mock data simulating a response from the FluentCRM API
+const mockLeads = [
+  { id: 1, first_name: 'Alice', last_name: 'Johnson', email: 'alice.j@email.com', created_at: '2023-10-26T10:00:00Z' },
+  { id: 2, first_name: 'Bob', last_name: 'Williams', email: 'bob.w@email.com', created_at: '2023-10-25T15:30:00Z' },
+  { id: 3, first_name: 'Charlie', last_name: 'Brown', email: 'charlie.b@email.com', created_at: '2023-10-25T11:45:00Z' },
+  { id: 4, first_name: 'Diana', last_name: 'Miller', email: 'diana.m@email.com', created_at: '2023-10-24T09:00:00Z' },
+];
+
+serve(async (req: Request) => {
+  // This is required for CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    if (!FLUENTCRM_API_URL || !FLUENTCRM_API_KEY) {
-      throw new Error('FluentCRM API URL or Key not set in your Supabase project environment variables.')
-    }
+    // In a real-world scenario, you would add logic here to fetch data from the actual FluentCRM API.
+    const data = { leads: mockLeads };
 
-    // Fetch the 5 most recent contacts from FluentCRM.
-    // Note: This assumes the API key is a Bearer token. This might need adjustment based on FluentCRM's specific authentication method.
-    const response = await fetch(`${FLUENTCRM_API_URL}/contacts?sort_by=created_at&sort_order=desc&per_page=5`, {
-      headers: {
-        'Authorization': `Bearer ${FLUENTCRM_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    })
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`FluentCRM API error: ${response.status} ${response.statusText} - ${errorBody}`)
-    }
-
-    const leads = await response.json()
-
-    return new Response(JSON.stringify({ leads }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200,
-    })
-  } catch (error: unknown) { // Asserted error type to unknown
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    return new Response(JSON.stringify({ error: errorMessage }), { // Safely access error.message
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500,
-    })
+    return new Response(
+      JSON.stringify(data),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  } catch (error: any) {
+    return new Response(
+        JSON.stringify({ error: error.message }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
   }
 })
