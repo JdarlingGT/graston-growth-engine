@@ -1,15 +1,12 @@
 "use client";
 
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow, MarkerClusterer } from '@react-google-maps/api';
-import { FullProviderProfile, Tier } from '@/types';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useState, useCallback } from 'react';
-import React from 'react';
-import MiniProfileCard from './MiniProfileCard';
+import React, { useRef, useEffect, useState } from 'react';
+import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import { FullProviderProfile } from '@/types';
 
-const containerStyle = {
+const mapContainerStyle = {
   width: '100%',
-  height: '100%'
+  height: '100%',
 };
 
 interface DirectoryMapProps {
@@ -17,121 +14,87 @@ interface DirectoryMapProps {
   apiKey: string;
   center: { lat: number; lng: number };
   zoom: number;
-  onBoundsChanged?: (bounds: google.maps.LatLngBounds) => void;
+  onBoundsChanged: (bounds: google.maps.LatLngBounds) => void;
+  hoveredProviderId?: string | null; // New prop
 }
 
-const getMarkerIcon = (tier: Tier, isHovered: boolean) => {
-  const baseIcons: Record<Tier, google.maps.Symbol> = {
-    Premier: {
-      path: window.google.maps.SymbolPath.CIRCLE,
-      scale: 10,
-      fillColor: "#8B5CF6", // purple-500
-      fillOpacity: 1,
-      strokeWeight: 2,
-      strokeColor: "white",
-    },
-    Preferred: {
-      path: window.google.maps.SymbolPath.CIRCLE,
-      scale: 8,
-      fillColor: "#3B82F6", // blue-500
-      fillOpacity: 1,
-      strokeWeight: 1,
-      strokeColor: "white",
-    },
-    Free: {
-      path: window.google.maps.SymbolPath.CIRCLE,
-      scale: 6,
-      fillColor: "#6B7280", // gray-500
-      fillOpacity: 1,
-      strokeWeight: 1,
-      strokeColor: "white",
-    },
-  };
-  
-  const icon = baseIcons[tier];
-  if (isHovered && icon.scale) {
-    return { ...icon, scale: icon.scale * 1.2, strokeColor: '#FBBF24' }; // Enlarge and add yellow border on hover
-  }
-  return icon;
-};
+const DirectoryMap: React.FC<DirectoryMapProps> = ({
+  providers,
+  apiKey,
+  center,
+  zoom,
+  onBoundsChanged,
+  hoveredProviderId,
+}) => {
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
-const DirectoryMap = ({ providers, apiKey, center, zoom, onBoundsChanged }: DirectoryMapProps) => {
-  const [selectedProvider, setSelectedProvider] = useState<FullProviderProfile | null>(null);
-  const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
+  const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: apiKey,
     libraries: ['places'],
   });
 
-  const onLoad = useCallback((mapInstance: google.maps.Map) => {
-    setMap(mapInstance);
+  const onLoad = React.useCallback(function callback(map: google.maps.Map) {
+    mapRef.current = map;
+    setMapLoaded(true);
   }, []);
 
-  const onUnmount = useCallback(() => {
-    setMap(null);
+  const onUnmount = React.useCallback(function callback() {
+    mapRef.current = null;
+    setMapLoaded(false);
   }, []);
 
-  if (!isLoaded) {
-    return <Skeleton className="w-full h-full rounded-lg" />;
-  }
+  const onIdle = () => {
+    if (mapRef.current) {
+      const bounds = mapRef.current.getBounds();
+      if (bounds) {
+        onBoundsChanged(bounds);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (mapLoaded && mapRef.current) {
+      mapRef.current.setCenter(center);
+      mapRef.current.setZoom(zoom);
+    }
+  }, [center, zoom, mapLoaded]);
+
+  if (loadError) return <div>Error loading maps</div>;
+  if (!isLoaded) return <div>Loading Maps...</div>;
 
   return (
     <GoogleMap
-      mapContainerStyle={containerStyle}
+      mapContainerStyle={mapContainerStyle}
       center={center}
       zoom={zoom}
-      options={{
-        streetViewControl: false,
-        mapTypeControl: false,
-        fullscreenControl: false,
-      }}
       onLoad={onLoad}
       onUnmount={onUnmount}
-      onIdle={() => {
-        if (map) {
-          const bounds = map.getBounds();
-          if (bounds && onBoundsChanged) {
-            onBoundsChanged(bounds);
-          }
-        }
+      onIdle={onIdle}
+      options={{
+        disableDefaultUI: true,
+        zoomControl: true,
       }}
     >
-      <MarkerClusterer>
-        {(clusterer) => (
-          <React.Fragment>
-            {providers
-              .filter(provider => provider.coordinates)
-              .map(provider => (
-                <Marker 
-                  key={provider.id} 
-                  position={provider.coordinates!} 
-                  title={provider.name}
-                  clusterer={clusterer}
-                  onClick={() => setSelectedProvider(provider)}
-                  onMouseOver={() => setHoveredProviderId(provider.id)}
-                  onMouseOut={() => setHoveredProviderId(null)}
-                  icon={getMarkerIcon(provider.tier, provider.id === hoveredProviderId || provider.id === selectedProvider?.id)}
-                  zIndex={provider.id === hoveredProviderId || provider.id === selectedProvider?.id ? 1000 : 1}
-                />
-              ))}
-          </React.Fragment>
-        )}
-      </MarkerClusterer>
-
-      {selectedProvider && selectedProvider.coordinates && (
-        <InfoWindow
-          position={selectedProvider.coordinates}
-          onCloseClick={() => setSelectedProvider(null)}
-          options={{ pixelOffset: new window.google.maps.Size(0, -40) }}
-        >
-          <MiniProfileCard provider={selectedProvider} />
-        </InfoWindow>
-      )}
+      {providers.map((provider) => {
+        if (!provider.coordinates) return null;
+        const isHovered = hoveredProviderId === provider.id;
+        return (
+          <MarkerF
+            key={provider.id}
+            position={provider.coordinates}
+            options={{
+              icon: {
+                url: isHovered ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                scaledSize: new window.google.maps.Size(32, 32),
+              },
+            }}
+            title={provider.name}
+          />
+        );
+      })}
     </GoogleMap>
   );
 };
 
-export default React.memo(DirectoryMap);
+export default DirectoryMap;

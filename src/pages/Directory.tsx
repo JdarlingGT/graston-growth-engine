@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProviderCard from "@/components/directory/ProviderCard";
@@ -14,7 +16,7 @@ import {
   RadiusOption,
   ClinicianType,
 } from "@/types";
-import { Search, Filter, RefreshCw } from "lucide-react";
+import { Search, Filter, RefreshCw, List, Map } from "lucide-react";
 import DirectoryMap from "@/components/directory/DirectoryMap";
 import FilterPanel from "@/components/directory/FilterPanel";
 import { Button } from "@/components/ui/button";
@@ -30,6 +32,8 @@ import Fuse from 'fuse.js';
 import { useDebounce } from '@/hooks/useDebounce';
 import SearchBar from '@/components/SearchBar';
 import smallProvidersRaw from '@/lib/smallProviderData.json';
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
 // Type definition for external raw providers JSON
 type RawProvider = {
   provider_name: string;
@@ -57,6 +61,8 @@ const Directory: React.FC = () => {
   const [filters, setFilters] = useState<DirectoryFilters>({ sortBy: "premier-first" });
   const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list'); // New state for view mode
+
   // Generate a list of ~100 providers by repeating base and external data
   const [localProviders, setLocalProviders] = useState<FullProviderProfile[]>(() => {
     const external = (smallProvidersRaw as RawProvider[]).map((p: RawProvider, idx: number) => ({
@@ -320,105 +326,114 @@ const Directory: React.FC = () => {
         </ul>
       )}
       </div>
+
+      {/* Toggle for List/Map View */}
+      <div className="flex justify-end mb-4">
+        <ToggleGroup type="single" value={viewMode} onValueChange={(value: 'list' | 'map') => setViewMode(value)} aria-label="View mode toggle">
+          <ToggleGroupItem value="list" aria-label="Toggle list view">
+            <List className="h-4 w-4 mr-2" /> List View
+          </ToggleGroupItem>
+          <ToggleGroupItem value="map" aria-label="Toggle map view">
+            <Map className="h-4 w-4 mr-2" /> Map View
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        {/* Reset display count when filters change */}
-        {filteredAndSortedProviders.length === 0 && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            <p>No providers found matching your criteria.</p>
-            <Button variant="link" onClick={() => setFilters({ sortBy: "premier-first" })}>
+        {/* Filter Panel (always visible) */}
+        <div className="lg:col-span-1">
+          <div className="flex flex-col gap-4">
+            <Button
+              onClick={() => setIsFilterPanelOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+            </Button>
+            <Sheet open={isFilterPanelOpen} onOpenChange={setIsFilterPanelOpen}>
+              <SheetContent side="left" className="w-full sm:max-w-sm overflow-y-auto">
+                <div className="p-4">
+                  <FilterPanel
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    specialties={specialties}
+                  />
+                  <Button className="w-full mt-4" onClick={() => setIsFilterPanelOpen(false)}>
+                    Apply Filters
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+            <Button variant="outline" onClick={() => setFilters({ sortBy: "premier-first" })}>
+              <RefreshCw className="h-4 w-4 mr-2" />
               Reset Filters
             </Button>
           </div>
-        )}
-        {filteredAndSortedProviders.length > 0 && (
-          <div className="lg:col-span-1">
-            <div className="flex flex-col gap-4">
-              <Button
-                onClick={() => setIsFilterPanelOpen(true)}
-                className="flex items-center gap-2"
-              >
-                <Filter className="h-4 w-4" />
-                Filters
-              </Button>
-              <Sheet open={isFilterPanelOpen} onOpenChange={setIsFilterPanelOpen}>
-                <SheetContent side="left" className="w-full sm:max-w-sm overflow-y-auto">
-                  <div className="p-4">
-                    <FilterPanel 
-                      filters={filters} 
-                      onFilterChange={handleFilterChange} 
-                      specialties={specialties} 
-                    />
-                    <Button className="w-full mt-4" onClick={() => setIsFilterPanelOpen(false)}>
-                      Apply Filters
-                    </Button>
-                  </div>
-                </SheetContent>
-              </Sheet>
-              <Button variant="outline" onClick={() => setFilters({ sortBy: "premier-first" })}>
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Reset Filters
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {googleMapsApiKey && (
-          <Card className="h-[400px] w-full">
-            <CardContent className="p-0 h-full w-full rounded-lg overflow-hidden">
-              <DirectoryMap 
-                providers={filteredAndSortedProviders} 
-                apiKey={googleMapsApiKey} 
-                center={mapCenter}
-                zoom={mapZoom}
-                onBoundsChanged={setMapBounds}
-              />
-            </CardContent>
-          </Card>
-        )}
-        {!googleMapsApiKey && (
-          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
-            <p className="font-bold">Google Maps API Key Missing</p>
-            <p>To enable the interactive map, please set the `VITE_GOOGLE_MAPS_API_KEY` environment variable.</p>
-          </div>
-        )}
-
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="search-on-move"
-            checked={searchOnMapMove}
-            onCheckedChange={(checked) => setSearchOnMapMove(Boolean(checked))}
-          />
-          <Label htmlFor="search-on-move" className="font-semibold text-sm">
-            Search as I move the map
-          </Label>
         </div>
 
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-          {displayedProviders.length > 0 ? (
-            displayedProviders.map(provider => (
-              <ProviderCard
-                key={provider.id}
-                provider={provider}
-                onMouseEnter={() => setHoveredProviderId(provider.id)}
-                onMouseLeave={() => setHoveredProviderId(null)}
-                onToggleFavorite={handleToggleFavorite}
-              />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12 text-muted-foreground">
-              <p>No providers found matching your criteria.</p>
-              <Button variant="link" onClick={() => setFilters({ sortBy: "premier-first" })}>
-                Reset Filters
-              </Button>
+        {/* Main content area (conditionally rendered) */}
+        {viewMode === 'list' ? (
+          <div className="lg:col-span-2">
+            {filteredAndSortedProviders.length === 0 && (
+              <div className="col-span-full text-center py-12 text-muted-foreground">
+                <p>No providers found matching your criteria.</p>
+                <Button variant="link" onClick={() => setFilters({ sortBy: "premier-first" })}>
+                  Reset Filters
+                </Button>
+              </div>
+            )}
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+              {displayedProviders.length > 0 &&
+                displayedProviders.map(provider => (
+                  <ProviderCard
+                    key={provider.id}
+                    provider={provider}
+                    onMouseEnter={() => setHoveredProviderId(provider.id)}
+                    onMouseLeave={() => setHoveredProviderId(null)}
+                    onToggleFavorite={handleToggleFavorite}
+                  />
+                ))}
             </div>
-          )}
-        </div>
-        {/* Load more button for manual pagination */}
-        {displayCount < filteredAndSortedProviders.length && (
-          <div className="text-center mt-6">
-            <Button onClick={() => setDisplayCount(prev => prev + 10)}>
-              Load More
-            </Button>
+            {displayCount < filteredAndSortedProviders.length && (
+              <div className="text-center mt-6">
+                <Button onClick={() => setDisplayCount(prev => prev + 10)}>
+                  Load More
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : ( // viewMode === 'map'
+          <div className="lg:col-span-2">
+            {googleMapsApiKey && (
+              <Card className="h-[600px] w-full"> {/* Increased height for better map view */}
+                <CardContent className="p-0 h-full w-full rounded-lg overflow-hidden">
+                  <DirectoryMap
+                    providers={filteredAndSortedProviders}
+                    apiKey={googleMapsApiKey}
+                    center={mapCenter}
+                    zoom={mapZoom}
+                    onBoundsChanged={setMapBounds}
+                    hoveredProviderId={hoveredProviderId} // Pass hovered ID to map
+                  />
+                </CardContent>
+              </Card>
+            )}
+            {!googleMapsApiKey && (
+              <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+                <p className="font-bold">Google Maps API Key Missing</p>
+                <p>To enable the interactive map, please set the `VITE_GOOGLE_MAPS_API_KEY` environment variable.</p>
+              </div>
+            )}
+            <div className="flex items-center space-x-2 mt-4">
+              <Checkbox
+                id="search-on-move"
+                checked={searchOnMapMove}
+                onCheckedChange={(checked) => setSearchOnMapMove(Boolean(checked))}
+              />
+              <Label htmlFor="search-on-move" className="font-semibold text-sm">
+                Search as I move the map
+              </Label>
+            </div>
           </div>
         )}
       </div>
