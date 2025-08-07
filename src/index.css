@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Droid+Sans:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap');
 @import 'leaflet/dist/leaflet.css';
-@import 'react-leaflet-markercluster/dist/styles.min.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.css'; /* Corrected import */
+@import 'leaflet.markercluster/dist/MarkerCluster.Default.css'; /* Corrected import */
 
 @tailwind base;
 @tailwind components;
