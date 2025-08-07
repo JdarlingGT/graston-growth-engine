@@ -12,7 +12,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { createClient } from "@/integrations/supabase/client"; // Import Supabase client
+import { supabase } from "@/integrations/supabase/client"; // Corrected import: import the 'supabase' instance directly
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
@@ -20,7 +20,6 @@ const Directory: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery("(max-width: 1023px)");
-  const supabase = createClient(); // Initialize Supabase client
 
   // Global filter state from Zustand
   const { searchTerm, clinicianType, condition, language, tiers, setSearchTerm, setClinicianType, setCondition, setLanguage, setTiers } = useFilterStore();
