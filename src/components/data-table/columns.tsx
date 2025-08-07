@@ -15,17 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FullProviderProfile } from "@/types";
-
-// Define the Provider interface
-export type Provider = {
-  id: string;
-  name: string;
-  email: string;
-  tier: "Free" | "Preferred" | "Premier";
-  trialStatus: "Active" | "Expired" | "N/A";
-  activity: number; // e.g., views, clicks
-  churnRisk: boolean;
-};
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<FullProviderProfile>[] = [
   {
@@ -83,27 +73,43 @@ export const columns: ColumnDef<FullProviderProfile>[] = [
       },
   },
   {
-    accessorKey: "trialStatus",
-    header: "Trial Status",
-  },
-  {
-    accessorKey: "activity",
+    accessorKey: "engagementScore",
     header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Activity (Views)
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Engagement Score
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const score = row.original.engagementScore || 0;
+      let color = "bg-red-500";
+      if (score > 70) color = "bg-green-500";
+      else if (score > 40) color = "bg-yellow-500";
+      
+      return (
+        <div className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${color}`}></span>
+          <span>{score}</span>
+        </div>
+      )
+    }
   },
   {
     accessorKey: "churnRisk",
     header: "Churn Risk",
-    cell: ({ row }) => (row.original.churnRisk ? "High" : "Low"),
+    cell: ({ row }) => {
+      const isHighRisk = row.original.churnRisk;
+      return (
+        <Badge variant={isHighRisk ? "destructive" : "secondary"}>
+          {isHighRisk ? "High" : "Low"}
+        </Badge>
+      );
+    },
   },
   {
     id: "actions",

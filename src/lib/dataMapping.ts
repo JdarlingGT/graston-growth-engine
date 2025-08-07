@@ -48,5 +48,7 @@ export const mapProfileToFullProviderProfile = (data: any): FullProviderProfile 
     trialStatus: "N/A", 
     activity: 0,
     churnRisk: false,
+    // Mock engagement score for now, will be calculated later
+    engagementScore: Math.floor(Math.random() * 100),
   };
 };
