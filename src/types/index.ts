@@ -1,49 +1,15 @@
-export type Tier = 'Free' | 'Preferred' | 'Premier';
-export type TrainingLevel = 'Essential' | 'Advanced' | 'GTS';
-
-export type ClinicianType = 
-  | 'Chiropractor'
-  | 'Physical Therapist'
-  | 'Occupational Therapist'
-  | 'Athletic Trainer'
-  | 'Massage Therapist'
-  | 'Medical Doctor'
-  | 'Other';
-
-export type Language = 
-  | 'English'
-  | 'Spanish'
-  | 'French'
-  | 'Mandarin'
-  | 'Arabic'
-  | 'Tagalog'
-  | 'Other';
-
-export type SortOption = 
-  | 'closest'
-  | 'top-rated'
-  | 'most-active'
-  | 'premier-first'
-  | 'most-reviewed';
-
-export type RadiusOption = 5 | 10 | 25 | 50 | 100;
-
-export interface Coordinates {
-  lat: number;
-  lng: number;
-}
+export type Tier = "Free" | "Preferred" | "Premier";
+export type TrialStatus = "Active" | "Expired" | "N/A";
+export type ClinicianType = "Physical Therapist" | "Chiropractor" | "Massage Therapist" | "Athletic Trainer" | "Other";
+export type TrainingLevel = "GTS" | "Advanced" | "Essential" | "All";
+export type Language = "English" | "Spanish" | "French" | "Hindi";
+export type RadiusOption = 10 | 25 | 50 | 100;
+export type SortOption = 'premier-first' | 'closest' | 'top-rated' | 'most-active' | 'most-reviewed';
 
 export interface ContactInfo {
   phone?: string;
   email?: string;
   website?: string;
-}
-
-export interface SocialMedia {
-  linkedin?: string;
-  facebook?: string;
-  instagram?: string;
-  twitter?: string;
 }
 
 export interface Testimonial {
@@ -56,77 +22,68 @@ export interface FAQ {
   answer: string;
 }
 
-export interface MarketingResource {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  imageUrl?: string;
-  filePath: string;
-  fileUrl?: string;
-  tier: Tier;
-  category: string;
-  tags: string[];
-}
-
-export interface LocationData {
-  city: string;
-  state: string;
-  zipCode: string;
-  coordinates: Coordinates;
-}
-
 export interface FullProviderProfile {
   id: string;
   name: string;
-  specialty: string;
-  location: string;
-  bio: string;
-  profileImage: string;
-  tier: Tier;
   email: string;
-  
-  // Optional fields used throughout the app
-  membershipTier?: Tier;
-  trainingLevel?: TrainingLevel;
-  coordinates?: Coordinates;
-  contactInfo?: ContactInfo;
-  servicesOffered?: string[];
-  services?: string[];
-  galleryImages?: string[];
-  testimonials?: Testimonial[];
-  faqs?: FAQ[];
-  
-  // Additional fields referenced in components
-  website?: string;
-  socialMedia?: SocialMedia;
-  phone?: string;
-  experience?: string;
-  education?: string;
-  churnRisk?: boolean;
-  trialStatus?: 'Active' | 'Expired' | 'N/A';
-  certifications?: string[];
-  
-  // New fields for enhanced filtering
+  tier: Tier;
+  trialStatus: TrialStatus;
+  activity: number;
+  churnRisk: boolean;
+  profileImage?: string;
+  specialty?: string;
   clinicianType?: ClinicianType;
-  languagesSpoken?: Language[];
+  location?: string;
   city?: string;
   state?: string;
   zipCode?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  bio?: string;
+  experience?: string;
+  education?: string;
+  website?: string;
+  socialMedia?: {
+    linkedin?: string;
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+  };
+  services?: string[]; // from old form
+  servicesOffered?: string[]; // from public profile
+  certifications?: string[];
+  languagesSpoken?: Language[];
   rating?: number;
   reviewCount?: number;
   activityScore?: number;
+  trainingLevel?: TrainingLevel;
+  contactInfo?: ContactInfo;
+  galleryImages?: string[];
+  testimonials?: Testimonial[];
+  faqs?: FAQ[];
 }
 
 export interface DirectoryFilters {
+  sortBy?: SortOption;
   city?: string;
   state?: string;
   zipCode?: string;
   radius?: RadiusOption;
-  tier?: Tier | 'All';
   clinicianType?: ClinicianType | 'All';
   specialty?: string | 'All';
-  trainingLevel?: TrainingLevel | 'All';
+  tier?: Tier | 'All';
+  trainingLevel?: TrainingLevel;
   languages?: Language[];
-  sortBy?: SortOption;
+}
+
+export interface MarketingResource {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  tier: Tier;
+  image: string;
+  filePath: string;
 }
