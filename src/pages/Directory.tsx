@@ -428,7 +428,7 @@ const Directory: React.FC = () => {
                     providers={filteredAndSortedProviders}
                     center={mapCenter}
                     zoom={mapZoom}
-                    onBoundsChanged={setMapBounds}
+                    onBoundsChanged={(bounds) => setMapBounds(bounds)}
                   />
                 </CardContent>
               </Card>

@@ -16,7 +16,6 @@ import Layout from "./components/layout/Layout";
 import AdminPage from "./pages/Admin";
 import ProviderPage from "./pages/Provider";
 import UpdateProfile from "./pages/UpdateProfile";
-import Index from "./pages/Index"; // Import the new Index page
 import ComparePage from "./pages/ComparePage";
 
 const queryClient = new QueryClient();
@@ -30,7 +29,7 @@ const App = () => (
         <AnalyticsTracker />
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<Index />} /> {/* Set new Index as default */}
+            <Route path="/" element={<Directory />} /> {/* Directory now the home page */}
             <Route path="/directory" element={<Directory />} />
             <Route path="/directory/provider/:id" element={<PublicProviderProfilePage />} />
             <Route path="/onboarding" element={<Onboarding />} />

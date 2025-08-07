@@ -21,7 +21,7 @@ const defaultIcon = L.icon({
 });
 
 interface BoundsUpdaterProps {
-  onBoundsChanged: (bounds: L.LatLngBounds) => void;
+  onBoundsChanged: (bounds: any) => void;
 }
 
 const BoundsUpdater: React.FC<BoundsUpdaterProps> = ({ onBoundsChanged }) => {
@@ -37,7 +37,7 @@ interface LeafletDirectoryMapProps {
   providers: FullProviderProfile[];
   center: { lat: number; lng: number };
   zoom: number;
-  onBoundsChanged: (bounds: L.LatLngBounds) => void;
+  onBoundsChanged: (bounds: any) => void;
 }
 
 const LeafletDirectoryMap: React.FC<LeafletDirectoryMapProps> = ({
