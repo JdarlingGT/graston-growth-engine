@@ -92,10 +92,10 @@ const PublicProviderProfilePage = () => {
               <ServicesCard services={displayProvider.services} />
             )}
 
-            {displayProvider.tier === 'Premier' && (displayProvider.galleryImages || displayProvider.galleryVideos) && (
+            {displayProvider.tier === 'Premier' && (displayProvider.gallery_images || displayProvider.gallery_videos) && (
               <MediaCard 
-                galleryImages={displayProvider.galleryImages || []} 
-                galleryVideos={displayProvider.galleryVideos || []} 
+                galleryImages={displayProvider.gallery_images || []} 
+                galleryVideos={displayProvider.gallery_videos || []} 
               />
             )}
 
@@ -129,18 +129,18 @@ const PublicProviderProfilePage = () => {
                     />
                   </div>
                 )}
-                {displayProvider.verificationBadges && displayProvider.verificationBadges.length > 0 && (
+                {displayProvider.verification_badges && displayProvider.verification_badges.length > 0 && (
                   <div>
                     <span className="font-semibold">Badges:</span>
-                    {displayProvider.verificationBadges.map((url: string, i: number) => (
+                    {displayProvider.verification_badges.map((url: string, i: number) => (
                       <img key={i} src={url} alt="Badge" className="inline-block h-6 mx-1" />
                     ))}
                   </div>
                 )}
-                {displayProvider.accreditationLogos && displayProvider.accreditationLogos.length > 0 && (
+                {displayProvider.accreditation_logos && displayProvider.accreditation_logos.length > 0 && (
                   <div>
                     <span className="font-semibold">Accreditations:</span>
-                    {displayProvider.accreditationLogos.map((a) => (
+                    {displayProvider.accreditation_logos.map((a) => (
                       <img key={a.name} src={a.logoUrl} alt={a.name} className="inline-block h-6 mx-1" />
                     ))}
                   </div>

@@ -49,7 +49,7 @@ const Directory: React.FC = () => {
       const typeMatch = !filters.clinicianType || p.specialty === filters.clinicianType;
       const searchMatch = filters.searchTerm === '' || 
         p.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        p.specialty.toLowerCase().includes(filters.searchTerm.toLowerCase());
+        (p.specialty || '').toLowerCase().includes(filters.searchTerm.toLowerCase());
 
       return inBounds && tierMatch && typeMatch && searchMatch;
     });

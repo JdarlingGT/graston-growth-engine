@@ -68,7 +68,7 @@ const ProfileSidebar = ({ provider, onToggleFavorite }: ProfileSidebarProps) => 
             <Badge variant="outline" className={`font-semibold ${tierColors[provider.tier]}`}>
               {provider.tier} Provider
             </Badge>
-            {provider.verificationBadges?.includes('Verified') && (
+            {provider.verification_badges?.includes('Verified') && (
               <Tooltip>
                 <TooltipTrigger>
                   <Badge variant="secondary" className="text-green-600 bg-green-50 border-green-500">
@@ -112,13 +112,13 @@ const ProfileSidebar = ({ provider, onToggleFavorite }: ProfileSidebarProps) => 
           </div>
         </CardContent>
 
-        {provider.accreditationLogos && provider.accreditationLogos.length > 0 && (
+        {provider.accreditation_logos && provider.accreditation_logos.length > 0 && (
           <>
             <Separator />
             <CardContent className="p-4">
               <h3 className="text-sm font-semibold text-center text-muted-foreground mb-3">Accreditations</h3>
               <div className="flex flex-wrap justify-center items-center gap-4">
-                {provider.accreditationLogos.map((acc, index) => (
+                {provider.accreditation_logos.map((acc, index) => (
                   <Tooltip key={index}>
                     <TooltipTrigger asChild>
                       <a href={acc.url} target="_blank" rel="noopener noreferrer">

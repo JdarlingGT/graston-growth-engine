@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { TierBadge } from "@/components/TierBadge";
+import TierBadge from "@/components/TierBadge";
 
 interface ProviderCardProps {
   provider: FullProviderProfile;
