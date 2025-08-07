@@ -1,8 +1,21 @@
 export type Tier = "Free" | "Preferred" | "Premier";
 export type TrialStatus = "Active" | "Expired" | "N/A";
-export type ClinicianType = "Physical Therapist" | "Chiropractor" | "Occupational Therapist" | "Athletic Trainer" | "Medical Doctor" | "Other";
+export type ClinicianType =
+  | "Physical Therapist"
+  | "Chiropractor"
+  | "Occupational Therapist"
+  | "Athletic Trainer"
+  | "Medical Doctor"
+  | "Other";
 export type TrainingLevel = "GTS" | "Advanced" | "Essential";
-export type Language = "English" | "Spanish" | "French" | "German" | "Mandarin" | "Arabic";
+// Added "German" here
+export type Language =
+  | "English"
+  | "Spanish"
+  | "French"
+  | "German"
+  | "Mandarin"
+  | "Arabic";
 
 export interface ContactInfo {
   phone?: string;
@@ -32,7 +45,7 @@ export interface FullProviderProfile {
   email: string;
   tier: Tier;
   trialStatus: TrialStatus;
-  activity: number; // e.g., views, clicks
+  activity: number;
   churnRisk: boolean;
   profileImage?: string;
   specialty?: string;
@@ -42,7 +55,7 @@ export interface FullProviderProfile {
   socialMedia?: SocialMedia;
   services?: string[];
   certifications?: string[];
-  location?: string; // e.g., "New York, NY"
+  location?: string;
   coordinates?: { lat: number; lng: number };
   city?: string;
   state?: string;
@@ -65,14 +78,18 @@ export interface DirectoryFilters {
   state?: string;
   zipCode?: string;
   radius?: RadiusOption;
-  tier?: Tier | 'All';
-  clinicianType?: ClinicianType | 'All';
-  specialty?: string | 'All';
-  trainingLevel?: TrainingLevel | 'All';
+  tier?: Tier | "All";
+  clinicianType?: ClinicianType | "All";
+  specialty?: string | "All";
+  trainingLevel?: TrainingLevel | "All";
   languages?: Language[];
   sortBy?: SortOption;
 }
 
 export type RadiusOption = 5 | 10 | 25 | 50 | 100;
-
-export type SortOption = 'premier-first' | 'closest' | 'top-rated' | 'most-active' | 'most-reviewed';
+export type SortOption =
+  | "premier-first"
+  | "closest"
+  | "top-rated"
+  | "most-active"
+  | "most-reviewed";
