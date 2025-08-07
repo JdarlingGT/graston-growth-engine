@@ -44,7 +44,9 @@ const Directory: React.FC = () => {
   // Sync filters with URL parameters
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const newFilters: DirectoryFilters = {};
+    const newFilters: DirectoryFilters = {
+      sortBy: "premier-first",
+    };
     const urlSearchTerm = params.get('searchTerm');
 
     if (urlSearchTerm) {

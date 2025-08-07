@@ -1,15 +1,34 @@
-export type Tier = "Free" | "Preferred" | "Premier";
-export type TrainingLevel = "Essential" | "Advanced" | "GTS";
-export type Language = "English" | "Spanish" | "French" | "German" | "Mandarin" | "Cantonese" | "Hindi" | "Arabic" | "Portuguese" | "Russian" | "Japanese" | "Korean" | "Italian" | "Vietnamese";
-export type Condition = "Back Pain" | "Neck Pain" | "Shoulder Pain" | "Knee Pain" | "Headaches" | "Plantar Fasciitis" | "Tennis Elbow" | "Golfers Elbow" | "Carpal Tunnel Syndrome" | "Shin Splints" | "Rotator Cuff Tendinopathy" | "Achilles Tendinopathy" | "IT Band Syndrome" | "Sciatica" | "TMJ Dysfunction" | "Shoulder Injuries" | "Sports Injuries" | "Post-Surgical Rehab" | "Chronic Pain";
-export type PatientDemographic = "Adults" | "Children" | "Adolescents" | "Seniors" | "Athletes" | "Pregnant Women" | "Post-Surgical Patients" | "Geriatric" | "Post-Surgical";
+export type Tier = "Premier" | "Preferred" | "Free";
+export type TrainingLevel = "GTS" | "Advanced" | "Essential";
+export type ClinicianType = "Chiropractor" | "Physical Therapist" | "Athletic Trainer" | "Massage Therapist" | "Other" | "Occupational Therapist" | "Medical Doctor";
+export type Language = "English" | "Spanish" | "French" | "German" | "Mandarin" | "Other" | "Cantonese" | "Hindi" | "Arabic" | "Portuguese" | "Russian" | "Japanese" | "Korean" | "Italian" | "Vietnamese";
+export type Condition = "Back Pain" | "Neck Pain" | "Shoulder Pain" | "Knee Pain" | "Plantar Fasciitis" | "Tennis Elbow" | "Shoulder Injuries" | "Headaches" | "Carpal Tunnel Syndrome" | "TMJ Dysfunction" | "Sciatica" | "Sports Injuries" | "Post-Surgical Rehab" | "Chronic Pain" | "Golfers Elbow" | "Shin Splints" | "Rotator Cuff Tendinopathy" | "Achilles Tendinopathy" | "IT Band Syndrome";
+export type PatientDemographic = "Athletes" | "Pediatrics" | "Geriatrics" | "General Population" | "Adults" | "Children" | "Adolescents" | "Pregnant Women" | "Post-Surgical" | "Seniors" | "Post-Surgical Patients";
 export type RadiusOption = 5 | 10 | 25 | 50 | 100;
-export type ClinicianType = "Physical Therapist" | "Chiropractor" | "Occupational Therapist" | "Athletic Trainer" | "Massage Therapist" | "Medical Doctor" | "Other";
+export type SortOption = "premier-first" | "top-rated" | "most-reviewed" | "distance";
+
+export interface DirectoryFilters {
+  searchTerm?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  radius?: RadiusOption;
+  clinicianType?: ClinicianType | 'All';
+  specialty?: string | 'All';
+  tier?: Tier | 'All';
+  trainingLevel?: TrainingLevel | 'All';
+  languages?: Language[];
+  patientTypes?: PatientDemographic[];
+  conditionsTreated?: Condition[];
+  sortBy: SortOption;
+  favoritesOnly?: boolean;
+}
 
 export interface Testimonial {
   quote: string;
   author: string;
   source?: string;
+  rating?: number;
 }
 
 export interface FAQ {
@@ -17,24 +36,14 @@ export interface FAQ {
   answer: string;
 }
 
-export interface Accreditation {
+export interface AccreditationLogo {
   name: string;
   logoUrl: string;
   url: string;
 }
 
-export interface MarketingResource {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  image: string;
-  filePath: string;
-  tier: Tier;
-}
-
 export interface FullProviderProfile {
-  id:string;
+  id: string;
   name: string;
   email: string;
   specialty?: string;
@@ -55,7 +64,7 @@ export interface FullProviderProfile {
   coordinates?: { lat: number; lng: number };
   gtCertifications?: TrainingLevel[];
   verificationBadges?: string[];
-  accreditationLogos?: Accreditation[];
+  accreditationLogos?: AccreditationLogo[];
   languagesSpoken?: Language[];
   patientTypes?: PatientDemographic[];
   conditionsTreated?: Condition[];
@@ -63,32 +72,22 @@ export interface FullProviderProfile {
   reviewCount?: number;
   isFavorite?: boolean;
   tier: Tier;
-  trialStatus?: "Active" | "Expired" | "N/A";
-  activity?: number;
-  churnRisk?: boolean;
   clinicianType?: ClinicianType;
+  trialStatus: "Active" | "Expired" | "N/A";
+  activity: number;
+  churnRisk: boolean;
   galleryImages?: string[];
   galleryVideos?: string[];
   testimonials?: Testimonial[];
   faqs?: FAQ[];
-  canCompare?: boolean;
 }
 
-export interface DirectoryFilters {
-  searchTerm?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  radius?: RadiusOption;
-  clinicianType?: ClinicianType | 'All';
-  specialty?: string | 'All';
-  tier?: Tier | 'All';
-  trainingLevel?: TrainingLevel | 'All';
-  languages?: Language[];
-  conditionsTreated?: Condition[];
-  patientTypes?: PatientDemographic[];
-  sortBy?: SortOption;
-  favoritesOnly?: boolean;
+export interface MarketingResource {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  tier: Tier;
+  filePath: string;
 }
-
-export type SortOption = 'premier-first' | 'top-rated' | 'most-reviewed';

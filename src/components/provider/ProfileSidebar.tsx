@@ -1,11 +1,12 @@
 import React from 'react';
-import { FullProviderProfile, Tier, TrainingLevel } from '@/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FullProviderProfile, Tier } from '@/types';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, Phone, Mail, Globe, Heart, Share2, CheckCircle, Award } from 'lucide-react';
+import { MapPin, Heart, Share2, Mail, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { showSuccess, showError } from '@/utils/toast';
 
 interface ProfileSidebarProps {
@@ -13,103 +14,115 @@ interface ProfileSidebarProps {
   onToggleFavorite: (providerId: string) => void;
 }
 
-const gtCertificationLabels: { [key in TrainingLevel]: string } = {
-  GTS: "Graston Technique Specialist (GTS)",
-  Advanced: "Advanced Certified",
-  Essential: "Essential Certified",
+const tierColors: Record<Tier, string> = {
+  Premier: "border-purple-500 bg-purple-50 text-purple-700",
+  Preferred: "border-blue-500 bg-blue-50 text-blue-700",
+  Free: "border-gray-400 bg-gray-50 text-gray-600",
 };
 
 const ProfileSidebar = ({ provider, onToggleFavorite }: ProfileSidebarProps) => {
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: provider.name,
-          text: `Check out ${provider.name}'s profile on Graston Technique Directory!`,
-          url: window.location.href,
-        });
+    const shareData = {
+      title: provider.name,
+      text: `Check out ${provider.name}'s profile on the Graston Technique® Provider Directory!`,
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
         showSuccess("Profile shared successfully!");
-      } catch (error) {
-        console.error('Error sharing:', error);
-        showError("Failed to share profile.");
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        showSuccess("Profile link copied to clipboard!");
       }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      showSuccess("Profile link copied to clipboard!");
+    } catch (error) {
+      console.error('Error sharing:', error);
+      showError("Could not share profile at this time.");
     }
   };
 
+  const handleContactClick = () => {
+    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Provider Details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Contact Info */}
-        <div className="space-y-3">
-          {provider.phone && (
-            <div className="flex items-center gap-3 text-sm">
-              <Phone className="h-5 w-5 text-muted-foreground" />
-              <a href={`tel:${provider.phone}`} className="hover:underline">
-                {provider.phone}
-              </a>
-            </div>
-          )}
-          {provider.email && (
-            <div className="flex items-center gap-3 text-sm">
-              <Mail className="h-5 w-5 text-muted-foreground" />
-              <a href={`mailto:${provider.email}`} className="hover:underline">
-                {provider.email}
-              </a>
-            </div>
-          )}
-          {provider.website && (
-            <div className="flex items-center gap-3 text-sm">
-              <Globe className="h-5 w-5 text-muted-foreground" />
-              <a href={provider.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                Visit Website
-              </a>
-            </div>
-          )}
-          {provider.clinicAddress && (
-            <div className="flex items-start gap-3 text-sm">
-              <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
-              <span>{provider.clinicAddress}</span>
-            </div>
-          )}
-        </div>
+    <TooltipProvider>
+      <Card className="overflow-hidden">
+        <CardContent className="p-6 text-center">
+          <Avatar className="h-28 w-28 mx-auto mb-4 border-4 border-background shadow-md">
+            <AvatarImage src={provider.profileImage} alt={provider.name} />
+            <AvatarFallback className="text-4xl">
+              {provider.name.split(' ').map(n => n[0]).join('')}
+            </AvatarFallback>
+          </Avatar>
+          
+          <h1 className="text-2xl font-bold text-foreground">{provider.name}</h1>
+          <p className="text-md text-muted-foreground">{provider.specialty}</p>
+          
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
+            <MapPin className="h-4 w-4" />
+            <span>{provider.location}</span>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+            <Badge variant="outline" className={`font-semibold ${tierColors[provider.tier]}`}>
+              {provider.tier} Provider
+            </Badge>
+            {provider.verificationBadges?.includes('Verified') && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <Badge variant="secondary" className="text-green-600 bg-green-50 border-green-500">
+                    <ShieldCheck className="h-4 w-4 mr-1.5" />
+                    Verified
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>This provider's credentials have been verified.</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        </CardContent>
 
         <Separator />
 
-        {/* Certifications */}
-        <div className="space-y-3">
-          <h3 className="font-semibold">Graston Technique®</h3>
-          {provider.gtCertifications && provider.gtCertifications.length > 0 ? (
-            <div className="flex flex-col gap-2">
-              {provider.gtCertifications.map((cert, index) => (
-                <Badge key={index} variant="secondary" className="py-1 px-2 text-sm">
-                  <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                  {gtCertificationLabels[cert]}
-                </Badge>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">No GT® certifications listed.</p>
+        <CardContent className="p-4 space-y-4">
+          {provider.tier === 'Premier' && (
+            <Button size="lg" className="w-full" onClick={handleContactClick}>
+              <Mail className="mr-2 h-4 w-4" /> Contact Provider
+            </Button>
           )}
-        </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button 
+              variant={provider.isFavorite ? "default" : "outline"} 
+              className="w-full flex items-center gap-2"
+              onClick={() => onToggleFavorite(provider.id)}
+            >
+              <Heart className={`h-4 w-4 ${provider.isFavorite ? 'fill-white' : ''}`} />
+              Favorite
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full flex items-center gap-2"
+              onClick={handleShare}
+            >
+              <Share2 className="h-4 w-4" />
+              Share
+            </Button>
+          </div>
+        </CardContent>
 
-        {/* Accreditations */}
         {provider.accreditationLogos && provider.accreditationLogos.length > 0 && (
           <>
             <Separator />
-            <div className="space-y-3">
-              <h3 className="font-semibold">Accreditations</h3>
-              <div className="flex flex-wrap gap-2">
+            <CardContent className="p-4">
+              <h3 className="text-sm font-semibold text-center text-muted-foreground mb-3">Accreditations</h3>
+              <div className="flex flex-wrap justify-center items-center gap-4">
                 {provider.accreditationLogos.map((acc, index) => (
                   <Tooltip key={index}>
                     <TooltipTrigger asChild>
-                      <a href={acc.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-2 border rounded-md hover:bg-muted transition-colors">
-                        <img src={acc.logoUrl} alt={acc.name} className="h-10 object-contain" />
+                      <a href={acc.url} target="_blank" rel="noopener noreferrer">
+                        <img src={acc.logoUrl} alt={acc.name} className="h-10 object-contain grayscale hover:grayscale-0 transition-all" />
                       </a>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -118,39 +131,11 @@ const ProfileSidebar = ({ provider, onToggleFavorite }: ProfileSidebarProps) => 
                   </Tooltip>
                 ))}
               </div>
-            </div>
+            </CardContent>
           </>
         )}
-
-        <Separator />
-
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-2">
-          <Button 
-            variant="outline" 
-            className="w-full flex items-center gap-2"
-            onClick={() => onToggleFavorite(provider.id)}
-          >
-            <Heart className={`h-4 w-4 ${provider.isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-            Favorite
-          </Button>
-          <Button 
-            variant="outline" 
-            className="w-full flex items-center gap-2"
-            onClick={handleShare}
-          >
-            <Share2 className="h-4 w-4" />
-            Share
-          </Button>
-          {provider.canCompare && (
-            <Button variant="outline" className="w-full flex items-center gap-2 col-span-2">
-              <Award className="h-4 w-4" />
-              Add to Compare
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      </Card>
+    </TooltipProvider>
   );
 };
 
