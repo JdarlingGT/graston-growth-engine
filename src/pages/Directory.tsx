@@ -19,6 +19,7 @@ const Directory = () => {
     sortBy: 'premier-first'
   });
   const [filteredProviders, setFilteredProviders] = useState<FullProviderProfile[]>(mockProviders);
+  const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
   const isMobile = useMediaQuery("(max-width: 1024px)");
 
   // Extract unique specialties for the filter dropdown
@@ -89,6 +90,14 @@ const Directory = () => {
     setFilteredProviders(sorted);
   }, [searchTerm, filters]);
 
+  // Filter providers based on current map bounds if available
+  const visibleProviders = mapBounds ? 
+    filteredProviders.filter(provider => {
+      if (!provider.coordinates) return false;
+      const position = new google.maps.LatLng(provider.coordinates.lat, provider.coordinates.lng);
+      return mapBounds.contains(position);
+    }) : filteredProviders;
+
   // Sort providers based on selected sort option
   const sortProviders = (providers: FullProviderProfile[], sortBy: SortOption): FullProviderProfile[] => {
     const sortedProviders = [...providers];
@@ -102,7 +111,6 @@ const Directory = () => {
         
       case 'closest':
         // In a real app, this would use geolocation to sort by actual distance
-        // For now, we'll just return the original order
         return sortedProviders;
         
       case 'top-rated':
@@ -204,14 +212,14 @@ const Directory = () => {
 
           {/* Results Count */}
           <div className="text-sm text-muted-foreground">
-            Found {filteredProviders.length} provider{filteredProviders.length !== 1 ? 's' : ''}
+            Found {visibleProviders.length} provider{visibleProviders.length !== 1 ? 's' : ''}
           </div>
 
           {/* Results List */}
           <ScrollArea className="flex-grow border rounded-lg">
             <div className="p-2 space-y-2">
-              {filteredProviders.length > 0 ? (
-                filteredProviders.map((provider) => (
+              {visibleProviders.length > 0 ? (
+                visibleProviders.map((provider) => (
                   <div
                     key={provider.id}
                     onMouseEnter={() => setHoveredProviderId(provider.id)}
@@ -245,7 +253,8 @@ const Directory = () => {
           <DirectoryMap 
             providers={filteredProviders} 
             apiKey={googleMapsApiKey} 
-            hoveredProviderId={hoveredProviderId} 
+            hoveredProviderId={hoveredProviderId}
+            onBoundsChanged={setMapBounds}
           />
         </div>
       </div>

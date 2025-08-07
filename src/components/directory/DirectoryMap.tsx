@@ -3,6 +3,7 @@
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { FullProviderProfile } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const containerStyle = {
@@ -19,10 +20,13 @@ interface DirectoryMapProps {
   providers: FullProviderProfile[];
   apiKey: string;
   hoveredProviderId: string | null;
+  onBoundsChanged?: (bounds: google.maps.LatLngBounds) => void;
 }
 
-const DirectoryMap = ({ providers, apiKey, hoveredProviderId }: DirectoryMapProps) => {
+const DirectoryMap = ({ providers, apiKey, hoveredProviderId, onBoundsChanged }: DirectoryMapProps) => {
   const navigate = useNavigate();
+  const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
+  
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: apiKey
@@ -45,6 +49,15 @@ const DirectoryMap = ({ providers, apiKey, hoveredProviderId }: DirectoryMapProp
         streetViewControl: false,
         mapTypeControl: false,
         fullscreenControl: false,
+      }}
+      onLoad={(map: google.maps.Map) => setMapInstance(map)}
+      onIdle={() => {
+        if (mapInstance) {
+          const bounds = mapInstance.getBounds();
+          if (bounds && onBoundsChanged) {
+            onBoundsChanged(bounds);
+          }
+        }
       }}
     >
       {providers.map(provider => {
