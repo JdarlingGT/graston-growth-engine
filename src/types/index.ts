@@ -1,10 +1,21 @@
 export type Tier = "Free" | "Preferred" | "Premier";
 export type TrialStatus = "Active" | "Expired" | "N/A";
-export type ClinicianType = "Physical Therapist" | "Chiropractor" | "Massage Therapist" | "Athletic Trainer" | "Other";
+export type ClinicianType =
+  | "Physical Therapist"
+  | "Chiropractor"
+  | "Massage Therapist"
+  | "Athletic Trainer"
+  | "Other";
 export type TrainingLevel = "GTS" | "Advanced" | "Essential" | "All";
+// Added "Hindi" here to match mockData.ts
 export type Language = "English" | "Spanish" | "French" | "Hindi";
 export type RadiusOption = 10 | 25 | 50 | 100;
-export type SortOption = 'premier-first' | 'closest' | 'top-rated' | 'most-active' | 'most-reviewed';
+export type SortOption =
+  | "premier-first"
+  | "closest"
+  | "top-rated"
+  | "most-active"
+  | "most-reviewed";
 
 export interface ContactInfo {
   phone?: string;
@@ -51,8 +62,8 @@ export interface FullProviderProfile {
     instagram?: string;
     twitter?: string;
   };
-  services?: string[]; // from old form
-  servicesOffered?: string[]; // from public profile
+  services?: string[];
+  servicesOffered?: string[];
   certifications?: string[];
   languagesSpoken?: Language[];
   rating?: number;
@@ -71,9 +82,9 @@ export interface DirectoryFilters {
   state?: string;
   zipCode?: string;
   radius?: RadiusOption;
-  clinicianType?: ClinicianType | 'All';
-  specialty?: string | 'All';
-  tier?: Tier | 'All';
+  clinicianType?: ClinicianType | "All";
+  specialty?: string | "All";
+  tier?: Tier | "All";
   trainingLevel?: TrainingLevel;
   languages?: Language[];
 }
