@@ -6,8 +6,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { FullProviderProfile } from '@/types';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
-import 'leaflet.markercluster/dist/MarkerCluster.css'; // Corrected import
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css'; // Corrected import
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { Button } from '../ui/button';
 
 const createCustomIcon = (tier: 'Premier' | 'Preferred' | 'Free', isHovered: boolean) => {
