@@ -1,187 +1,139 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProviderCard from "@/components/directory/ProviderCard";
-import {
-  DirectoryFilters,
-  FullProviderProfile,
-  SortOption,
-} from "@/types";
-import { Search, Filter, RefreshCw } from "lucide-react";
-import LeafletDirectoryMap from "@/components/directory/LeafletDirectoryMap";
+import { FullProviderProfile } from "@/types";
+import DirectoryMap from "@/components/directory/DirectoryMap";
 import FilterPanel from "@/components/directory/FilterPanel";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useMediaQuery } from "@/hooks/use-mobile";
-import { showSuccess } from "@/utils/toast";
-import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { mockProviders, specialties } from "@/lib/mockData";
+import { mockProviders } from "@/lib/mockData";
 import { useDebounce } from '@/hooks/useDebounce';
-import ComparisonBar from "@/components/directory/ComparisonBar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFilterStore } from "@/hooks/useFilterStore";
+// Note: React Query would be used here for real data fetching.
+// import { useQuery } from "@tanstack/react-query";
+
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
 const Directory: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
+  // Global filter state from Zustand
+  const filters = useFilterStore();
+
+  // Local UI state
   const [providers, setProviders] = useState<FullProviderProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filters, setFilters] = useState<DirectoryFilters>({ sortBy: "premier-first" });
   const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
-  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
-  const [compareList, setCompareList] = useState<string[]>([]);
   
+  // Map state
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 });
   const [mapZoom, setMapZoom] = useState(4);
-  const [mapBounds, setMapBounds] = useState<any>(null);
-  
-  // Simulate fetching data
+  const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
+  const debouncedBounds = useDebounce(mapBounds, 500);
+
+  // Simulate fetching data based on filters and map bounds
   useEffect(() => {
     setIsLoading(true);
-    // In a real app, you'd fetch this from your backend
-    const allProviders = [...mockProviders]; 
-    setProviders(allProviders);
-    setTimeout(() => setIsLoading(false), 1000); // Simulate network delay
-  }, []);
+    console.log("Fetching data for bounds:", debouncedBounds);
+    // In a real app, this would be a useQuery call with dependencies on `debouncedBounds` and `filters`
+    const filteredProviders = mockProviders.filter(p => {
+      const inBounds = debouncedBounds 
+        ? p.coordinates && debouncedBounds.contains(p.coordinates)
+        : true;
+      
+      const tierMatch = filters.tiers.includes(p.tier);
+      const typeMatch = !filters.clinicianType || p.specialty === filters.clinicianType;
+      const searchMatch = filters.searchTerm === '' || 
+        p.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        p.specialty.toLowerCase().includes(filters.searchTerm.toLowerCase());
 
-  // URL Sync Effect
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const newFilters: DirectoryFilters = { sortBy: "premier-first" };
-    // ... logic to parse filters from URL ...
-    setFilters(prev => ({ ...prev, ...newFilters }));
-  }, [location.search]);
-
-  useEffect(() => {
-    const params = new URLSearchParams();
-    // ... logic to set URL from filters ...
-    navigate(`?${params.toString()}`, { replace: true });
-  }, [filters, navigate]);
-
-  const handleFilterChange = (newFilters: DirectoryFilters) => {
-    setFilters(newFilters);
-  };
-
-  const handleToggleFavorite = (providerId: string) => {
-    setProviders(prevProviders =>
-      prevProviders.map(p =>
-        p.id === providerId ? { ...p, isFavorite: !p.isFavorite } : p
-      )
-    );
-    showSuccess("Favorite status updated! (This is a demo and won't be saved)");
-  };
-
-  const handleToggleCompare = (providerId: string) => {
-    setCompareList(prev =>
-      prev.includes(providerId)
-        ? prev.filter(id => id !== providerId)
-        : [...prev, providerId]
-    );
-  };
-
-  const visibleProviders = useMemo(() => {
-    if (!mapBounds) {
-      return providers; // Initially show all, or could be empty
-    }
-    
-    let filtered = providers.filter(p =>
-      p.coordinates && mapBounds.contains([p.coordinates.lat, p.coordinates.lng])
-    );
-
-    // Add other filtering logic here (from `filters` state)
-
-    // Add sorting logic here
-    filtered.sort((a, b) => {
-      const tierOrder = { Premier: 3, Preferred: 2, Free: 1 };
-      return tierOrder[b.tier] - tierOrder[a.tier];
+      return inBounds && tierMatch && typeMatch && searchMatch;
     });
 
-    return filtered;
-  }, [providers, mapBounds, filters]);
+    setProviders(filteredProviders);
+    setTimeout(() => setIsLoading(false), 500); // Simulate network delay
+  }, [debouncedBounds, filters]);
 
-  const providersInCompareList = useMemo(() => 
-    providers.filter(p => compareList.includes(p.id)),
-    [providers, compareList]
-  );
+  const handleMapCameraChanged = useCallback((ev: any) => {
+    const newBounds = ev.map.getBounds();
+    if (newBounds) {
+      setMapBounds(newBounds);
+    }
+  }, []);
+
+  const handleMarkerClick = (providerId: string) => {
+    // Logic to scroll list to provider card
+    console.log("Marker clicked:", providerId);
+  };
 
   const ResultsList = () => (
-    <div className="flex flex-col h-full">
-      <div className="p-4 border-b border-brand-gray">
-        <FilterPanel
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          specialties={specialties}
-        />
-      </div>
-      <div className="flex-grow overflow-y-auto p-4">
+    <div className="flex flex-col h-full bg-brand-background">
+      <FilterPanel />
+      <div className="flex-grow overflow-y-auto p-4 space-y-4">
         {isLoading ? (
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-            {[...Array(6)].map((_, i) => <Skeleton key={i} className="h-48 w-full" />)}
-          </div>
+          [...Array(5)].map((_, i) => <Skeleton key={i} className="h-48 w-full rounded-lg" />)
         ) : (
           <>
-            <p className="mb-4 text-sm text-brand-text/80">
-              Showing {visibleProviders.length} of {providers.length} providers in this map area.
+            <p className="text-sm text-brand-text/80 px-2">
+              Showing {providers.length} providers in this map area.
             </p>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              {visibleProviders.map(provider => (
-                <ProviderCard
-                  key={provider.id}
-                  provider={provider}
-                  onMouseEnter={() => setHoveredProviderId(provider.id)}
-                  onMouseLeave={() => setHoveredProviderId(null)}
-                  onToggleFavorite={handleToggleFavorite}
-                  onToggleCompare={handleToggleCompare}
-                  isComparing={compareList.includes(provider.id)}
-                />
-              ))}
-            </div>
+            {providers.map(provider => (
+              <ProviderCard
+                key={provider.id}
+                provider={provider}
+                onMouseEnter={() => setHoveredProviderId(provider.id)}
+                onMouseLeave={() => setHoveredProviderId(null)}
+              />
+            ))}
           </>
         )}
       </div>
     </div>
   );
 
+  const mainContent = (
+    <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
+      <div className="lg:col-span-5 xl:col-span-4 h-full">
+        <ResultsList />
+      </div>
+      <div className="lg:col-span-7 xl:col-span-8 h-full">
+        <DirectoryMap
+          providers={providers}
+          apiKey={GOOGLE_MAPS_API_KEY}
+          center={mapCenter}
+          zoom={mapZoom}
+          onCameraChanged={handleMapCameraChanged}
+          hoveredProviderId={hoveredProviderId}
+          onMarkerClick={handleMarkerClick}
+        />
+      </div>
+    </div>
+  );
+
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)]"> {/* Adjust height based on header */}
+    <div className="h-[calc(100vh-80px)]"> {/* Adjust height based on header */}
       {isMobile ? (
         <div className="flex flex-col h-full">
-          <div className="h-1/3 border-b border-brand-gray">
-            <LeafletDirectoryMap
+          <div className="h-1/2">
+            <DirectoryMap
               providers={providers}
+              apiKey={GOOGLE_MAPS_API_KEY}
               center={mapCenter}
               zoom={mapZoom}
-              onBoundsChanged={setMapBounds}
+              onCameraChanged={handleMapCameraChanged}
+              hoveredProviderId={hoveredProviderId}
+              onMarkerClick={handleMarkerClick}
             />
           </div>
-          <div className="h-2/3">
+          <div className="h-1/2">
             <ResultsList />
           </div>
         </div>
-      ) : (
-        <>
-          <div className="lg:w-3/5 h-full">
-            <ResultsList />
-          </div>
-          <div className="lg:w-2/5 h-full">
-            <LeafletDirectoryMap
-              providers={providers}
-              center={mapCenter}
-              zoom={mapZoom}
-              onBoundsChanged={setMapBounds}
-            />
-          </div>
-        </>
-      )}
-      <ComparisonBar 
-        providers={providersInCompareList}
-        onClear={() => setCompareList([])}
-        onRemove={handleToggleCompare}
-      />
+      ) : mainContent}
     </div>
   );
 };

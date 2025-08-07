@@ -1,21 +1,17 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
-import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import React from 'react';
+import { Map, APIProvider, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 import { FullProviderProfile } from '@/types';
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-};
 
 interface DirectoryMapProps {
   providers: FullProviderProfile[];
   apiKey: string;
   center: { lat: number; lng: number };
   zoom: number;
-  onBoundsChanged: (bounds: google.maps.LatLngBounds) => void;
-  hoveredProviderId?: string | null; // New prop
+  onCameraChanged: (ev: any) => void;
+  hoveredProviderId?: string | null;
+  onMarkerClick: (providerId: string) => void;
 }
 
 const DirectoryMap: React.FC<DirectoryMapProps> = ({
@@ -23,77 +19,47 @@ const DirectoryMap: React.FC<DirectoryMapProps> = ({
   apiKey,
   center,
   zoom,
-  onBoundsChanged,
+  onCameraChanged,
   hoveredProviderId,
+  onMarkerClick,
 }) => {
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: apiKey,
-    libraries: ['places'],
-  });
-
-  const onLoad = React.useCallback(function callback(map: google.maps.Map) {
-    mapRef.current = map;
-    setMapLoaded(true);
-  }, []);
-
-  const onUnmount = React.useCallback(function callback() {
-    mapRef.current = null;
-    setMapLoaded(false);
-  }, []);
-
-  const onIdle = () => {
-    if (mapRef.current) {
-      const bounds = mapRef.current.getBounds();
-      if (bounds) {
-        onBoundsChanged(bounds);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (mapLoaded && mapRef.current) {
-      mapRef.current.setCenter(center);
-      mapRef.current.setZoom(zoom);
-    }
-  }, [center, zoom, mapLoaded]);
-
-  if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <div>Loading Maps...</div>;
+  if (!apiKey) {
+    return <div className="flex items-center justify-center h-full bg-gray-200"><p>Google Maps API Key is missing.</p></div>;
+  }
 
   return (
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      center={center}
-      zoom={zoom}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
-      onIdle={onIdle}
-      options={{
-        disableDefaultUI: true,
-        zoomControl: true,
-      }}
-    >
-      {providers.map((provider) => {
-        if (!provider.coordinates) return null;
-        const isHovered = hoveredProviderId === provider.id;
-        return (
-          <MarkerF
-            key={provider.id}
-            position={provider.coordinates}
-            options={{
-              icon: {
-                url: isHovered ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                scaledSize: new window.google.maps.Size(32, 32),
-              },
-            }}
-            title={provider.name}
-          />
-        );
-      })}
-    </GoogleMap>
+    <APIProvider apiKey={apiKey}>
+      <Map
+        mapId="graston-directory-map"
+        style={{ width: '100%', height: '100%' }}
+        defaultCenter={center}
+        defaultZoom={zoom}
+        gestureHandling={'greedy'}
+        disableDefaultUI={true}
+        onCameraChanged={onCameraChanged}
+      >
+        {providers.map((provider) => {
+          if (!provider.coordinates) return null;
+          const isHovered = hoveredProviderId === provider.id;
+          const isPremier = provider.tier === 'Premier';
+
+          return (
+            <AdvancedMarker
+              key={provider.id}
+              position={provider.coordinates}
+              onClick={() => onMarkerClick(provider.id)}
+            >
+              <Pin
+                background={isPremier ? '#157A83' : '#FC7831'} // Teal for Premier, Orange for others
+                borderColor={isPremier ? '#FC7831' : '#157A83'}
+                glyphColor={'#FFFFFF'}
+                scale={isHovered ? 1.2 : 1}
+              />
+            </AdvancedMarker>
+          );
+        })}
+      </Map>
+    </APIProvider>
   );
 };
 
