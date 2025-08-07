@@ -9,9 +9,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button";
 import ListItem from "./ListItem";
-import { Gem, User, BarChart, LifeBuoy, FileText, BookOpen, Wrench, Users } from "lucide-react";
+import { Gem } from "lucide-react";
 
 const Header = () => {
   return (
@@ -63,11 +62,6 @@ const Header = () => {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          <Button asChild>
-            <Link to="/login">
-              <User className="mr-2 h-4 w-4" /> Provider Login
-            </Link>
-          </Button>
         </div>
       </div>
     </header>
