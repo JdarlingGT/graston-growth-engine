@@ -69,13 +69,6 @@ const Directory: React.FC = () => {
     if (language) params.set('language', language);
     if (tiers.length < 3) params.set('tiers', tiers.join(','));
     
-    // Only update map params if map has been interacted with or explicitly set
-    if (mapBounds) { // A simple heuristic to check if map has been initialized/interacted
-      params.set('lat', mapCenter.lat.toFixed(4));
-      params.set('lng', mapCenter.lng.toFixed(4));
-      params.set('zoom', mapZoom.toString());
-    }
-
     // By comparing the generated search string with the current one, we prevent an infinite loop
     // of navigation events.
     if (params.toString() !== new URLSearchParams(location.search).toString()) {
