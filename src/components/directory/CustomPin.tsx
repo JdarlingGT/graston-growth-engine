@@ -8,6 +8,8 @@ interface CustomPinProps {
   borderColor?: string;
   glyphColor?: string;
   scale?: number;
+  // Add any other props that Pin component explicitly accepts if needed
+  // All other unknown props will be filtered out
 }
 
 const CustomPin: React.FC<CustomPinProps> = ({ background, borderColor, glyphColor, scale }) => {
@@ -17,6 +19,7 @@ const CustomPin: React.FC<CustomPinProps> = ({ background, borderColor, glyphCol
       borderColor={borderColor}
       glyphColor={glyphColor}
       scale={scale}
+      // Do NOT spread '...rest' here, as it might contain unknown props like 'data-dyad-id'
     />
   );
 };
