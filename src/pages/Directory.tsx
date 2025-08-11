@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProviderCard from "@/components/directory/ProviderCard";
-import { FullProviderProfile, Condition, Language } from "@/types"; // Import Condition and Language types
+import { FullProviderProfile, Condition, Language } from "@/types";
 import DirectoryMap from "@/components/directory/DirectoryMap";
 import FilterPanel from "@/components/directory/FilterPanel";
 import { useMediaQuery } from "@/hooks/use-mobile";
@@ -12,6 +12,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { motion, AnimatePresence } from "framer-motion";
+// Removed: import { supabase } from "@/integrations/supabase/client"; // No longer needed for mock data demo
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
