@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import StaffDashboard from "@/components/dashboards/StaffDashboard";
 import MarketingToolkitPage from "./pages/MarketingToolkit";
-import Directory from "./pages/Directory";
+import Directory from "./pages/Directory"; // Ensure Directory is imported
 import PublicProviderProfilePage from "./pages/PublicProviderProfilePage";
 import Onboarding from "./pages/Onboarding";
 import Reports from "./pages/Reports";
@@ -17,6 +17,8 @@ import AdminPage from "./pages/Admin";
 import ProviderPage from "./pages/Provider";
 import UpdateProfile from "./pages/UpdateProfile";
 import ComparePage from "./pages/ComparePage";
+// Index is no longer the default home page, but might be used elsewhere if needed.
+// import Index from "./pages/Index"; 
 
 const queryClient = new QueryClient();
 
@@ -29,8 +31,8 @@ const App = () => (
         <AnalyticsTracker />
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<Directory />} /> {/* Directory now the home page */}
-            <Route path="/directory" element={<Directory />} />
+            <Route path="/" element={<Directory />} /> {/* Directory is now the home page */}
+            <Route path="/directory" element={<Directory />} /> {/* Keep existing directory route */}
             <Route path="/directory/provider/:id" element={<PublicProviderProfilePage />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/reports" element={<Reports />} />

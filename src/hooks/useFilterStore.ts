@@ -14,7 +14,7 @@ interface FilterState {
   setLanguage: (language: Language | null) => void;
   setTiers: (tiers: string[]) => void;
   setAcceptingNewPatients: (value: boolean) => void;
-  clearFilters: () => void;
+  clearFilters: () => void; // New action
 }
 
 export const useFilterStore = create<FilterState>((set) => ({
@@ -22,15 +22,15 @@ export const useFilterStore = create<FilterState>((set) => ({
   clinicianType: null,
   condition: null,
   language: null,
-  tiers: ['Premier', 'Preferred', 'Free'],
+  tiers: ['Premier', 'Preferred', 'Free'], // Default to all tiers selected
   acceptingNewPatients: false,
-  setSearchTerm: (searchTerm) => set({ searchTerm }),
-  setClinicianType: (clinicianType) => set({ clinicianType }),
-  setCondition: (condition) => set({ condition }),
-  setLanguage: (language) => set({ language }),
-  setTiers: (tiers) => set({ tiers }),
-  setAcceptingNewPatients: (acceptingNewPatients) => set({ acceptingNewPatients }),
-  clearFilters: () => set({
+  setSearchTerm: (term) => set({ searchTerm: term }),
+  setClinicianType: (type) => set({ clinicianType: type }),
+  setCondition: (condition) => set({ condition: condition }),
+  setLanguage: (language) => set({ language: language }),
+  setTiers: (tiers) => set({ tiers: tiers }),
+  setAcceptingNewPatients: (value) => set({ acceptingNewPatients: value }),
+  clearFilters: () => set({ // Implementation of clearFilters
     searchTerm: '',
     clinicianType: null,
     condition: null,

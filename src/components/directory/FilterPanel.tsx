@@ -1,114 +1,150 @@
 "use client";
 
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, XCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { useFilterStore } from '@/hooks/useFilterStore';
-import { Search, X } from 'lucide-react';
-import { specialties, conditions, languages } from '@/lib/mockData';
-import { Condition, Language } from '@/types'; // Import types for casting
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { useFilterStore } from "@/hooks/useFilterStore";
+import { conditions, languages, clinicianTypes } from "@/lib/constants";
 
-const FilterPanel = () => {
+const FilterPanel: React.FC = () => {
   const {
     searchTerm,
-    setSearchTerm,
     clinicianType,
-    setClinicianType,
     condition,
-    setCondition,
     language,
-    setLanguage,
     tiers,
-    setTiers,
     acceptingNewPatients,
+    setSearchTerm,
+    setClinicianType,
+    setCondition,
+    setLanguage,
+    setTiers,
     setAcceptingNewPatients,
-    clearFilters,
+    clearFilters, // Destructure the new clearFilters action
   } = useFilterStore();
 
+  const handleTierChange = (tier: string, checked: boolean) => {
+    setTiers(
+      checked ? [...tiers, tier] : tiers.filter((t) => t !== tier)
+    );
+  };
+
   return (
-    <div className="p-4 space-y-4 bg-white">
+    <div className="p-4 border-b lg:border-r bg-white shadow-sm space-y-4">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search by name, specialty, or location..."
-          className="pl-10"
+          type="text"
+          placeholder="Search by name, clinic, or location..."
+          className="pl-9"
           value={searchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
+        {searchTerm && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0 text-muted-foreground hover:bg-transparent"
+            onClick={() => setSearchTerm("")}
+          >
+            <XCircle className="h-4 w-4" />
+          </Button>
+        )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Select value={clinicianType || ''} onValueChange={setClinicianType}>
-          <SelectTrigger>
-            <SelectValue placeholder="Clinician Type" />
-          </SelectTrigger>
-          <SelectContent>
-            {specialties.map((s) => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={condition || ''} onValueChange={(value) => setCondition(value as Condition)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Condition" />
-          </SelectTrigger>
-          <SelectContent>
-            {conditions.map((c) => (
-              <SelectItem key={c} value={c}>{c}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={language || ''} onValueChange={(value) => setLanguage(value as Language)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Language" />
-          </SelectTrigger>
-          <SelectContent>
-            {languages.map((l) => (
-              <SelectItem key={l} value={l}>{l}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+
+      <Select
+        value={clinicianType || ""}
+        onValueChange={(value) => setClinicianType(value === "" ? null : value)}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Clinician Type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Clinician Types</SelectItem>
+          {clinicianTypes.map((type) => (
+            <SelectItem key={type} value={type}>
+              {type}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={condition || ""}
+        onValueChange={(value) => setCondition(value === "" ? null : value)}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Condition Treated" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Conditions</SelectItem>
+          {conditions.map((cond) => (
+            <SelectItem key={cond} value={cond}>
+              {cond}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={language || ""}
+        onValueChange={(value) => setLanguage(value === "" ? null : value)}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Language Spoken" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="">All Languages</SelectItem>
+          {languages.map((lang) => (
+            <SelectItem key={lang} value={lang}>
+              {lang}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <div className="space-y-2">
+        <p className="text-sm font-medium">Membership Tier</p>
+        <div className="flex flex-col space-y-1">
+          {["Premier", "Preferred", "Free"].map((tier) => (
+            <div key={tier} className="flex items-center space-x-2">
+              <Checkbox
+                id={`tier-${tier}`}
+                checked={tiers.includes(tier)}
+                onCheckedChange={(checked) =>
+                  handleTierChange(tier, checked as boolean)
+                }
+              />
+              <Label htmlFor={`tier-${tier}`}>{tier}</Label>
+            </div>
+          ))}
+        </div>
       </div>
-      <div>
-        <label className="text-sm font-medium text-brand-text mb-2 block">Provider Tier</label>
-        <ToggleGroup
-          type="multiple"
-          variant="outline"
-          value={tiers}
-          onValueChange={(value) => setTiers(value)}
-          className="justify-start"
-        >
-          <ToggleGroupItem value="Premier">Premier</ToggleGroupItem>
-          <ToggleGroupItem value="Preferred">Preferred</ToggleGroupItem>
-          <ToggleGroupItem value="Free">Free</ToggleGroupItem>
-        </ToggleGroup>
-      </div>
+
       <div className="flex items-center space-x-2">
-        <Checkbox 
-          id="accepting-patients"
+        <Checkbox
+          id="accepting-new-patients"
           checked={acceptingNewPatients}
-          onCheckedChange={(checked) => setAcceptingNewPatients(!!checked)}
+          onCheckedChange={(checked) =>
+            setAcceptingNewPatients(checked as boolean)
+          }
         />
-        <label
-          htmlFor="accepting-patients"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Accepting New Patients
-        </label>
+        <Label htmlFor="accepting-new-patients">Accepting New Patients</Label>
       </div>
-      <div className="pt-2">
-        <Button variant="ghost" onClick={clearFilters} className="w-full flex items-center gap-1 text-muted-foreground hover:text-foreground">
-          <X className="h-4 w-4" /> Clear All Filters
-        </Button>
-      </div>
+
+      <Button variant="outline" className="w-full" onClick={clearFilters}>
+        Clear All Filters
+      </Button>
     </div>
   );
 };
