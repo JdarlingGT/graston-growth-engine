@@ -42,7 +42,7 @@ const FilterPanel = () => {
           placeholder="Search by name, specialty, or location..."
           className="pl-10"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

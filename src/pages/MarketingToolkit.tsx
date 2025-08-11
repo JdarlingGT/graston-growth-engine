@@ -111,7 +111,7 @@ const MarketingToolkitPage = () => {
             placeholder="Search resources..." 
             className="pl-10"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2">

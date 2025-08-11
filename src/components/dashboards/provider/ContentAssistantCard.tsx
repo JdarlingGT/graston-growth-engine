@@ -31,7 +31,6 @@ const generateContent = async (prompt: string): Promise<ContentResponse> => {
   return data;
 };
 
-
 const ContentAssistantCard = () => {
   const [prompt, setPrompt] = useState('');
   const [generatedContent, setGeneratedContent] = useState('');
@@ -79,7 +78,7 @@ const ContentAssistantCard = () => {
             placeholder="e.g., 'Write a short, friendly bio for my profile focusing on sports injuries' or 'Create a list of 5 video ideas for patient testimonials'" 
             rows={4}
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
             disabled={mutation.isPending}
           />
         </div>
