@@ -43,6 +43,15 @@ const ProviderCard = ({ provider, onMouseEnter, onMouseLeave }: ProviderCardProp
               <span className="font-bold text-brand-text">{provider.rating?.toFixed(1)}</span>
               <span className="text-brand-text/70 ml-1.5">({provider.reviewCount} reviews)</span>
             </div>
+            {provider.accepting_new_patients !== null && (
+              <div className="mt-2">
+                {provider.accepting_new_patients ? (
+                  <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-100">Accepting New Patients</Badge>
+                ) : (
+                  <Badge variant="secondary">Not Accepting New Patients</Badge>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">

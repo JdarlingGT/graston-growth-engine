@@ -15,6 +15,7 @@ import { useFilterStore } from '@/hooks/useFilterStore';
 import { Search, X } from 'lucide-react';
 import { specialties, conditions, languages } from '@/lib/mockData';
 import { Condition, Language } from '@/types'; // Import types for casting
+import { Checkbox } from '@/components/ui/checkbox';
 
 const FilterPanel = () => {
   const {
@@ -28,6 +29,8 @@ const FilterPanel = () => {
     setLanguage,
     tiers,
     setTiers,
+    acceptingNewPatients,
+    setAcceptingNewPatients,
     clearFilters,
   } = useFilterStore();
 
@@ -87,6 +90,19 @@ const FilterPanel = () => {
           <ToggleGroupItem value="Preferred">Preferred</ToggleGroupItem>
           <ToggleGroupItem value="Free">Free</ToggleGroupItem>
         </ToggleGroup>
+      </div>
+      <div className="flex items-center space-x-2">
+        <Checkbox 
+          id="accepting-patients"
+          checked={acceptingNewPatients}
+          onCheckedChange={(checked) => setAcceptingNewPatients(!!checked)}
+        />
+        <label
+          htmlFor="accepting-patients"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Accepting New Patients
+        </label>
       </div>
       <div className="flex gap-2">
         <Button className="w-full bg-brand-orange hover:bg-brand-orange/90">Search</Button>

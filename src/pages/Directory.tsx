@@ -22,7 +22,7 @@ const Directory: React.FC = () => {
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
   // Global filter state from Zustand
-  const { searchTerm, clinicianType, condition, language, tiers, setSearchTerm, setClinicianType, setCondition, setLanguage, setTiers } = useFilterStore();
+  const { searchTerm, clinicianType, condition, language, tiers, acceptingNewPatients, setSearchTerm, setClinicianType, setCondition, setLanguage, setTiers } = useFilterStore();
 
   // Local UI state
   const [providers, setProviders] = useState<FullProviderProfile[]>([]);
@@ -39,6 +39,7 @@ const Directory: React.FC = () => {
   const debouncedCondition = useDebounce(condition, 500);
   const debouncedLanguage = useDebounce(language, 500);
   const debouncedTiers = useDebounce(tiers, 500);
+  const debouncedAcceptingNewPatients = useDebounce(acceptingNewPatients, 500);
 
   // Refs for scrolling to provider cards
   const providerCardRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
@@ -110,6 +111,11 @@ const Directory: React.FC = () => {
         query = query.in('tier', debouncedTiers);
       }
 
+      // Apply accepting new patients filter
+      if (debouncedAcceptingNewPatients) {
+        query = query.eq('accepting_new_patients', true);
+      }
+
       // Apply map bounds filter (requires coordinates to be stored as JSONB or separate lat/lng columns)
       // For simplicity, this example assumes coordinates are available and filters them client-side
       // A more robust solution would involve PostGIS or a custom Supabase function for geo-spatial queries.
@@ -131,7 +137,7 @@ const Directory: React.FC = () => {
     };
 
     fetchProviders();
-  }, [debouncedBounds, debouncedSearchTerm, debouncedClinicianType, debouncedCondition, debouncedLanguage, debouncedTiers, supabase]);
+  }, [debouncedBounds, debouncedSearchTerm, debouncedClinicianType, debouncedCondition, debouncedLanguage, debouncedTiers, debouncedAcceptingNewPatients, supabase]);
 
   const handleMapCameraChanged = useCallback((ev: any) => {
     const newBounds = ev.map.getBounds();

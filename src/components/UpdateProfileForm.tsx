@@ -12,7 +12,8 @@ import { Separator } from "@/components/ui/separator";
 import { FullProviderProfile } from "@/types";
 import { showSuccess, showError } from "@/utils/toast";
 import { User, Mail, Phone, MapPin, Globe, Plus, X } from "lucide-react";
-import { mockProviders } from "@/lib/mockData";
+import { supabase } from "@/integrations/supabase/client";
+import { Switch } from "@/components/ui/switch";
 
 interface UpdateProfileFormProps {
   providerId: string;
@@ -27,10 +28,27 @@ export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormPro
   const [newCertification, setNewCertification] = useState("");
 
   useEffect(() => {
-    setIsLoading(true);
-    const providerData = mockProviders.find(p => p.id === providerId) || null;
-    setFormData(providerData);
-    setIsLoading(false);
+    const fetchProfile = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', providerId)
+        .single();
+
+      if (error) {
+        showError("Failed to load profile data.");
+        console.error(error);
+        setFormData(null);
+      } else {
+        setFormData(data as FullProviderProfile);
+      }
+      setIsLoading(false);
+    };
+
+    if (providerId) {
+      fetchProfile();
+    }
   }, [providerId]);
 
   const handleInputChange = (field: keyof FullProviderProfile, value: any) => {
@@ -84,11 +102,20 @@ export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormPro
 
     setIsSaving(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(formData)
+      .eq('id', providerId)
+      .select()
+      .single();
 
-    onUpdate(formData);
-    showSuccess("Profile updated successfully! (Mock update)");
+    if (error) {
+      showError("Failed to update profile.");
+      console.error(error);
+    } else {
+      onUpdate(data as FullProviderProfile);
+      showSuccess("Profile updated successfully!");
+    }
     
     setIsSaving(false);
   };
@@ -127,7 +154,7 @@ export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormPro
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center space-y-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={formData.profileImage} alt={formData.name} />
+                  <AvatarImage src={formData.profile_image} alt={formData.name} />
                   <AvatarFallback className="text-lg">
                     {formData.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
@@ -136,8 +163,8 @@ export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormPro
                   <Label htmlFor="profileImage">Profile Image URL</Label>
                   <Input
                     id="profileImage"
-                    value={formData.profileImage || ""}
-                    onChange={(e) => handleInputChange("profileImage", e.target.value)}
+                    value={formData.profile_image || ""}
+                    onChange={(e) => handleInputChange("profile_image", e.target.value)}
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
@@ -163,6 +190,17 @@ export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormPro
                       placeholder="e.g., Physical Therapy"
                     />
                   </div>
+                </div>
+                
+                <div className="flex items-center space-x-2 pt-2">
+                  <Switch
+                    id="accepting-new-patients"
+                    checked={formData.accepting_new_patients}
+                    onCheckedChange={(checked) => handleInputChange("accepting_new_patients", checked)}
+                  />
+                  <Label htmlFor="accepting-new-patients" className="text-base">
+                    Accepting New Patients
+                  </Label>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
