@@ -6,7 +6,6 @@ import { Edit } from "lucide-react";
 import ProfileScoreCard from "./provider/ProfileScoreCard";
 import MembershipTierCard from "./provider/MembershipTierCard";
 import PerformanceAnalyticsCard from "./provider/PerformanceAnalyticsCard";
-import AudienceOverviewCard from "./provider/AudienceOverviewCard";
 import LeadInboxCard from "./provider/LeadInboxCard";
 import RoiCalculatorCard from "./provider/RoiCalculatorCard";
 import UpgradeCtaCard from "./provider/UpgradeCtaCard";
