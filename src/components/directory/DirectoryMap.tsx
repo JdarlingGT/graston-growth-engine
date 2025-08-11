@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { Map, APIProvider, AdvancedMarker, Pin, InfoWindow } from '@vis.gl/react-google-maps';
+import { Map, APIProvider, AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps';
 import { FullProviderProfile } from '@/types';
 import MiniProfileCard from './MiniProfileCard';
+import CustomPin from './CustomPin'; // Import the new CustomPin component
 
 interface DirectoryMapProps {
   providers: FullProviderProfile[];
@@ -66,7 +67,7 @@ const DirectoryMap: React.FC<DirectoryMapProps> = ({
                 handleLocalMarkerClick(provider.id);
               }}
             >
-              <Pin
+              <CustomPin // Use CustomPin instead of Pin
                 background={isPremier ? '#157A83' : '#FC7831'} // Teal for Premier, Orange for others
                 borderColor={isPremier ? '#FC7831' : '#157A83'}
                 glyphColor={'#FFFFFF'}
