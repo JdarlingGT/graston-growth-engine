@@ -1,5 +1,5 @@
 import React from 'react';
-import { FullProviderProfile, Tier } from '@/types';
+import { FullProviderProfile, Tier, AccreditationLogo } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -45,12 +45,14 @@ const ProfileSidebar = ({ provider, onToggleFavorite }: ProfileSidebarProps) => 
     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  if (!provider.tier) return null;
+
   return (
     <TooltipProvider>
       <Card className="overflow-hidden">
         <CardContent className="p-6 text-center">
           <Avatar className="h-28 w-28 mx-auto mb-4 border-4 border-background shadow-md">
-            <AvatarImage src={provider.profileImage} alt={provider.name} />
+            <AvatarImage src={provider.profile_image || undefined} alt={provider.name} />
             <AvatarFallback className="text-4xl">
               {provider.name.split(' ').map(n => n[0]).join('')}
             </AvatarFallback>
@@ -118,7 +120,7 @@ const ProfileSidebar = ({ provider, onToggleFavorite }: ProfileSidebarProps) => 
             <CardContent className="p-4">
               <h3 className="text-sm font-semibold text-center text-muted-foreground mb-3">Accreditations</h3>
               <div className="flex flex-wrap justify-center items-center gap-4">
-                {provider.accreditation_logos.map((acc, index) => (
+                {provider.accreditation_logos?.map((acc: AccreditationLogo, index: number) => (
                   <Tooltip key={index}>
                     <TooltipTrigger asChild>
                       <a href={acc.url} target="_blank" rel="noopener noreferrer">

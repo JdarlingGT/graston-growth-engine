@@ -29,19 +29,19 @@ const ProviderCard = ({ provider, onMouseEnter, onMouseLeave }: ProviderCardProp
       <CardContent className="p-4 flex-grow">
         <div className="flex items-start gap-4">
           <Avatar className="h-20 w-20 border-2 border-brand-gray">
-            <AvatarImage src={provider.profileImage} alt={provider.name}/>
+            <AvatarImage src={provider.profile_image || undefined} alt={provider.name}/>
             <AvatarFallback>{provider.name.split(' ').map(n=>n[0]).join('')}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
             <div className="flex justify-between items-start">
               <h3 className="font-heading text-xl font-bold text-brand-blue">{provider.name}</h3>
-              <TierBadge tier={provider.tier} />
+              {provider.tier && <TierBadge tier={provider.tier} />}
             </div>
             <p className="text-md text-brand-text/90 font-semibold">{provider.specialty}</p>
             <div className="flex items-center mt-1 text-sm">
               <Star className="h-5 w-5 text-yellow-400 fill-yellow-400 mr-1" />
               <span className="font-bold text-brand-text">{provider.rating?.toFixed(1)}</span>
-              <span className="text-brand-text/70 ml-1.5">({provider.reviewCount} reviews)</span>
+              <span className="text-brand-text/70 ml-1.5">({provider.review_count} reviews)</span>
             </div>
             {provider.accepting_new_patients !== null && (
               <div className="mt-2">

@@ -109,7 +109,7 @@ const ComparePage = () => {
                     <TableHead key={p.id} className="w-[200px] md:w-[250px]">
                       <div className="flex flex-col items-center text-center gap-2">
                         <Avatar className="h-16 w-16">
-                          <AvatarImage src={p.profileImage} />
+                          <AvatarImage src={p.profile_image || undefined} />
                           <AvatarFallback>{p.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                         <Link to={`/directory/provider/${p.id}`} className="font-semibold text-base hover:underline">{p.name}</Link>

@@ -1,10 +1,18 @@
-export type Tier = 'Premier' | 'Preferred' | 'Free';
+export type Tier = "Premier" | "Preferred" | "Free";
 
-export type ClinicianType = 'Chiropractor' | 'Physical Therapist' | 'Athletic Trainer' | 'Massage Therapist' | 'Occupational Therapist' | 'Other' | 'Medical Doctor';
-export type Language = 'English' | 'Spanish' | 'French' | 'German' | 'Mandarin' | 'Vietnamese' | 'Irish' | 'Hindi' | 'Korean' | 'Italian';
-export type Condition = 'Back Pain' | 'Neck Pain' | 'Plantar Fasciitis' | 'Tennis Elbow' | 'Carpal Tunnel Syndrome' | 'Headaches' | 'Sports Injuries' | 'Post-Surgical Rehab' | 'Chronic Pain';
-export type PatientDemographic = 'Athletes' | 'Pediatrics' | 'Geriatrics' | 'General Population';
-export type TrainingLevel = 'M1 Basic' | 'M2 Advanced' | 'Certified Specialist' | 'GTS' | 'Essential' | 'Advanced';
+export type Condition =
+  | "Low Back Pain"
+  | "Neck Pain"
+  | "Sciatica"
+  | "Sports Injuries"
+  | "Headaches & Migraines"
+  | "Plantar Fasciitis"
+  | "Tennis Elbow"
+  | "Carpal Tunnel Syndrome";
+
+export type Language = "English" | "Spanish" | "French" | "Mandarin" | "German";
+
+export type ClinicianType = "Chiropractor" | "Physical Therapist" | "Massage Therapist" | "Acupuncturist";
 
 export interface Coordinates {
   lat: number;
@@ -14,7 +22,7 @@ export interface Coordinates {
 export interface AccreditationLogo {
   name: string;
   logoUrl: string;
-  url: string;
+  url?: string;
 }
 
 export interface Testimonial {
@@ -42,54 +50,52 @@ export interface MarketingResource {
 export interface FullProviderProfile {
   id: string;
   name: string;
-  specialty: string;
-  profileImage: string;
-  location: string;
-  clinicAddress: string;
-  coordinates?: Coordinates;
-  tier: Tier;
-  clinicianType: ClinicianType;
-  languages_spoken?: Language[];
   email: string;
-  phone: string;
-  website: string;
-  bio?: string;
-  trialStatus?: string;
-  activity?: number;
-  churnRisk?: boolean;
-  rating?: number;
-  reviewCount?: number;
-  isFavorite?: boolean;
-  services?: string[];
-  certifications?: string[];
-  gt_certifications?: TrainingLevel[];
-  verification_badges?: string[];
-  accreditation_logos?: AccreditationLogo[];
-  patient_types?: PatientDemographic[];
-  conditions_treated?: Condition[];
-  gallery_images?: string[];
-  gallery_videos?: string[];
-  testimonials?: Testimonial[];
-  faqs?: FAQ[];
-  views?: number;
-  engagementScore?: number;
-  can_compare?: boolean;
-  // Fields from mock data and forms
-  experience?: string;
-  education?: string;
-  linkedin?: string;
-  facebook?: string;
-  instagram?: string;
-  twitter?: string;
-}
+  specialty?: string | null;
+  clinician_type?: ClinicianType | null;
+  tier?: Tier | null;
+  
+  // Contact & Location
+  phone?: string | null;
+  website?: string | null;
+  location?: string | null; // e.g., "City, State"
+  clinic_address?: string | null;
+  coordinates?: Coordinates | null;
 
-export interface DirectoryFilters {
-  sortBy: string;
-  searchTerm?: string;
-  clinicianType?: string | null;
-  condition?: string | null;
-  language?: string | null;
-  tiers?: string[];
-}
+  // Profile Details
+  bio?: string | null;
+  profile_image?: string | null;
+  rating?: number | null;
+  review_count?: number | null;
+  accepting_new_patients?: boolean | null;
+  
+  // Arrays
+  services?: string[] | null;
+  conditions_treated?: Condition[] | null;
+  languages_spoken?: Language[] | null;
+  certifications?: string[] | null;
+  verification_badges?: string[] | null;
+  gallery_images?: string[] | null;
+  gallery_videos?: string[] | null;
+  testimonials?: Testimonial[] | null;
+  faqs?: FAQ[] | null;
+  accreditation_logos?: AccreditationLogo[] | null;
 
-export type SortOption = 'premier-first' | 'rating-desc' | 'name-asc';
+  // Social
+  linkedin?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  twitter?: string | null;
+
+  // Other fields from schema (optional for mock data)
+  experience?: string | null;
+  education?: string | null;
+
+  // Admin/Internal fields
+  engagementScore?: number | null;
+  churnRisk?: boolean | null;
+  views?: number | null;
+  isFavorite?: boolean | null;
+  trialStatus?: 'Active' | 'Expired' | 'N/A' | null;
+  can_compare?: boolean | null;
+}

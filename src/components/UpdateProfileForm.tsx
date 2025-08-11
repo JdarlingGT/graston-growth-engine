@@ -154,7 +154,7 @@ export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormPro
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center space-y-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={formData.profile_image} alt={formData.name} />
+                  <AvatarImage src={formData.profile_image || undefined} alt={formData.name} />
                   <AvatarFallback className="text-lg">
                     {formData.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
@@ -195,7 +195,7 @@ export const UpdateProfileForm = ({ providerId, onUpdate }: UpdateProfileFormPro
                 <div className="flex items-center space-x-2 pt-2">
                   <Switch
                     id="accepting-new-patients"
-                    checked={formData.accepting_new_patients}
+                    checked={formData.accepting_new_patients ?? false}
                     onCheckedChange={(checked) => handleInputChange("accepting_new_patients", checked)}
                   />
                   <Label htmlFor="accepting-new-patients" className="text-base">

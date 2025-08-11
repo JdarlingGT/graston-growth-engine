@@ -14,6 +14,7 @@ import { mockProviders } from "@/lib/mockData";
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Linkedin, Facebook as FbIcon, Instagram, Twitter } from 'lucide-react';
 import ProviderMap from '@/components/provider/ProviderMap';
+import { AccreditationLogo } from '@/types';
 
 const PublicProviderProfilePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -118,8 +119,8 @@ const PublicProviderProfilePage = () => {
                 <h2 className="text-xl font-semibold">Additional Information</h2>
               </CardHeader>
               <CardContent className="space-y-4">
-                {displayProvider.clinicAddress && (
-                  <div><span className="font-semibold">Address:</span> {displayProvider.clinicAddress}</div>
+                {displayProvider.clinic_address && (
+                  <div><span className="font-semibold">Address:</span> {displayProvider.clinic_address}</div>
                 )}
                 {displayProvider.coordinates && (
                   <div className="w-full h-64">
@@ -140,7 +141,7 @@ const PublicProviderProfilePage = () => {
                 {displayProvider.accreditation_logos && displayProvider.accreditation_logos.length > 0 && (
                   <div>
                     <span className="font-semibold">Accreditations:</span>
-                    {displayProvider.accreditation_logos.map((a) => (
+                    {displayProvider.accreditation_logos.map((a: AccreditationLogo) => (
                       <img key={a.name} src={a.logoUrl} alt={a.name} className="inline-block h-6 mx-1" />
                     ))}
                   </div>

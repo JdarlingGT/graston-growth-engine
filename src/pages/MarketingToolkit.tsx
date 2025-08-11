@@ -92,7 +92,7 @@ const MarketingToolkitPage = () => {
           <h3 className="text-2xl font-bold">{featuredResource.title}</h3>
           <p className="text-muted-foreground mt-2 mb-4">{featuredResource.description}</p>
           {isLoading ? <ResourceCardSkeleton /> : (
-            <ResourceCard 
+            provider.tier && <ResourceCard 
               resource={featuredResource} 
               userTier={provider.tier} 
               providerId={provider.id}
@@ -134,7 +134,7 @@ const MarketingToolkitPage = () => {
             Array.from({ length: 6 }).map((_, index) => <ResourceCardSkeleton key={index} />)
         ) : (
             filteredResources.map((resource: MarketingResource) => (
-                <ResourceCard 
+              provider.tier && <ResourceCard 
                     key={resource.id} 
                     resource={resource} 
                     userTier={provider.tier} 
