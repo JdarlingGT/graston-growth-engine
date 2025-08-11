@@ -125,8 +125,11 @@ const Directory: React.FC = () => {
         console.error("Error fetching providers:", error);
         setProviders([]);
       } else {
+        // If Supabase returns no data, use mock data as a fallback for development
+        const dataToUse = data.length > 0 ? data : mockProviders;
+
         // Client-side filtering for map bounds as Supabase doesn't have native geospatial queries on JSONB
-        const filteredByBounds = data.filter(p => {
+        const filteredByBounds = dataToUse.filter(p => {
           return debouncedBounds 
             ? p.coordinates && debouncedBounds.contains(new google.maps.LatLng(p.coordinates.lat, p.coordinates.lng))
             : true;

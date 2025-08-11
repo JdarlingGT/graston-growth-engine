@@ -33,3 +33,31 @@ export const calculateProfileCompleteness = (user: FullProviderProfile): number 
 
   return Math.round((completedFields / requiredFields.length) * 100);
 };
+
+export const calculateProfileScore = (user: FullProviderProfile): { score: number; nextAction: string } => {
+  if (!user.tier) {
+    return { score: 0, nextAction: "Please select a membership tier to see your profile score." };
+  }
+
+  const score = calculateProfileCompleteness(user);
+
+  if (score === 100) {
+    return { score: 100, nextAction: "Your profile is complete! Great job." };
+  }
+
+  const requiredFields = requiredProfileFields[user.tier];
+  if (!requiredFields) {
+    return { score: 0, nextAction: "Could not determine required fields for your tier." };
+  }
+
+  const missingField = requiredFields.find(fieldPath => {
+    const value = getNestedProperty(user, fieldPath as keyof FullProviderProfile);
+    return value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0);
+  });
+
+  const nextAction = missingField
+    ? `To improve your score, add your ${missingField.replace(/_/g, ' ')}.`
+    : "Your profile is looking great!";
+
+  return { score, nextAction };
+};
