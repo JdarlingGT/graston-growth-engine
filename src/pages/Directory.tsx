@@ -29,7 +29,7 @@ const Directory: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
   
-  // Map state
+  // Map state - always start at default values
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 });
   const [mapZoom, setMapZoom] = useState(4);
   const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
@@ -44,7 +44,7 @@ const Directory: React.FC = () => {
   // Refs for scrolling to provider cards
   const providerCardRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
 
-  // URL State Synchronization - Read from URL on mount
+  // URL State Synchronization - Read from URL on mount (only filters, not map state)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSearchTerm(params.get('search') || '');
@@ -52,15 +52,10 @@ const Directory: React.FC = () => {
     setCondition(params.get('condition') as Condition || null); // Type assertion
     setLanguage(params.get('language') as Language || null);     // Type assertion
     setTiers(params.get('tiers')?.split(',') || ['Premier', 'Preferred', 'Free']);
-    
-    const lat = parseFloat(params.get('lat') || '39.8283');
-    const lng = parseFloat(params.get('lng') || '-98.5795');
-    const zoom = parseInt(params.get('zoom') || '4', 10);
-    setMapCenter({ lat, lng });
-    setMapZoom(zoom);
+    // Removed map coordinate and zoom parsing from URL
   }, [location.search, setSearchTerm, setClinicianType, setCondition, setLanguage, setTiers]);
 
-  // URL State Synchronization - Write to URL on state change
+  // URL State Synchronization - Write to URL on filter state change (not map state change)
   useEffect(() => {
     const params = new URLSearchParams();
     if (searchTerm) params.set('search', searchTerm);
@@ -74,7 +69,7 @@ const Directory: React.FC = () => {
     if (params.toString() !== new URLSearchParams(location.search).toString()) {
       navigate(`?${params.toString()}`, { replace: true });
     }
-  }, [searchTerm, clinicianType, condition, language, tiers, mapCenter, mapZoom, mapBounds, navigate, location.search]);
+  }, [searchTerm, clinicianType, condition, language, tiers, navigate, location.search]); // Removed mapCenter, mapZoom, mapBounds from dependencies
 
 
   // Fetch data from Supabase based on filters and map bounds
