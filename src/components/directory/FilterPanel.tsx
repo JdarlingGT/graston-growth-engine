@@ -104,10 +104,9 @@ const FilterPanel = () => {
           Accepting New Patients
         </label>
       </div>
-      <div className="flex gap-2">
-        <Button className="w-full bg-brand-orange hover:bg-brand-orange/90">Search</Button>
-        <Button variant="ghost" onClick={clearFilters} className="flex items-center gap-1">
-          <X className="h-4 w-4" /> Clear
+      <div className="pt-2">
+        <Button variant="ghost" onClick={clearFilters} className="w-full flex items-center gap-1 text-muted-foreground hover:text-foreground">
+          <X className="h-4 w-4" /> Clear All Filters
         </Button>
       </div>
     </div>

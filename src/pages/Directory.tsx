@@ -76,8 +76,12 @@ const Directory: React.FC = () => {
       params.set('zoom', mapZoom.toString());
     }
 
-    navigate(`?${params.toString()}`, { replace: true });
-  }, [searchTerm, clinicianType, condition, language, tiers, mapCenter, mapZoom, mapBounds, navigate]);
+    // By comparing the generated search string with the current one, we prevent an infinite loop
+    // of navigation events.
+    if (params.toString() !== new URLSearchParams(location.search).toString()) {
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [searchTerm, clinicianType, condition, language, tiers, mapCenter, mapZoom, mapBounds, navigate, location.search]);
 
 
   // Fetch data from Supabase based on filters and map bounds
