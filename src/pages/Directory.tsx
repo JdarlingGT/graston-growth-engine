@@ -12,7 +12,6 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client"; // Corrected import: import the 'supabase' instance directly
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
@@ -34,7 +33,7 @@ const Directory: React.FC = () => {
   const [mapZoom, setMapZoom] = useState(4);
   const [mapBounds, setMapBounds] = useState<google.maps.LatLngBounds | null>(null);
   const debouncedBounds = useDebounce(mapBounds, 500);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500); // Debounce search term
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const debouncedClinicianType = useDebounce(clinicianType, 500);
   const debouncedCondition = useDebounce(condition, 500);
   const debouncedLanguage = useDebounce(language, 500);
@@ -49,10 +48,9 @@ const Directory: React.FC = () => {
     const params = new URLSearchParams(location.search);
     setSearchTerm(params.get('search') || '');
     setClinicianType(params.get('clinicianType') || null);
-    setCondition(params.get('condition') as Condition || null); // Type assertion
-    setLanguage(params.get('language') as Language || null);     // Type assertion
+    setCondition(params.get('condition') as Condition || null);
+    setLanguage(params.get('language') as Language || null);
     setTiers(params.get('tiers')?.split(',') || ['Premier', 'Preferred', 'Free']);
-    // Removed map coordinate and zoom parsing from URL
   }, [location.search, setSearchTerm, setClinicianType, setCondition, setLanguage, setTiers]);
 
   // URL State Synchronization - Write to URL on filter state change (not map state change)
@@ -64,75 +62,72 @@ const Directory: React.FC = () => {
     if (language) params.set('language', language);
     if (tiers.length < 3) params.set('tiers', tiers.join(','));
     
-    // By comparing the generated search string with the current one, we prevent an infinite loop
-    // of navigation events.
     if (params.toString() !== new URLSearchParams(location.search).toString()) {
       navigate(`?${params.toString()}`, { replace: true });
     }
-  }, [searchTerm, clinicianType, condition, language, tiers, navigate, location.search]); // Removed mapCenter, mapZoom, mapBounds from dependencies
+  }, [searchTerm, clinicianType, condition, language, tiers, navigate, location.search]);
 
-
-  // Fetch data from Supabase based on filters and map bounds
+  // Fetch and filter data from mock data source
   useEffect(() => {
-    const fetchProviders = async () => {
+    const processDemoData = () => {
       setIsLoading(true);
-      let query = supabase.from('profiles').select('*');
+
+      let filteredData: FullProviderProfile[] = [...mockProviders];
 
       // Apply text search filter
       if (debouncedSearchTerm) {
-        query = query.or(`name.ilike.%${debouncedSearchTerm}%,specialty.ilike.%${debouncedSearchTerm}%,clinic_address.ilike.%${debouncedSearchTerm}%,location.ilike.%${debouncedSearchTerm}%`);
+        const lowercasedTerm = debouncedSearchTerm.toLowerCase();
+        filteredData = filteredData.filter(p =>
+          p.name?.toLowerCase().includes(lowercasedTerm) ||
+          p.specialty?.toLowerCase().includes(lowercasedTerm) ||
+          p.clinic_address?.toLowerCase().includes(lowercasedTerm) ||
+          p.location?.toLowerCase().includes(lowercasedTerm)
+        );
       }
 
       // Apply clinician type filter
       if (debouncedClinicianType) {
-        query = query.eq('clinician_type', debouncedClinicianType);
+        filteredData = filteredData.filter(p => p.clinician_type === debouncedClinicianType);
       }
 
       // Apply condition filter
       if (debouncedCondition) {
-        query = query.contains('conditions_treated', [debouncedCondition]);
+        filteredData = filteredData.filter(p => p.conditions_treated?.includes(debouncedCondition));
       }
 
       // Apply language filter
       if (debouncedLanguage) {
-        query = query.contains('languages_spoken', [debouncedLanguage]);
+        filteredData = filteredData.filter(p => p.languages_spoken?.includes(debouncedLanguage));
       }
 
       // Apply tier filter
       if (debouncedTiers && debouncedTiers.length > 0 && debouncedTiers.length < 3) {
-        query = query.in('tier', debouncedTiers);
+        filteredData = filteredData.filter(p => p.tier && debouncedTiers.includes(p.tier));
       }
 
       // Apply accepting new patients filter
       if (debouncedAcceptingNewPatients) {
-        query = query.eq('accepting_new_patients', true);
+        filteredData = filteredData.filter(p => p.accepting_new_patients === true);
       }
 
-      // Apply map bounds filter (requires coordinates to be stored as JSONB or separate lat/lng columns)
-      // For simplicity, this example assumes coordinates are available and filters them client-side
-      // A more robust solution would involve PostGIS or a custom Supabase function for geo-spatial queries.
-      const { data, error } = await query;
-
-      if (error) {
-        console.error("Error fetching providers:", error);
-        setProviders([]);
-      } else {
-        // If Supabase returns no data, use mock data as a fallback for development
-        const dataToUse = data.length > 0 ? data : mockProviders;
-
-        // Client-side filtering for map bounds as Supabase doesn't have native geospatial queries on JSONB
-        const filteredByBounds = dataToUse.filter(p => {
-          return debouncedBounds 
-            ? p.coordinates && debouncedBounds.contains(new google.maps.LatLng(p.coordinates.lat, p.coordinates.lng))
-            : true;
-        });
-        setProviders(filteredByBounds as FullProviderProfile[]);
+      // Apply map bounds filter
+      if (debouncedBounds) {
+        filteredData = filteredData.filter(p =>
+          p.coordinates && debouncedBounds.contains(new google.maps.LatLng(p.coordinates.lat, p.coordinates.lng))
+        );
       }
+
+      setProviders(filteredData);
       setIsLoading(false);
     };
 
-    fetchProviders();
-  }, [debouncedBounds, debouncedSearchTerm, debouncedClinicianType, debouncedCondition, debouncedLanguage, debouncedTiers, debouncedAcceptingNewPatients, supabase]);
+    // Use a timeout to simulate network latency for a better demo experience
+    const timer = setTimeout(() => {
+      processDemoData();
+    }, 300); 
+
+    return () => clearTimeout(timer);
+  }, [debouncedBounds, debouncedSearchTerm, debouncedClinicianType, debouncedCondition, debouncedLanguage, debouncedTiers, debouncedAcceptingNewPatients]);
 
   const handleMapCameraChanged = useCallback((ev: any) => {
     const newBounds = ev.map.getBounds();
