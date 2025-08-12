@@ -7,10 +7,23 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import NotificationBell from "./NotificationBell";
 import CommandPaletteShortcut from "./CommandPaletteShortcut";
 import MegaMenu from "./MegaMenu";
-import { useAuthStore } from "@/store/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 const Header = () => {
-  const isAdmin = useAuthStore((s) => s.isAdmin);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        const user = data.user;
+        // assume role is in user.app_metadata.role
+        if (user?.app_metadata?.role === "admin") {
+          setIsAdmin(true);
+        }
+      });
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">

@@ -1,35 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import { fetchProviderById } from "@/api/providers";
-import { Provider } from "@/types/provider";
-import ProfileHeader from "@/components/ProfileHeader";
-import ContactCard from "@/components/ContactCard";
-import LocationCard from "@/components/LocationCard";
-import ProfileBody from "@/components/ProfileBody";
+import { useProvider } from "@/hooks/useProvider";
+import ProfileHeader from "@/components/provider/ProfileHeader";
+import ContactCard from "@/components/provider/ContactCard";
+import LocationCard from "@/components/provider/LocationCard";
+import ProfileBody from "@/components/provider/ProfileBody";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProviderDetail = () => {
   const { providerId } = useParams<{ providerId: string }>();
-  const [provider, setProvider] = useState<Provider | null>(null);
-  const [loading, setLoading] = useState(true);
+  const id = providerId ? parseInt(providerId, 10) : null;
+  const { data: provider, isLoading, isError } = useProvider(id);
 
-  useEffect(() => {
-    if (!providerId) return;
-    setLoading(true);
-    fetchProviderById(Number(providerId))
-      .then((data: Provider) => {
-        setProvider(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setProvider(null);
-        setLoading(false);
-      });
-  }, [providerId]);
-
-  if (loading) return <p>Loading…</p>;
-  if (!provider) return <p className="text-center p-8">Profile Not Found</p>;
+  if (isLoading) return <Skeleton className="h-64 w-full" />;
+  if (isError || !provider) return <p className="text-center p-8">Profile Not Found</p>;
 
   return (
     <>
