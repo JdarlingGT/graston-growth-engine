@@ -44,7 +44,7 @@ const FreeProfile = ({ provider }: FreeProfileProps) => {
       </Card>
 
       {/* Specialties */}
-      {provider.specialties.length > 0 && (
+      {provider.specialties && provider.specialties.length > 0 && (
         <Card className="mb-6">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Specialties</h3>
@@ -90,7 +90,7 @@ const FreeProfile = ({ provider }: FreeProfileProps) => {
       </Card>
 
       {/* Accreditations */}
-      {provider.provider_accreditations.length > 0 && (
+      {provider.provider_accreditations && provider.provider_accreditations.length > 0 && (
         <Card>
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Certifications</h3>

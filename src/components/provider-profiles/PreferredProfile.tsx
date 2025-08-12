@@ -113,7 +113,7 @@ const PreferredProfile = ({ provider }: PreferredProfileProps) => {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {provider.specialties.map((specialty, index) => (
+                  {(provider.specialties || []).map((specialty, index) => (
                     <Badge key={index} variant="secondary">
                       {specialty}
                     </Badge>
@@ -128,7 +128,7 @@ const PreferredProfile = ({ provider }: PreferredProfileProps) => {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {provider.conditions_treated.map((condition, index) => (
+                  {(provider.conditions_treated || []).map((condition, index) => (
                     <Badge key={index} variant="outline">
                       {condition}
                     </Badge>
@@ -276,7 +276,7 @@ const PreferredProfile = ({ provider }: PreferredProfileProps) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {provider.provider_accreditations.map((accreditation, index) => (
+                {(provider.provider_accreditations || []).map((accreditation, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <Shield className="h-4 w-4 text-blue-500" />
                     <span className="text-sm text-gray-700">{accreditation}</span>
@@ -293,7 +293,7 @@ const PreferredProfile = ({ provider }: PreferredProfileProps) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {provider.insurance_accepted.map((insurance, index) => (
+                {(provider.insurance_accepted || []).map((insurance, index) => (
                   <div key={index} className="text-sm text-gray-700">
                     • {insurance}
                   </div>

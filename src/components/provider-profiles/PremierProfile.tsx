@@ -204,7 +204,7 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
-                        {provider.specialties.map((specialty, index) => (
+                        {(provider.specialties || []).map((specialty, index) => (
                           <div key={index} className="flex items-center gap-2">
                             <TrendingUp className="h-4 w-4 text-blue-500" />
                             <span className="text-gray-700">{specialty}</span>
@@ -220,7 +220,7 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                     </CardHeader>
                     <CardContent>
                       <div className="flex flex-wrap gap-2">
-                        {provider.conditions_treated.map((condition, index) => (
+                        {(provider.conditions_treated || []).map((condition, index) => (
                           <Badge key={index} variant="outline" className="text-sm">
                             {condition}
                           </Badge>
@@ -303,9 +303,10 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                           <div key={article.id} className="border-l-4 border-blue-500 pl-4 py-2">
                             <h3 className="font-semibold text-lg text-gray-900 mb-2">{article.title}</h3>
                             <p className="text-gray-600 mb-3">{article.excerpt}</p>
-                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                              <span>{new Date(article.published_date).toLocaleDateString()}</span>
-                              <span>{article.read_time} min read</span>
+                            <div className="flex items-center justify-between">
+                              <div className="text-sm text-gray-500">
+                                <p>{new Date(article.published_date).toLocaleDateString()} • {article.read_time} min read</p>
+                              </div>
                               <Button variant="link" className="p-0 h-auto">
                                 Read More →
                               </Button>
@@ -590,7 +591,7 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {provider.provider_accreditations.map((accreditation, index) => (
+                  {(provider.provider_accreditations || []).map((accreditation, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <Shield className="h-4 w-4 text-blue-500" />
                       <span className="text-sm text-gray-700">{accreditation}</span>
@@ -607,7 +608,7 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-2">
-                  {provider.insurance_accepted.map((insurance, index) => (
+                  {(provider.insurance_accepted || []).map((insurance, index) => (
                     <div key={index} className="text-sm text-gray-700 p-2 bg-gray-50 rounded text-center">
                       {insurance}
                     </div>
