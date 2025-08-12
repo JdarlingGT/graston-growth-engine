@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SkeletonProps extends HTMLMotionProps<"div"> {
   variant?: "default" | "card" | "avatar" | "text" | "button";
 }
 
