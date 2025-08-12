@@ -1,96 +1,65 @@
-export type Tier = "Free" | "Preferred" | "Premier";
-export type TrainingLevel = "GTS" | "Advanced" | "Essential";
-export type SortOption = "premier-first" | "top-rated" | "most-reviewed";
-export type RadiusOption = 5 | 10 | 25 | 50 | 100;
-export type ClinicianType = "Chiropractor" | "Physical Therapist" | "Athletic Trainer" | "Massage Therapist" | "Other";
-export type Language = "English" | "Spanish" | "French" | "German" | "Mandarin";
-export type Condition = "Back Pain" | "Neck Pain" | "Headaches" | "Sports Injuries" | "Post-Surgical Rehab";
-export type PatientDemographic = "Athletes" | "Pediatrics" | "Geriatrics" | "General Population";
+export type Tier = 'Premier' | 'Preferred' | 'Free';
 
 export interface DirectoryFilters {
+  sortBy: "premier-first" | "top-rated" | "most-reviewed";
   searchTerm?: string;
   city?: string;
   state?: string;
-  zipCode?: string;
-  radius?: RadiusOption;
-  clinicianType?: ClinicianType | 'All';
-  specialty?: string | 'All';
+  clinicianType?: string;
+  specialty?: string;
   tier?: Tier | 'All';
-  trainingLevel?: TrainingLevel | 'All';
-  languages?: Language[];
-  conditionsTreated?: Condition[];
-  patientTypes?: PatientDemographic[];
-  sortBy: SortOption;
   favoritesOnly?: boolean;
 }
 
-export interface Testimonial {
-  quote: string;
-  author: string;
-  source?: string;
+export interface Provider {
+  id: string;
+  name: string;
+  specialty: string;
+  profileImage: string;
+  location: string;
+  clinicAddress: string;
+  coordinates?: { lat: number; lng: number };
+  tier: Tier;
+  clinicianType: string;
+  languagesSpoken: string[];
+  email: string;
+  phone: string;
+  website: string;
+  bio?: string;
+  trialStatus: string;
+  activity: number;
+  churnRisk: boolean;
   rating?: number;
+  reviewCount?: number;
+  isFavorite: boolean;
+  engagementScore?: number;
+  views?: number;
+  can_compare: boolean;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
 }
 
-export interface FAQ {
+export interface Testimonial {
+  author: string;
+  avatar: string;
+  text: string;
+  rating: number;
+}
+
+export interface Faq {
   question: string;
   answer: string;
 }
 
-export interface Accreditation {
-  name: string;
-  logoUrl: string;
+export interface MediaItem {
+  type: 'image' | 'video';
   url: string;
 }
 
-export interface FullProviderProfile {
-  id: string;
-  name: string;
-  email: string;
-  specialty?: string;
-  bio?: string;
-  experience?: string;
-  education?: string;
-  profileImage?: string;
-  phone?: string;
-  website?: string;
-  linkedin?: string;
-  facebook?: string;
-  instagram?: string;
-  twitter?: string;
-  services?: string[];
-  certifications?: string[];
-  location?: string;
-  clinicAddress?: string;
-  coordinates?: { lat: number; lng: number };
-  gtCertifications?: TrainingLevel[];
-  verificationBadges?: string[];
-  accreditationLogos?: Accreditation[];
-  languagesSpoken?: Language[];
-  patientTypes?: PatientDemographic[];
-  conditionsTreated?: Condition[];
-  rating?: number;
-  reviewCount?: number;
-  isFavorite: boolean;
-  tier: Tier;
-  clinicianType?: ClinicianType;
-  trialStatus: "Active" | "Expired" | "N/A";
-  activity: number;
-  churnRisk: boolean;
-  galleryImages?: string[];
-  galleryVideos?: string[];
+export interface FullProviderProfile extends Provider {
+  media?: MediaItem[];
   testimonials?: Testimonial[];
-  faqs?: FAQ[];
-  views?: number;
-  engagementScore?: number;
-  can_compare?: boolean;
-}
-
-export interface MarketingResource {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  tier: Tier;
-  image: string;
-  filePath: string;
+  faqs?: Faq[];
+  services?: string[];
 }

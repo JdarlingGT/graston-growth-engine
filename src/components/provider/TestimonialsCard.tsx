@@ -1,35 +1,45 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Testimonial } from "@/types";
-import { Star } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Star, MessageSquareQuote } from 'lucide-react';
+import { Testimonial } from '@/types'; // Import Testimonial from types
 
 interface TestimonialsCardProps {
-  testimonials: Testimonial[];
+  testimonials?: Testimonial[];
 }
 
 const TestimonialsCard = ({ testimonials }: TestimonialsCardProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold">What Patients Are Saying</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <MessageSquareQuote className="h-5 w-5" />
+          Patient Testimonials
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {testimonials.map((testimonial, index) => (
-          <div key={index} className="border-l-4 border-primary pl-4">
-            {testimonial.rating && (
-              <div className="flex items-center mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${i < testimonial.rating! ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-                  />
-                ))}
+        {testimonials && testimonials.length > 0 ? (
+          testimonials.map((testimonial, index) => (
+            <div key={index} className="flex gap-4">
+              <Avatar>
+                <AvatarImage src={testimonial.avatar} alt={testimonial.author} />
+                <AvatarFallback>{testimonial.author.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold">{testimonial.author}</p>
+                  <div className="flex items-center">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={`h-4 w-4 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-muted-foreground mt-2 text-sm">"{testimonial.text}"</p>
               </div>
-            )}
-            <p className="text-muted-foreground text-lg italic">"{testimonial.quote}"</p>
-            <p className="text-sm font-semibold mt-2">- {testimonial.author}</p>
-            {testimonial.source && <p className="text-xs text-muted-foreground">Source: {testimonial.source}</p>}
-          </div>
-        ))}
+            </div>
+          ))
+        ) : (
+          <p className="text-sm text-muted-foreground text-center py-8">No testimonials available yet.</p>
+        )}
       </CardContent>
     </Card>
   );

@@ -1,99 +1,50 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { FullProviderProfile } from "@/types";
-import { supabase } from "@/integrations/supabase/client";
-import { showSuccess, showError, showLoading, dismissToast } from "@/utils/toast";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { FullProviderProfile } from '@/types';
+import { Mail, Phone, Globe, Linkedin, Twitter, Instagram } from 'lucide-react';
 
 interface ContactCardProps {
   provider: FullProviderProfile;
 }
 
 const ContactCard = ({ provider }: ContactCardProps) => {
-  const [contactName, setContactName] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactMessage, setContactMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!contactName || !contactEmail || !contactMessage || !provider.email) {
-      showError("Please fill out all fields.");
-      return;
-    }
-  
-    setIsSubmitting(true);
-    const toastId = showLoading("Sending your message...");
-  
-    try {
-      const { error } = await supabase.functions.invoke('contact-provider', {
-        body: {
-          providerEmail: provider.email,
-          name: contactName,
-          email: contactEmail,
-          message: contactMessage,
-        },
-      });
-  
-      dismissToast(toastId);
-  
-      if (error) {
-        throw new Error(error.message);
-      }
-  
-      showSuccess("Your message has been sent!");
-      setContactName('');
-      setContactEmail('');
-      setContactMessage('');
-    } catch (error: any) {
-      dismissToast(toastId);
-      console.error("Error sending message:", error);
-      showError(`Failed to send message: ${error.message}`);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <Card className="shadow-lg border-primary/50">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Request an Appointment</CardTitle>
-        <CardDescription>Send a direct message to {provider.name}. Your message will be sent securely to the provider's office.</CardDescription>
+        <CardTitle>Contact Information</CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleContactSubmit} className="space-y-4">
-          <Input
-            placeholder="Your Name"
-            value={contactName}
-            onChange={(e) => setContactName(e.target.value)}
-            disabled={isSubmitting}
-            required
-            aria-label="Your Name"
-          />
-          <Input
-            type="email"
-            placeholder="Your Email"
-            value={contactEmail}
-            onChange={(e) => setContactEmail(e.target.value)}
-            disabled={isSubmitting}
-            required
-            aria-label="Your Email"
-          />
-          <Textarea
-            placeholder="Your Message (e.g., 'I'd like to inquire about treatment for shoulder pain.')"
-            rows={4}
-            value={contactMessage}
-            onChange={(e) => setContactMessage(e.target.value)}
-            disabled={isSubmitting}
-            required
-            aria-label="Your Message"
-          />
-          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? 'Sending...' : 'Send Message'}
+      <CardContent className="space-y-4">
+        <div className="space-y-2 text-sm">
+          <a href={`mailto:${provider.email}`} className="flex items-center gap-3 hover:text-primary transition-colors">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+            <span>{provider.email}</span>
+          </a>
+          <a href={`tel:${provider.phone}`} className="flex items-center gap-3 hover:text-primary transition-colors">
+            <Phone className="h-4 w-4 text-muted-foreground" />
+            <span>{provider.phone}</span>
+          </a>
+          <a href={provider.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-primary transition-colors">
+            <Globe className="h-4 w-4 text-muted-foreground" />
+            <span>{provider.website}</span>
+          </a>
+        </div>
+        <div className="flex gap-2 pt-2 border-t">
+          <Button variant="ghost" size="icon" asChild>
+            <a href={provider.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+              <Linkedin className="h-5 w-5" />
+            </a>
           </Button>
-        </form>
+          <Button variant="ghost" size="icon" asChild>
+            <a href={provider.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter Profile">
+              <Twitter className="h-5 w-5" />
+            </a>
+          </Button>
+          <Button variant="ghost" size="icon" asChild>
+            <a href={provider.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram Profile">
+              <Instagram className="h-5 w-5" />
+            </a>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

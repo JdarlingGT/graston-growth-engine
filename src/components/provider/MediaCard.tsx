@@ -1,45 +1,38 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion } from 'framer-motion';
+import { Image as ImageIcon } from 'lucide-react';
+import { MediaItem } from '@/types'; // Import MediaItem from types
 
 interface MediaCardProps {
-  galleryImages: string[];
-  galleryVideos: string[];
+  media?: MediaItem[];
 }
 
-const MediaCard = ({ galleryImages, galleryVideos }: MediaCardProps) => {
-  const hasMedia = galleryImages.length > 0 || galleryVideos.length > 0;
-
-  if (!hasMedia) return null;
-
+const MediaCard = ({ media }: MediaCardProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold">Clinic Gallery</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <ImageIcon className="h-5 w-5" />
+          Media Gallery
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <Carousel className="w-full max-w-full mx-auto">
-          <CarouselContent>
-            {galleryImages.map((image, index) => (
-              <CarouselItem key={`img-${index}`} className="md:basis-1/2 lg:basis-1/3">
-                <img src={image} alt={`Gallery image ${index + 1}`} className="object-cover w-full h-64 rounded-lg border" />
-              </CarouselItem>
+        {media && media.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {media.map((item, index) => (
+              <motion.div
+                key={index}
+                className="aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer"
+                whileHover={{ scale: 1.05, zIndex: 10 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <img src={item.url} alt={`Gallery item ${index + 1}`} className="w-full h-full object-cover" />
+              </motion.div>
             ))}
-            {galleryVideos.map((videoUrl, index) => (
-              <CarouselItem key={`vid-${index}`} className="md:basis-1/2 lg:basis-1/3">
-                <iframe
-                  className="w-full h-64 rounded-lg border"
-                  src={videoUrl.includes("youtube.com") ? videoUrl.replace("watch?v=", "embed/") : videoUrl}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={`Embedded video ${index + 1}`}
-                ></iframe>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="ml-14" />
-          <CarouselNext className="mr-14" />
-        </Carousel>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground text-center py-8">No media has been uploaded yet.</p>
+        )}
       </CardContent>
     </Card>
   );
