@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { FullProviderProfile } from '@/types';
+import { FullProviderProfile } from '@/types/index';
 import { mockProviders } from '@/lib/mockData';
 import { AnimatePresence, motion } from 'framer-motion';
 

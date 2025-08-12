@@ -1,13 +1,27 @@
 export type Tier = 'Premier' | 'Preferred' | 'Free';
+export type TierFilter = Tier | 'All';
+export type SortOption = 'premier-first' | 'top-rated' | 'most-reviewed';
+export type RadiusOption = 5 | 10 | 25 | 50 | 100;
+export type ClinicianType = 'Physical Therapist' | 'Chiropractor' | 'Massage Therapist' | 'Athletic Trainer' | 'Occupational Therapist';
+export type TrainingLevel = 'GTS' | 'Advanced' | 'Essential';
+export type Language = 'English' | 'Spanish' | 'French' | 'German' | 'Mandarin' | 'Japanese' | 'Portuguese' | 'Italian';
+export type Condition = 'Back Pain' | 'Neck Pain' | 'Shoulder Pain' | 'Knee Pain' | 'Hip Pain' | 'Ankle Pain' | 'Carpal Tunnel' | 'Tennis Elbow' | 'Plantar Fasciitis' | 'Sciatica';
+export type PatientDemographic = 'Adults' | 'Seniors' | 'Children' | 'Athletes' | 'Post-Surgery' | 'Chronic Pain' | 'Work Injuries' | 'Auto Accidents';
 
 export interface DirectoryFilters {
-  sortBy: "premier-first" | "top-rated" | "most-reviewed";
+  sortBy: SortOption;
   searchTerm?: string;
   city?: string;
   state?: string;
-  clinicianType?: string;
+  zipCode?: string;
+  radius?: RadiusOption;
+  clinicianType?: ClinicianType | 'All';
   specialty?: string;
-  tier?: Tier | 'All';
+  tier?: TierFilter;
+  trainingLevel?: TrainingLevel | 'All';
+  languages?: Language[];
+  conditionsTreated?: Condition[];
+  patientTypes?: PatientDemographic[];
   favoritesOnly?: boolean;
 }
 
@@ -20,8 +34,8 @@ export interface Provider {
   clinicAddress: string;
   coordinates?: { lat: number; lng: number };
   tier: Tier;
-  clinicianType: string;
-  languagesSpoken: string[];
+  clinicianType: ClinicianType;
+  languagesSpoken: Language[];
   email: string;
   phone: string;
   website: string;
@@ -38,6 +52,13 @@ export interface Provider {
   linkedin?: string;
   twitter?: string;
   instagram?: string;
+  facebook?: string;
+  experience?: string;
+  education?: string;
+  certifications?: string[];
+  conditionsTreated?: Condition[];
+  patientTypes?: PatientDemographic[];
+  trainingLevel?: TrainingLevel;
 }
 
 export interface MediaItem {
