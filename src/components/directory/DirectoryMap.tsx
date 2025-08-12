@@ -119,26 +119,28 @@ const DirectoryMap: React.FC<DirectoryMapProps> = ({
       options={mapOptions}
     >
       <MarkerClustererF>
-        {(clusterer) =>
-          providers
-            .filter(provider => provider.coordinates) // Pre-filter providers without coordinates
-            .map((provider) => {
-              const isHovered = hoveredProviderId === provider.id || selectedProvider?.id === provider.id;
-              
-              return (
-                <MarkerF
-                  key={provider.id}
-                  position={provider.coordinates!} // Use non-null assertion as it's filtered
-                  icon={getMarkerIcon(provider, isHovered)}
-                  title={provider.name}
-                  onClick={() => onMarkerClick(provider)}
-                  animation={isHovered ? google.maps.Animation.BOUNCE : undefined}
-                  zIndex={isHovered ? 100 : 1}
-                  clusterer={clusterer} // Pass the clusterer prop
-                />
-              );
-            })
-        }
+        {(clusterer) => (
+          <React.Fragment>
+            {providers
+              .filter(provider => provider.coordinates) // Pre-filter providers without coordinates
+              .map((provider) => {
+                const isHovered = hoveredProviderId === provider.id || selectedProvider?.id === provider.id;
+                
+                return (
+                  <MarkerF
+                    key={provider.id}
+                    position={provider.coordinates!} // Use non-null assertion as it's filtered
+                    icon={getMarkerIcon(provider, isHovered)}
+                    title={provider.name}
+                    onClick={() => onMarkerClick(provider)}
+                    animation={isHovered ? google.maps.Animation.BOUNCE : undefined}
+                    zIndex={isHovered ? 100 : 1}
+                    clusterer={clusterer} // Pass the clusterer prop
+                  />
+                );
+              })}
+          </React.Fragment>
+        )}
       </MarkerClustererF>
 
       {selectedProvider && selectedProvider.coordinates && (
