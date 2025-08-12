@@ -1,15 +1,13 @@
 export interface ProviderProfile {
   id: string;
-  tier: 'Free' | 'Preferred' | 'Premier';
-  
-  // Basic Information
   provider_name: string;
-  practitioner_type: string;
   credentials: string;
+  practitioner_type: string;
+  tier: 'Free' | 'Preferred' | 'Premier';
+  tier_badge: string;
   profile_photo?: string;
-  provider_bio: string;
   
-  // Location & Contact
+  // Contact & Location
   clinic_name?: string;
   clinic_street?: string;
   clinic_city: string;
@@ -23,21 +21,24 @@ export interface ProviderProfile {
     lng: number;
   };
   
-  // Professional Details
+  // Bio & Content
+  provider_bio?: string;
+  specialties: string[];
+  conditions_treated: string[];
+  
+  // Qualifications & Trust Signals
   provider_accreditations: string[];
   insurance_accepted: string[];
-  specialties: string[];
-  languages_spoken: string[];
+  avg_rating?: number;
+  total_reviews?: number;
   
   // Availability & Services
   telehealth_available: boolean;
   accepting_new_patients: boolean;
-  office_hours?: {
-    [key: string]: string;
-  };
+  office_hours?: OfficeHours[];
   
   // Social Media
-  social_media: {
+  social_media?: {
     facebook?: string;
     twitter?: string;
     linkedin?: string;
@@ -45,20 +46,29 @@ export interface ProviderProfile {
   };
   
   // Premier Features
-  clinic_gallery?: string[];
+  clinic_gallery?: GalleryImage[];
   video_intro?: string;
-  booking_url?: string;
-  avg_rating?: number;
   testimonials?: Testimonial[];
   faqs?: FAQ[];
+  booking_url?: string;
   custom_sections?: CustomSection[];
   published_articles?: Article[];
   upcoming_events?: Event[];
-  
-  // Verification & Trust
-  tier_badge: string;
-  verified: boolean;
-  years_experience?: number;
+  community_activity?: CommunityPost[];
+}
+
+export interface OfficeHours {
+  day: string;
+  open: string;
+  close: string;
+  closed?: boolean;
+}
+
+export interface GalleryImage {
+  id: string;
+  url: string;
+  alt: string;
+  caption?: string;
 }
 
 export interface Testimonial {
@@ -81,9 +91,7 @@ export interface CustomSection {
   id: string;
   type: 'text' | 'video' | 'download' | 'gallery';
   title: string;
-  content: string;
-  media_url?: string;
-  download_url?: string;
+  content: any;
 }
 
 export interface Article {
@@ -101,7 +109,14 @@ export interface Event {
   date: string;
   time: string;
   location: string;
-  type: 'workshop' | 'webinar' | 'seminar';
   registration_url: string;
   description: string;
+}
+
+export interface CommunityPost {
+  id: string;
+  title: string;
+  type: 'topic' | 'reply';
+  date: string;
+  engagement: number;
 }
