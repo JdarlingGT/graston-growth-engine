@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { conditions, languages, clinicianTypes } from "@/lib/constants";
+import { Condition, Language } from "@/types";
 
 const FilterPanel: React.FC = () => {
   const {
@@ -81,7 +82,7 @@ const FilterPanel: React.FC = () => {
 
       <Select
         value={condition || ""}
-        onValueChange={(value) => setCondition(value === "" ? null : value)}
+        onValueChange={(value) => setCondition(value === "" ? null : (value as Condition))}
       >
         <SelectTrigger>
           <SelectValue placeholder="Condition Treated" />
@@ -98,7 +99,7 @@ const FilterPanel: React.FC = () => {
 
       <Select
         value={language || ""}
-        onValueChange={(value) => setLanguage(value === "" ? null : value)}
+        onValueChange={(value) => setLanguage(value === "" ? null : (value as Language))}
       >
         <SelectTrigger>
           <SelectValue placeholder="Language Spoken" />
