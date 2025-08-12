@@ -1,0 +1,94 @@
+import * as React from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+const EnhancedCard = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & {
+    hoverable?: boolean;
+    clickable?: boolean;
+  }
+>(({ className, hoverable = false, clickable = false, ...props }, ref) => (
+  <motion.div
+    ref={ref}
+    className={cn(
+      "rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-200",
+      hoverable && "hover:shadow-md hover:-translate-y-1",
+      clickable && "cursor-pointer hover:shadow-lg hover:-translate-y-2 active:scale-[0.98]",
+      className,
+    )}
+    whileHover={hoverable || clickable ? { y: -4, boxShadow: "0 10px 25px -3px rgb(0 0 0 / 0.1)" } : undefined}
+    whileTap={clickable ? { scale: 0.98 } : undefined}
+    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+    {...props}
+  />
+));
+EnhancedCard.displayName = "EnhancedCard";
+
+const EnhancedCardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+));
+EnhancedCardHeader.displayName = "EnhancedCardHeader";
+
+const EnhancedCardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn(
+      "text-2xl font-semibold leading-none tracking-tight",
+      className,
+    )}
+    {...props}
+  />
+));
+EnhancedCardTitle.displayName = "EnhancedCardTitle";
+
+const EnhancedCardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+));
+EnhancedCardDescription.displayName = "EnhancedCardDescription";
+
+const EnhancedCardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+));
+EnhancedCardContent.displayName = "EnhancedCardContent";
+
+const EnhancedCardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+));
+EnhancedCardFooter.displayName = "EnhancedCardFooter";
+
+export {
+  EnhancedCard,
+  EnhancedCardHeader,
+  EnhancedCardFooter,
+  EnhancedCardTitle,
+  EnhancedCardDescription,
+  EnhancedCardContent,
+};
