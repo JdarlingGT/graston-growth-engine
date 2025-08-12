@@ -45,3 +45,20 @@ export function Sidebar({
     </div>
   );
 }
+
+// Add missing exports
+export const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
+  return <div className="flex h-screen">{children}</div>;
+};
+
+export const SidebarInset = ({ children }: { children: React.ReactNode }) => {
+  return <div className="flex-1 flex flex-col">{children}</div>;
+};
+
+export const SidebarTrigger = ({ className }: { className?: string }) => {
+  return (
+    <button className={cn("p-2 hover:bg-accent rounded-md", className)}>
+      <ChevronRight className="h-4 w-4" />
+    </button>
+  );
+};

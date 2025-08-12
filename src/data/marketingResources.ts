@@ -1,31 +1,31 @@
-import { MarketingResource } from "@/types";
+import { MarketingResource } from "@/types/index";
 
 export const marketingResources: MarketingResource[] = [
   {
-    id: "res_001",
+    id: "resource-1",
     title: "Patient Education Brochure",
-    description: "Comprehensive brochure explaining the Graston Technique benefits",
+    description: "Professional brochure explaining the Graston Technique benefits",
     category: "Patient Education",
     tier: "Free",
-    image: "https://picsum.photos/400/300?random=1",
-    filePath: "/resources/patient-brochure.pdf"
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+    filePath: "/resources/patient-education-brochure.pdf"
   },
   {
-    id: "res_002",
-    title: "Social Media Kit",
-    description: "Ready-to-use social media posts and graphics",
-    category: "Marketing Materials",
+    id: "resource-2",
+    title: "Social Media Templates",
+    description: "Ready-to-use social media post templates",
+    category: "Social Media",
     tier: "Preferred",
-    image: "https://picsum.photos/400/300?random=2",
-    filePath: "/resources/social-media-kit.zip"
+    image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop",
+    filePath: "/resources/social-media-templates.zip"
   },
   {
-    id: "res_003",
-    title: "Treatment Protocol Guide",
-    description: "Step-by-step treatment protocols for common conditions",
-    category: "Clinical Resources",
+    id: "resource-3",
+    title: "Practice Marketing Guide",
+    description: "Comprehensive guide to marketing your practice",
+    category: "Marketing",
     tier: "Premier",
-    image: "https://picsum.photos/400/300?random=3",
-    filePath: "/resources/treatment-protocols.pdf"
+    image: "https://images.unsplash.com/photo-1553484771-371a605b060b?w=400&h=300&fit=crop",
+    filePath: "/resources/practice-marketing-guide.pdf"
   }
 ];

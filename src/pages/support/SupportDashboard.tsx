@@ -12,17 +12,19 @@ import {
   Zap,
   Bell,
   Search,
-  Filter
+  Filter,
+  Bot
 } from 'lucide-react';
 import SmartInbox from '@/components/support/SmartInbox';
 import ChatDashboard from '@/components/support/ChatDashboard';
 import KnowledgeBase from '@/components/support/KnowledgeBase';
 import AutomationBuilder from '@/components/support/AutomationBuilder';
 import AnalyticsDashboard from '@/components/support/AnalyticsDashboard';
+import SupportTriageView from '@/components/support/SupportTriageView';
 import { Input } from '@/components/ui/input';
 
 const SupportDashboard = () => {
-  const [activeTab, setActiveTab] = useState('inbox');
+  const [activeTab, setActiveTab] = useState('triage');
   const [globalSearch, setGlobalSearch] = useState('');
 
   const quickStats = {
@@ -119,7 +121,11 @@ const SupportDashboard = () => {
       {/* Main Content */}
       <div className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:grid-cols-6">
+            <TabsTrigger value="triage" className="flex items-center space-x-2">
+              <Bot className="h-4 w-4" />
+              <span>AI Triage</span>
+            </TabsTrigger>
             <TabsTrigger value="inbox" className="flex items-center space-x-2">
               <Inbox className="h-4 w-4" />
               <span>Smart Inbox</span>
@@ -141,6 +147,10 @@ const SupportDashboard = () => {
               <span>Analytics</span>
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="triage" className="space-y-6">
+            <SupportTriageView />
+          </TabsContent>
 
           <TabsContent value="inbox" className="space-y-6">
             <SmartInbox />

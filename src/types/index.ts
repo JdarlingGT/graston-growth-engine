@@ -78,9 +78,27 @@ export interface Faq {
   answer: string;
 }
 
+export interface AccreditationLogo {
+  name: string;
+  logoUrl: string;
+  url: string;
+}
+
+export interface MarketingResource {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  tier: Tier;
+  image: string;
+  filePath: string;
+}
+
 export interface FullProviderProfile extends Provider {
   media?: MediaItem[];
   testimonials?: Testimonial[];
   faqs?: Faq[];
   services?: string[];
+  verificationBadges?: string[];
+  accreditationLogos?: AccreditationLogo[];
 }
