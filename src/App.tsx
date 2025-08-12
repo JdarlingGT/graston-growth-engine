@@ -41,7 +41,7 @@ function App() {
           <Route path="support" element={<Support />} />
           <Route path="support-dashboard" element={<SupportDashboard />} />
           <Route path="faq" element={<FaqPage />} />
-          <Route path="profile-showcase" element={<ProviderProfileShowcase />} />
+          <Route path="profile-tiers" element={<ProviderProfileShowcase />} />
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="badges" element={<BadgeShowcase />} />
           <Route path="*" element={<NotFound />} />

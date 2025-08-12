@@ -5,10 +5,32 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { 
-  MapPin, Shield, CheckCircle, Phone, Mail, Globe, Clock, Star,
-  Facebook, Twitter, Linkedin, Instagram, ExternalLink, Calendar,
-  FileText, Video, Award, Users, BookOpen, ChevronRight, Play
+  MapPin, 
+  Phone, 
+  Mail, 
+  Globe, 
+  Star, 
+  Shield, 
+  CheckCircle, 
+  XCircle,
+  Clock,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  ExternalLink,
+  Calendar,
+  Play,
+  FileText,
+  Users,
+  MessageSquare,
+  Send,
+  Award,
+  TrendingUp,
+  BookOpen
 } from 'lucide-react';
 import { ProviderProfile } from '@/types/provider-profile';
 
@@ -17,144 +39,128 @@ interface PremierProfileProps {
 }
 
 const PremierProfile = ({ provider }: PremierProfileProps) => {
-  const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
-  
-  const socialIcons = {
-    facebook: Facebook,
-    twitter: Twitter,
-    linkedin: Linkedin,
-    instagram: Instagram
-  };
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+        className={`h-4 w-4 ${
+          i < Math.floor(rating) 
+            ? 'text-yellow-400 fill-current' 
+            : 'text-gray-300'
+        }`}
       />
     ));
+  };
+
+  const getSocialIcon = (platform: string) => {
+    const icons = {
+      facebook: Facebook,
+      twitter: Twitter,
+      linkedin: Linkedin,
+      instagram: Instagram
+    };
+    return icons[platform as keyof typeof icons] || Globe;
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission
+    console.log('Contact form submitted:', contactForm);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-80 bg-gradient-to-r from-blue-600 to-indigo-700 overflow-hidden">
-        {provider.clinic_gallery && provider.clinic_gallery[0] && (
-          <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30"
-            style={{ backgroundImage: `url(${provider.clinic_gallery[0]})` }}
-          />
-        )}
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
+      <div className="relative">
+        {/* Background Image */}
+        <div className="h-80 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 relative overflow-hidden">
+          {provider.clinic_gallery && provider.clinic_gallery[0] && (
+            <div 
+              className="absolute inset-0 bg-cover bg-center opacity-30"
+              style={{ backgroundImage: `url(${provider.clinic_gallery[0].url})` }}
+            />
+          )}
+          <div className="absolute inset-0 bg-black bg-opacity-40" />
+        </div>
         
-        <div className="relative max-w-6xl mx-auto px-4 h-full flex items-center">
-          <div className="flex flex-col md:flex-row items-center gap-8 text-white">
-            <Avatar className="h-40 w-40 border-4 border-white shadow-2xl">
+        {/* Profile Content */}
+        <div className="relative max-w-7xl mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-end gap-8 -mt-32">
+            <Avatar className="h-40 w-40 border-6 border-white shadow-2xl">
               <AvatarImage src={provider.profile_photo} alt={provider.provider_name} />
-              <AvatarFallback className="text-3xl bg-blue-100 text-blue-600">
+              <AvatarFallback className="text-3xl bg-blue-100">
                 {provider.provider_name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
             
-            <div className="text-center md:text-left">
-              <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
-                <h1 className="text-4xl font-bold">{provider.provider_name}</h1>
-                <Badge className="bg-yellow-500 text-yellow-900 w-fit">
-                  <Award className="h-4 w-4 mr-2" />
-                  {provider.tier_badge}
-                </Badge>
-              </div>
-              
-              <p className="text-xl mb-2">
-                {provider.practitioner_type}
-                {provider.credentials && (
-                  <span className="ml-2">• {provider.credentials}</span>
-                )}
-              </p>
-              
-              {provider.clinic_name && (
-                <p className="text-lg mb-4">{provider.clinic_name}</p>
-              )}
-              
-              {provider.avg_rating && (
-                <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-                  <div className="flex">{renderStars(provider.avg_rating)}</div>
-                  <span className="text-lg font-semibold">{provider.avg_rating}</span>
-                  <span className="text-sm opacity-90">
-                    ({provider.testimonials?.length || 0} reviews)
-                  </span>
-                </div>
-              )}
-              
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-                <div className="flex items-center">
-                  <CheckCircle className={`h-5 w-5 mr-2 ${provider.accepting_new_patients ? 'text-green-400' : 'text-gray-400'}`} />
-                  <span className="text-sm">
-                    {provider.accepting_new_patients ? 'Accepting New Patients' : 'Not Accepting New Patients'}
-                  </span>
+            <div className="flex-1 text-center lg:text-left pb-8">
+              <div className="bg-white rounded-lg p-6 shadow-lg">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+                  <div>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                      {provider.provider_name}
+                    </h1>
+                    <p className="text-xl text-gray-600 mb-2">{provider.credentials}</p>
+                    <p className="text-lg font-medium text-gray-800">{provider.practitioner_type}</p>
+                  </div>
+                  
+                  <div className="flex flex-col items-center lg:items-end gap-3">
+                    <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2">
+                      <Award className="h-4 w-4 mr-2" />
+                      {provider.tier_badge}
+                    </Badge>
+                    
+                    {provider.avg_rating && (
+                      <div className="flex items-center gap-2">
+                        <div className="flex">{renderStars(provider.avg_rating)}</div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {provider.avg_rating} ({provider.total_reviews} reviews)
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
-                {provider.telehealth_available && (
-                  <div className="flex items-center">
-                    <Globe className="h-5 w-5 mr-2 text-blue-400" />
-                    <span className="text-sm">Telehealth Available</span>
-                  </div>
-                )}
-                
-                {provider.years_experience && (
-                  <div className="flex items-center">
-                    <Award className="h-5 w-5 mr-2 text-yellow-400" />
-                    <span className="text-sm">{provider.years_experience} Years Experience</span>
-                  </div>
-                )}
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {provider.booking_url && (
+                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
+                      <a href={provider.booking_url} target="_blank" rel="noopener noreferrer">
+                        <Calendar className="h-5 w-5 mr-2" />
+                        Book Appointment
+                      </a>
+                    </Button>
+                  )}
+                  <Button size="lg" variant="outline">
+                    <MessageSquare className="h-5 w-5 mr-2" />
+                    Send Message
+                  </Button>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Bar */}
-      <div className="bg-white border-b shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 text-sm text-gray-600">
-              <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-1" />
-                {provider.clinic_city}, {provider.clinic_state}
-              </div>
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 mr-1" />
-                {provider.clinic_phone}
-              </div>
-            </div>
-            
-            <div className="flex gap-3">
-              {provider.booking_url && (
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Book Appointment
-                </Button>
-              )}
-              <Button variant="outline" size="lg">
-                <Mail className="h-4 w-4 mr-2" />
-                Contact
-              </Button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content Area */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="gallery">Gallery</TabsTrigger>
-                <TabsTrigger value="testimonials">Reviews</TabsTrigger>
                 <TabsTrigger value="articles">Articles</TabsTrigger>
+                <TabsTrigger value="events">Events</TabsTrigger>
+                <TabsTrigger value="testimonials">Reviews</TabsTrigger>
                 <TabsTrigger value="faq">FAQ</TabsTrigger>
               </TabsList>
 
@@ -163,8 +169,8 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                 {provider.video_intro && (
                   <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <Video className="h-5 w-5 mr-2" />
+                      <CardTitle className="flex items-center gap-2">
+                        <Play className="h-5 w-5" />
                         Introduction Video
                       </CardTitle>
                     </CardHeader>
@@ -172,14 +178,15 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                       <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
                         <div className="text-center">
                           <Play className="h-16 w-16 text-gray-400 mx-auto mb-2" />
-                          <p className="text-gray-600">Video Introduction</p>
+                          <p className="text-gray-500">Video Player Component</p>
+                          <p className="text-xs text-gray-400">{provider.video_intro}</p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 )}
 
-                {/* About */}
+                {/* About Section */}
                 <Card>
                   <CardHeader>
                     <CardTitle>About Dr. {provider.provider_name.split(' ').pop()}</CardTitle>
@@ -189,42 +196,66 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                   </CardContent>
                 </Card>
 
-                {/* Specialties */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Areas of Expertise</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-3">
-                      {provider.specialties.map((specialty, index) => (
-                        <div key={index} className="flex items-center p-3 bg-blue-50 rounded-lg">
-                          <CheckCircle className="h-5 w-5 text-blue-600 mr-3" />
-                          <span className="font-medium text-gray-800">{specialty}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Specialties & Expertise */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Areas of Expertise</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        {provider.specialties.map((specialty, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <TrendingUp className="h-4 w-4 text-blue-500" />
+                            <span className="text-gray-700">{specialty}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                {/* Accreditations */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Award className="h-5 w-5 mr-2" />
-                      Professional Credentials & Accreditations
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {provider.provider_accreditations.map((accreditation, index) => (
-                        <div key={index} className="flex items-center p-4 bg-green-50 rounded-lg border border-green-200">
-                          <Award className="h-6 w-6 text-green-600 mr-3 flex-shrink-0" />
-                          <span className="font-medium text-gray-800">{accreditation}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Conditions Treated</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {provider.conditions_treated.map((condition, index) => (
+                          <Badge key={index} variant="outline" className="text-sm">
+                            {condition}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Community Activity */}
+                {provider.community_activity && provider.community_activity.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Users className="h-5 w-5" />
+                        Community Engagement
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {provider.community_activity.map((activity) => (
+                          <div key={activity.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                              <p className="font-medium text-gray-900">{activity.title}</p>
+                              <p className="text-sm text-gray-600">
+                                {activity.type === 'topic' ? 'Started discussion' : 'Replied to discussion'} • {new Date(activity.date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <Badge variant="secondary">{activity.engagement} interactions</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </TabsContent>
 
               <TabsContent value="gallery">
@@ -234,54 +265,24 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                   </CardHeader>
                   <CardContent>
                     {provider.clinic_gallery && provider.clinic_gallery.length > 0 ? (
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {provider.clinic_gallery.map((image, index) => (
-                          <div
-                            key={index}
-                            className="aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                            onClick={() => setSelectedGalleryImage(image)}
-                          >
-                            <img src={image} alt={`Clinic ${index + 1}`} className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-gray-500 text-center py-8">No gallery images available.</p>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="testimonials">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Users className="h-5 w-5 mr-2" />
-                      Patient Testimonials
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {provider.testimonials && provider.testimonials.length > 0 ? (
-                      <div className="space-y-6">
-                        {provider.testimonials.map((testimonial) => (
-                          <div key={testimonial.id} className="border-l-4 border-blue-500 pl-6 py-4">
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className="flex">{renderStars(testimonial.rating)}</div>
-                              <span className="font-semibold text-gray-800">{testimonial.patient_name}</span>
-                              {testimonial.verified && (
-                                <Badge variant="secondary" className="text-xs">
-                                  <CheckCircle className="h-3 w-3 mr-1" />
-                                  Verified
-                                </Badge>
-                              )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {provider.clinic_gallery.map((image) => (
+                          <div key={image.id} className="group cursor-pointer">
+                            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                              <img 
+                                src={image.url} 
+                                alt={image.alt}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
                             </div>
-                            <p className="text-gray-700 leading-relaxed italic">"{testimonial.text}"</p>
-                            <p className="text-sm text-gray-500 mt-2">{new Date(testimonial.date).toLocaleDateString()}</p>
+                            {image.caption && (
+                              <p className="text-sm text-gray-600 mt-2">{image.caption}</p>
+                            )}
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-500 text-center py-8">No testimonials available.</p>
+                      <p className="text-gray-500 text-center py-8">No gallery images available</p>
                     )}
                   </CardContent>
                 </Card>
@@ -290,8 +291,8 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
               <TabsContent value="articles">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <BookOpen className="h-5 w-5 mr-2" />
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
                       Published Articles
                     </CardTitle>
                   </CardHeader>
@@ -299,21 +300,104 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                     {provider.published_articles && provider.published_articles.length > 0 ? (
                       <div className="space-y-4">
                         {provider.published_articles.map((article) => (
-                          <div key={article.id} className="p-6 border rounded-lg hover:shadow-md transition-shadow">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">{article.title}</h3>
+                          <div key={article.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                            <h3 className="font-semibold text-lg text-gray-900 mb-2">{article.title}</h3>
                             <p className="text-gray-600 mb-3">{article.excerpt}</p>
-                            <div className="flex items-center justify-between text-sm text-gray-500">
+                            <div className="flex items-center gap-4 text-sm text-gray-500">
                               <span>{new Date(article.published_date).toLocaleDateString()}</span>
                               <span>{article.read_time} min read</span>
+                              <Button variant="link" className="p-0 h-auto">
+                                Read More →
+                              </Button>
                             </div>
-                            <Button variant="outline" className="mt-3">
-                              Read Article <ChevronRight className="h-4 w-4 ml-1" />
-                            </Button>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-500 text-center py-8">No articles published yet.</p>
+                      <p className="text-gray-500 text-center py-8">No articles published yet</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="events">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      Upcoming Events
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {provider.upcoming_events && provider.upcoming_events.length > 0 ? (
+                      <div className="space-y-4">
+                        {provider.upcoming_events.map((event) => (
+                          <Card key={event.id} className="border-l-4 border-green-500">
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start mb-3">
+                                <h3 className="font-semibold text-lg text-gray-900">{event.title}</h3>
+                                <Badge variant="outline">{new Date(event.date).toLocaleDateString()}</Badge>
+                              </div>
+                              <p className="text-gray-600 mb-3">{event.description}</p>
+                              <div className="flex items-center justify-between">
+                                <div className="text-sm text-gray-500">
+                                  <p>{event.time} • {event.location}</p>
+                                </div>
+                                <Button size="sm" asChild>
+                                  <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
+                                    Register
+                                  </a>
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-center py-8">No upcoming events</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="testimonials">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="h-5 w-5" />
+                      Patient Testimonials
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {provider.testimonials && provider.testimonials.length > 0 ? (
+                      <div className="space-y-6">
+                        {provider.testimonials.map((testimonial) => (
+                          <div key={testimonial.id} className="bg-gray-50 rounded-lg p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10">
+                                  <AvatarFallback>{testimonial.patient_name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium text-gray-900">{testimonial.patient_name}</p>
+                                  <div className="flex items-center gap-2">
+                                    <div className="flex">{renderStars(testimonial.rating)}</div>
+                                    {testimonial.verified && (
+                                      <Badge variant="secondary" className="text-xs">Verified</Badge>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <span className="text-sm text-gray-500">
+                                {new Date(testimonial.date).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="text-gray-700 italic">"{testimonial.text}"</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-center py-8">No testimonials available</p>
                     )}
                   </CardContent>
                 </Card>
@@ -330,14 +414,14 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                         {provider.faqs.map((faq) => (
                           <AccordionItem key={faq.id} value={faq.id}>
                             <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                            <AccordionContent className="text-gray-700 leading-relaxed">
+                            <AccordionContent className="text-gray-700">
                               {faq.answer}
                             </AccordionContent>
                           </AccordionItem>
                         ))}
                       </Accordion>
                     ) : (
-                      <p className="text-gray-500 text-center py-8">No FAQs available.</p>
+                      <p className="text-gray-500 text-center py-8">No FAQs available</p>
                     )}
                   </CardContent>
                 </Card>
@@ -347,47 +431,101 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Quick Contact */}
-            <Card className="sticky top-4">
+            {/* Contact Form */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Send a Message</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleContactSubmit} className="space-y-4">
+                  <Input
+                    placeholder="Your Name"
+                    value={contactForm.name}
+                    onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                    required
+                  />
+                  <Input
+                    type="email"
+                    placeholder="Your Email"
+                    value={contactForm.email}
+                    onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                    required
+                  />
+                  <Input
+                    type="tel"
+                    placeholder="Your Phone"
+                    value={contactForm.phone}
+                    onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                  />
+                  <Textarea
+                    placeholder="Your Message"
+                    value={contactForm.message}
+                    onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
+                    rows={4}
+                    required
+                  />
+                  <Button type="submit" className="w-full">
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* Contact Information */}
+            <Card>
               <CardHeader>
                 <CardTitle>Contact Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {provider.clinic_phone && (
-                  <Button variant="outline" className="w-full justify-start" asChild>
-                    <a href={`tel:${provider.clinic_phone}`}>
-                      <Phone className="h-4 w-4 mr-2" />
-                      {provider.clinic_phone}
-                    </a>
-                  </Button>
+                {provider.clinic_name && (
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-1">{provider.clinic_name}</h4>
+                  </div>
                 )}
                 
-                {provider.provider_email && (
-                  <Button variant="outline" className="w-full justify-start" asChild>
-                    <a href={`mailto:${provider.provider_email}`}>
-                      <Mail className="h-4 w-4 mr-2" />
-                      Email
-                    </a>
-                  </Button>
-                )}
-                
-                {provider.clinic_website_url && (
-                  <Button variant="outline" className="w-full justify-start" asChild>
-                    <a href={provider.clinic_website_url} target="_blank" rel="noopener noreferrer">
-                      <Globe className="h-4 w-4 mr-2" />
-                      Website
-                    </a>
-                  </Button>
-                )}
-
-                {provider.booking_url && (
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700" asChild>
-                    <a href={provider.booking_url} target="_blank" rel="noopener noreferrer">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Book Online
-                    </a>
-                  </Button>
-                )}
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-5 w-5 text-gray-500 mt-0.5" />
+                    <div className="text-sm text-gray-700">
+                      {provider.clinic_street && <div>{provider.clinic_street}</div>}
+                      <div>{provider.clinic_city}, {provider.clinic_state} {provider.clinic_zip}</div>
+                    </div>
+                  </div>
+                  
+                  {provider.clinic_phone && (
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 text-gray-500" />
+                      <a href={`tel:${provider.clinic_phone}`} className="text-sm text-blue-600 hover:underline">
+                        {provider.clinic_phone}
+                      </a>
+                    </div>
+                  )}
+                  
+                  {provider.provider_email && (
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-5 w-5 text-gray-500" />
+                      <a href={`mailto:${provider.provider_email}`} className="text-sm text-blue-600 hover:underline">
+                        {provider.provider_email}
+                      </a>
+                    </div>
+                  )}
+                  
+                  {provider.clinic_website_url && (
+                    <div className="flex items-center gap-3">
+                      <Globe className="h-5 w-5 text-gray-500" />
+                      <a 
+                        href={provider.clinic_website_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        Visit Website
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -395,17 +533,19 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
             {provider.office_hours && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Clock className="h-5 w-5 mr-2" />
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
                     Office Hours
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {Object.entries(provider.office_hours).map(([day, hours]) => (
-                      <div key={day} className="flex justify-between py-1">
-                        <span className="font-medium text-gray-700">{day}</span>
-                        <span className="text-gray-600">{hours}</span>
+                    {provider.office_hours.map((hours, index) => (
+                      <div key={index} className="flex justify-between items-center py-1">
+                        <span className="font-medium text-gray-700 text-sm">{hours.day}</span>
+                        <span className="text-gray-600 text-sm">
+                          {hours.closed ? 'Closed' : `${hours.open} - ${hours.close}`}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -413,39 +553,52 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
               </Card>
             )}
 
-            {/* Upcoming Events */}
-            {provider.upcoming_events && provider.upcoming_events.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Upcoming Events</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {provider.upcoming_events.map((event) => (
-                      <div key={event.id} className="p-4 bg-blue-50 rounded-lg">
-                        <h4 className="font-semibold text-gray-900 mb-1">{event.title}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{event.description}</p>
-                        <div className="text-xs text-gray-500 space-y-1">
-                          <div className="flex items-center">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            {new Date(event.date).toLocaleDateString()} at {event.time}
-                          </div>
-                          <div className="flex items-center">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            {event.location}
-                          </div>
-                        </div>
-                        <Button size="sm" className="mt-2 w-full" asChild>
-                          <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
-                            Register
-                          </a>
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {/* Availability Status */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Availability</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center gap-3">
+                  {provider.accepting_new_patients ? (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-red-500" />
+                  )}
+                  <span className="text-sm text-gray-700">
+                    {provider.accepting_new_patients ? 'Accepting New Patients' : 'Not Accepting New Patients'}
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  {provider.telehealth_available ? (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-gray-400" />
+                  )}
+                  <span className="text-sm text-gray-700">
+                    {provider.telehealth_available ? 'Telehealth Available' : 'In-Person Only'}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Certifications */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Certifications & Accreditations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {provider.provider_accreditations.map((accreditation, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm text-gray-700">{accreditation}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Insurance */}
             <Card>
@@ -453,56 +606,55 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
                 <CardTitle>Insurance Accepted</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {provider.insurance_accepted.map((insurance, index) => (
-                    <div key={index} className="flex items-center p-2 bg-green-50 rounded">
-                      <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                      <span className="text-sm text-gray-700">{insurance}</span>
+                    <div key={index} className="text-sm text-gray-700 p-2 bg-gray-50 rounded text-center">
+                      {insurance}
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Languages */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Languages Spoken</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {provider.languages_spoken.map((language, index) => (
-                    <Badge key={index} variant="secondary">
-                      {language}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Social Media */}
-            {Object.keys(provider.social_media).length > 0 && (
+            {provider.social_media && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Follow Us</CardTitle>
+                  <CardTitle>Connect</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex space-x-3">
+                  <div className="flex gap-2">
                     {Object.entries(provider.social_media).map(([platform, url]) => {
                       if (!url) return null;
-                      const IconComponent = socialIcons[platform as keyof typeof socialIcons];
+                      const Icon = getSocialIcon(platform);
                       return (
-                        <a
-                          key={platform}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-                        >
-                          <IconComponent className="h-5 w-5 text-gray-600" />
-                        </a>
+                        <Button key={platform} variant="outline" size="sm" asChild>
+                          <a href={url} target="_blank" rel="noopener noreferrer">
+                            <Icon className="h-4 w-4" />
+                          </a>
+                        </Button>
                       );
                     })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Map */}
+            {provider.location_map && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Location</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-gray-200 h-48 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <MapPin className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-gray-500 text-sm">Interactive Map</p>
+                      <p className="text-xs text-gray-400">
+                        ({provider.location_map.lat}, {provider.location_map.lng})
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -510,22 +662,6 @@ const PremierProfile = ({ provider }: PremierProfileProps) => {
           </div>
         </div>
       </div>
-
-      {/* Gallery Modal */}
-      {selectedGalleryImage && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedGalleryImage(null)}
-        >
-          <div className="max-w-4xl max-h-full">
-            <img 
-              src={selectedGalleryImage} 
-              alt="Gallery" 
-              className="max-w-full max-h-full object-contain rounded-lg"
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
