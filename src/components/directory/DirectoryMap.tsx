@@ -33,7 +33,13 @@ const DirectoryMap: React.FC<DirectoryMapProps> = ({
   }, [selectedProviderId, providers]);
 
   if (!apiKey) {
-    return <div className="flex items-center justify-center h-full bg-gray-200"><p>Google Maps API Key is missing.</p></div>;
+    return (
+      <div className="flex items-center justify-center h-full bg-gray-200 p-6">
+        <p className="text-lg font-semibold text-gray-800 text-center">
+          Google Maps API Key is missing. Please add VITE_GOOGLE_MAPS_API_KEY in your .env
+        </p>
+      </div>
+    );
   }
 
   const handleLocalMarkerClick = (providerId: string) => {
