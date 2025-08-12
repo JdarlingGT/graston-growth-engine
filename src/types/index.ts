@@ -58,8 +58,8 @@ export interface MediaItem { // Added for MediaCard.tsx
 }
 
 export interface FullProviderProfile extends Provider {
-  media?: MediaItem[]; // Added for PublicProviderProfilePage.tsx and MediaCard.tsx
+  media?: MediaItem[]; // Added for PublicProviderProfilePage.tsx
   testimonials?: Testimonial[];
-  faqs?: Faq[]; // Added for PublicProviderProfilePage.tsx and FaqCard.tsx
+  faqs?: Faq[];
   services?: string[];
 }

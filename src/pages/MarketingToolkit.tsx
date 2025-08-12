@@ -1,157 +1,123 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { mockProviders } from "@/lib/mockData";
-import { marketingResources } from "@/data/marketingResources";
-import ResourceCard from "@/components/dashboards/provider/ResourceCard";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, Star } from "lucide-react";
-import { MarketingResource } from "@/types";
-import { supabase } from "@/integrations/supabase/client";
-import ResourceCardSkeleton from "@/components/dashboards/provider/ResourceCardSkeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Wand2, Calculator, Calendar, BarChart3, Target, Zap } from "lucide-react";
+import ContentGenerator from "@/components/marketing/ContentGenerator";
+import RoiCalculator from "@/components/marketing/RoiCalculator";
+import SocialMediaScheduler from "@/components/marketing/SocialMediaScheduler";
 
-const categories = ['All', ...new Set(marketingResources.map((r: MarketingResource) => r.category))];
-
-const MarketingToolkitPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const provider = mockProviders.find((p) => p.id === id);
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [resourceStatuses, setResourceStatuses] = useState<Record<string, 'read' | 'downloaded'>>({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      if (!provider) return;
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from('provider_resources')
-        .select('resource_id, status')
-        .eq('provider_id', provider.id);
-
-      if (error) {
-        console.error("Error fetching resource statuses", error);
-      } else {
-        const statuses = data.reduce((acc, record) => {
-          acc[record.resource_id] = record.status;
-          return acc;
-        }, {} as Record<string, 'read' | 'downloaded'>);
-        setResourceStatuses(statuses);
-      }
-      setIsLoading(false);
-    };
-
-    fetchStatuses();
-  }, [provider]);
-
-  const handleStatusChange = (resourceId: string, newStatus?: 'read' | 'downloaded') => {
-    setResourceStatuses(prev => {
-      const newState = { ...prev };
-      if (newStatus) {
-        newState[resourceId] = newStatus;
-      } else {
-        delete newState[resourceId]; // Remove the status if newStatus is undefined
-      }
-      return newState;
-    });
-  };
-
-  if (!provider) {
-    return (
-      <div className="container mx-auto p-8 text-center">
-        <h1 className="text-2xl font-bold">Provider not found</h1>
-      </div>
-    );
-  }
-
-  const featuredResource = marketingResources.find((r: MarketingResource) => r.id === 'res_002')!;
-
-  const filteredResources = marketingResources
-    .filter((resource: MarketingResource) => resource.id !== featuredResource.id)
-    .filter((resource: MarketingResource) => 
-      selectedCategory === 'All' || resource.category === selectedCategory
-    )
-    .filter((resource: MarketingResource) =>
-      resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
+const MarketingToolkit = () => {
   return (
-    <div className="container mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-bold mb-2">Marketing Toolkit</h1>
-      <p className="text-muted-foreground mb-8">
-        Your central hub for marketing resources to help you grow your practice.
-      </p>
-
-      {/* Featured Resource */}
-      <div className="mb-12 p-6 bg-secondary rounded-lg flex flex-col md:flex-row gap-6 items-center">
-        <img src={featuredResource.image} alt={featuredResource.title} className="w-full md:w-1/3 rounded-lg object-cover aspect-video" />
-        <div className="flex-1">
-          <h2 className="text-sm font-semibold uppercase text-primary mb-1 flex items-center gap-2"><Star className="h-4 w-4" /> Featured Resource</h2>
-          <h3 className="text-2xl font-bold">{featuredResource.title}</h3>
-          <p className="text-muted-foreground mt-2 mb-4">{featuredResource.description}</p>
-          {isLoading ? <ResourceCardSkeleton /> : (
-            <ResourceCard 
-              resource={featuredResource} 
-              userTier={provider.tier} 
-              providerId={provider.id}
-              status={resourceStatuses[featuredResource.id]}
-              onStatusChange={handleStatusChange}
-            />
-          )}
+    <div className="container mx-auto p-4 md:p-8 bg-background">
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+            <Zap className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Marketing Toolkit</h1>
+            <p className="text-muted-foreground">
+              AI-powered tools to supercharge your practice's marketing efforts
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="secondary" className="flex items-center gap-1">
+            <Wand2 className="h-3 w-3" />
+            AI-Powered
+          </Badge>
+          <Badge variant="outline">Premier Feature</Badge>
+          <Badge variant="outline">Real-time Analytics</Badge>
         </div>
       </div>
 
-      {/* Filters and Search */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-8">
-        <div className="relative w-full md:w-1/3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Search resources..." 
-            className="pl-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {categories.map((category: string) => (
-            <Button 
-              key={category}
-              variant={selectedCategory === category ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory(category)}
-              className="flex-shrink-0"
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
-      </div>
+      <Tabs defaultValue="content-generator" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+          <TabsTrigger value="content-generator" className="flex items-center gap-2">
+            <Wand2 className="h-4 w-4" />
+            Content Generator
+          </TabsTrigger>
+          <TabsTrigger value="roi-calculator" className="flex items-center gap-2">
+            <Calculator className="h-4 w-4" />
+            ROI Calculator
+          </TabsTrigger>
+          <TabsTrigger value="social-scheduler" className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            Social Scheduler
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Resource Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {isLoading ? (
-            Array.from({ length: 6 }).map((_, index) => <ResourceCardSkeleton key={index} />)
-        ) : (
-            filteredResources.map((resource: MarketingResource) => (
-                <ResourceCard 
-                    key={resource.id} 
-                    resource={resource} 
-                    userTier={provider.tier} 
-                    providerId={provider.id}
-                    status={resourceStatuses[resource.id]}
-                    onStatusChange={handleStatusChange}
-                />
-            ))
-        )}
-      </div>
-      {!isLoading && filteredResources.length === 0 && (
-        <div className="text-center col-span-full py-12">
-            <p className="text-muted-foreground">No resources found matching your criteria.</p>
-        </div>
-      )}
+        <TabsContent value="content-generator">
+          <ContentGenerator />
+        </TabsContent>
+
+        <TabsContent value="roi-calculator">
+          <RoiCalculator />
+        </TabsContent>
+
+        <TabsContent value="social-scheduler">
+          <SocialMediaScheduler />
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-blue-500" />
+                Marketing Analytics Dashboard
+              </CardTitle>
+              <CardDescription>
+                Track the performance of your marketing campaigns and content
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="h-5 w-5 text-blue-600" />
+                    <span className="font-semibold text-blue-900">Campaign Performance</span>
+                  </div>
+                  <p className="text-2xl font-bold text-blue-900">87%</p>
+                  <p className="text-sm text-blue-700">Success Rate</p>
+                </div>
+
+                <div className="p-6 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <BarChart3 className="h-5 w-5 text-green-600" />
+                    <span className="font-semibold text-green-900">Engagement Rate</span>
+                  </div>
+                  <p className="text-2xl font-bold text-green-900">12.4%</p>
+                  <p className="text-sm text-green-700">+2.1% from last month</p>
+                </div>
+
+                <div className="p-6 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Calculator className="h-5 w-5 text-purple-600" />
+                    <span className="font-semibold text-purple-900">Average ROI</span>
+                  </div>
+                  <p className="text-2xl font-bold text-purple-900">245%</p>
+                  <p className="text-sm text-purple-700">Across all campaigns</p>
+                </div>
+              </div>
+
+              <div className="mt-8 p-6 bg-muted/50 rounded-lg text-center">
+                <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="font-semibold mb-2">Detailed Analytics Coming Soon</h3>
+                <p className="text-sm text-muted-foreground">
+                  Advanced campaign tracking, conversion funnels, and performance insights will be available in the next update.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
 
-export default MarketingToolkitPage;
+export default MarketingToolkit;
