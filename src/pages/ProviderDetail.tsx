@@ -3,6 +3,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useProvider } from "@/hooks/useProvider";
+import type { FullProviderProfile } from "@/types";
 import ProfileHeader from "@/components/provider/ProfileHeader";
 import ContactCard from "@/components/provider/ContactCard";
 import LocationCard from "@/components/provider/LocationCard";

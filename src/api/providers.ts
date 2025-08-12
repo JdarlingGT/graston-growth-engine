@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { FullProviderProfile } from "@/types";
 
-export async function fetchProviderById(id: number) {
+export async function fetchProviderById(id: number): Promise<FullProviderProfile> {
   const { data, error } = await supabase
     .from("providers")
     .select(`
@@ -26,8 +27,8 @@ export async function fetchProviderById(id: number) {
     .eq("id", id)
     .single();
 
-  if (error) {
-    throw new Error(error.message);
+  if (error || !data) {
+    throw new Error(error?.message || "Provider not found");
   }
-  return data;
+  return data as FullProviderProfile;
 }
