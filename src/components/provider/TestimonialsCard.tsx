@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star, MessageSquareQuote } from 'lucide-react';
-import { Testimonial } from '@/types'; // Import Testimonial from types
+import { Testimonial } from '@/types/index';
 
 interface TestimonialsCardProps {
   testimonials?: Testimonial[];

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Image as ImageIcon } from 'lucide-react';
-import { MediaItem } from '@/types'; // Import MediaItem from types
+import { MediaItem } from '@/types/index';
 
 interface MediaCardProps {
   media?: MediaItem[];

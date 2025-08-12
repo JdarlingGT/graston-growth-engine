@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Provider } from "@/types"
+import { Provider } from "@/types/index"
 import TierBadge from "@/components/TierBadge"
 
 export const columns: ColumnDef<Provider>[] = [

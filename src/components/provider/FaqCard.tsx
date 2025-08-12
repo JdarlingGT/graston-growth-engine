@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { HelpCircle } from 'lucide-react';
-import { Faq } from '@/types'; // Import Faq from types
+import { Faq } from '@/types/index';
 
 interface FaqCardProps {
   faqs?: Faq[];
