@@ -40,25 +40,25 @@ export interface Provider {
   instagram?: string;
 }
 
-export interface Testimonial {
-  author: string;
-  avatar: string; // Added for TestimonialsCard.tsx
-  text: string;
-  rating: number;
-}
-
-export interface Faq { // Added for FaqCard.tsx
-  question: string;
-  answer: string;
-}
-
-export interface MediaItem { // Added for MediaCard.tsx
+export interface MediaItem {
   type: 'image' | 'video';
   url: string;
 }
 
+export interface Testimonial {
+  author: string;
+  avatar: string;
+  text: string;
+  rating: number;
+}
+
+export interface Faq {
+  question: string;
+  answer: string;
+}
+
 export interface FullProviderProfile extends Provider {
-  media?: MediaItem[]; // Added for PublicProviderProfilePage.tsx
+  media?: MediaItem[];
   testimonials?: Testimonial[];
   faqs?: Faq[];
   services?: string[];

@@ -1,0 +1,80 @@
+@media print {
+  /* Hide navigation and interactive elements */
+  .sticky,
+  button:not(.print-friendly),
+  .search-bar,
+  .feedback-section,
+  .escalation-cta,
+  .top-questions,
+  .sidebar-navigation,
+  nav,
+  header,
+  footer {
+    display: none !important;
+  }
+
+  /* Reset page layout for print */
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+    background: white;
+  }
+
+  /* FAQ content styling */
+  .faq-category {
+    page-break-inside: avoid;
+    margin-bottom: 2rem;
+  }
+
+  .faq-item {
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    padding: 1rem;
+  }
+
+  .faq-question {
+    font-weight: bold;
+    font-size: 14pt;
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-answer {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  /* Category headers */
+  .category-header {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Page breaks */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* Links */
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  a:after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666;
+  }
+
+  /* Remove shadows and rounded corners */
+  * {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+}
