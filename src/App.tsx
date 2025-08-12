@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
 import Layout from '@/components/layout/Layout';
+import AdminLayout from '@/components/layout/AdminLayout';
 import Index from '@/pages/Index';
 import EnhancedDirectory from '@/pages/EnhancedDirectory';
 import Directory from '@/pages/Directory';
@@ -29,13 +30,17 @@ function App() {
           <Route path="provider/:id" element={<PublicProviderProfilePage />} />
           <Route path="compare" element={<ComparePage />} />
           <Route path="update-profile" element={<UpdateProfile />} />
-          <Route path="admin" element={<Admin />} />
           <Route path="reports" element={<Reports />} />
           <Route path="marketing-toolkit" element={<MarketingToolkit />} />
           <Route path="support" element={<Support />} />
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="badges" element={<BadgeShowcase />} />
           <Route path="*" element={<NotFound />} />
+        </Route>
+        
+        <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Admin />} />
+            {/* Add other admin routes here, e.g., providers, analytics */}
         </Route>
       </Routes>
       <Toaster />

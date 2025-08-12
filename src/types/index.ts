@@ -42,24 +42,24 @@ export interface Provider {
 
 export interface Testimonial {
   author: string;
-  avatar: string; // This property is crucial for TestimonialsCard.tsx
+  avatar: string; // Added for TestimonialsCard.tsx
   text: string;
   rating: number;
 }
 
-export interface Faq { // This interface is crucial for FaqCard.tsx
+export interface Faq { // Added for FaqCard.tsx
   question: string;
   answer: string;
 }
 
-export interface MediaItem { // This interface is crucial for MediaCard.tsx
+export interface MediaItem { // Added for MediaCard.tsx
   type: 'image' | 'video';
   url: string;
 }
 
 export interface FullProviderProfile extends Provider {
-  media?: MediaItem[]; // This property is crucial for PublicProviderProfilePage.tsx and MediaCard.tsx
+  media?: MediaItem[]; // Added for PublicProviderProfilePage.tsx and MediaCard.tsx
   testimonials?: Testimonial[];
-  faqs?: Faq[]; // This property is crucial for PublicProviderProfilePage.tsx and FaqCard.tsx
+  faqs?: Faq[]; // Added for PublicProviderProfilePage.tsx and FaqCard.tsx
   services?: string[];
 }
