@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface Toast {
   id: string;
@@ -9,7 +9,6 @@ interface Toast {
 }
 
 const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
 
 let count = 0;
 
@@ -82,6 +81,8 @@ const reducer = (state: typeof memoryState, action: any): typeof memoryState => 
         ...state,
         toasts: state.toasts.filter((t) => t.id !== action.toastId),
       };
+    default:
+      return state;
   }
 };
 

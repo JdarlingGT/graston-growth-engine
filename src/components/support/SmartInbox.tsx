@@ -83,35 +83,13 @@ const SmartInbox = () => {
         },
         messages: [],
         internalNotes: []
-      },
-      {
-        id: 'TKT-002',
-        subject: 'Request for provider profile verification',
-        description: 'New provider requesting verification badge for their profile.',
-        status: 'New',
-        priority: 'Normal',
-        channel: 'Form',
-        customer: {
-          id: 'cust-2',
-          name: 'Dr. Robert Smith',
-          email: 'dr.smith@clinic.com',
-          tier: 'Free',
-          totalTickets: 1,
-          lastActivity: '2024-01-15T11:00:00Z',
-          tags: ['Provider', 'New']
-        },
-        tags: ['verification', 'provider'],
-        createdAt: '2024-01-15T11:00:00Z',
-        updatedAt: '2024-01-15T11:00:00Z',
-        messages: [],
-        internalNotes: []
       }
     ];
     setTickets(mockTickets);
   }, []);
 
   const getStatusColor = (status: TicketStatus) => {
-    const colors = {
+    const colors: Record<TicketStatus, string> = {
       'New': 'bg-blue-100 text-blue-800',
       'Open': 'bg-green-100 text-green-800',
       'Pending': 'bg-yellow-100 text-yellow-800',
@@ -123,7 +101,7 @@ const SmartInbox = () => {
   };
 
   const getPriorityColor = (priority: TicketPriority) => {
-    const colors = {
+    const colors: Record<TicketPriority, string> = {
       'Low': 'text-green-600',
       'Normal': 'text-blue-600',
       'High': 'text-orange-600',
@@ -133,7 +111,7 @@ const SmartInbox = () => {
   };
 
   const getChannelIcon = (channel: TicketChannel) => {
-    const icons = {
+    const icons: Record<TicketChannel, string> = {
       'Email': '📧',
       'Form': '📝',
       'Social': '📱',
@@ -290,7 +268,7 @@ const SmartInbox = () => {
 
                     {ticket.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {ticket.tags.slice(0, 2).map((tag) => (
+                        {ticket.tags.slice(0, 2).map((tag: string) => (
                           <Badge key={tag} variant="outline" className="text-xs">
                             {tag}
                           </Badge>

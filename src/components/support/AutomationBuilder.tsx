@@ -21,7 +21,7 @@ import {
   AlertTriangle,
   CheckCircle
 } from 'lucide-react';
-import { AutomationRule } from '@/types/support';
+import { AutomationRule, AutomationCondition, AutomationAction } from '@/types/support';
 
 const AutomationBuilder = () => {
   const [rules, setRules] = useState<AutomationRule[]>([]);
@@ -462,7 +462,7 @@ const AutomationBuilder = () => {
                     <h4 className="font-medium">IF</h4>
                   </div>
                   <div className="space-y-2">
-                    {selectedRule.conditions.map((condition, index) => (
+                    {selectedRule.conditions.map((condition: AutomationCondition, index: number) => (
                       <div key={index} className="flex items-center space-x-2 text-sm">
                         <Badge variant="outline">{condition.field}</Badge>
                         <span>{condition.operator}</span>
@@ -485,7 +485,7 @@ const AutomationBuilder = () => {
                     <h4 className="font-medium">THEN</h4>
                   </div>
                   <div className="space-y-2">
-                    {selectedRule.actions.map((action, index) => {
+                    {selectedRule.actions.map((action: AutomationAction, index: number) => {
                       const ActionIcon = getActionIcon(action.type);
                       return (
                         <div key={index} className="flex items-center space-x-2 text-sm">

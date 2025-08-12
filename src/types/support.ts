@@ -158,3 +158,28 @@ export interface SupportMetrics {
   slaBreaches: number;
   agentUtilization: number;
 }
+
+export interface SupportTicket {
+  id: string;
+  subject: string;
+  description: string;
+  customer: {
+    name: string;
+    email: string;
+    avatar?: string;
+    tier: string;
+  };
+  priority: 'Low' | 'Normal' | 'High' | 'Urgent';
+  category: string;
+  channel: 'Email' | 'Form' | 'Chat' | 'Phone';
+  createdAt: string;
+  aiAnalysis: {
+    suggestedPriority: 'Low' | 'Normal' | 'High' | 'Urgent';
+    suggestedTags: string[];
+    suggestedReply: string;
+    sentiment: 'positive' | 'neutral' | 'negative';
+    confidence: number;
+    category: string;
+  };
+  status: 'New' | 'In Progress' | 'Resolved';
+}
