@@ -1,77 +1,91 @@
-import { useParams } from "react-router-dom";
-import { FullProviderProfile } from "@/types";
+"use client";
+
+import { useParams, useNavigate } from "react-router-dom";
 import { UpdateProfileForm } from "@/components/UpdateProfileForm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { FullProviderProfile } from "@/types";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { mockProviderData } from "@/lib/mockData";
+import { mockProviders } from "@/lib/mockData";
 import { useEffect, useState } from "react";
 
 const UpdateProfilePage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [provider, setProvider] = useState<FullProviderProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call
     setIsLoading(true);
-    const foundProvider = mockProviderData.find((p: any) => p.id === id) || null;
+    const foundProvider = mockProviders.find(p => p.id === id) || null;
     setProvider(foundProvider);
     setIsLoading(false);
   }, [id]);
 
   const handleUpdate = (updatedProvider: FullProviderProfile) => {
-    setProvider(updatedProvider);
-    // Here you would typically make an API call to save the data
-    console.log("Updated Provider Data:", updatedProvider);
+    // In a real app, this would trigger a refetch.
+    // For mock data, we can just update the local state if we were managing it here.
+    console.log("Profile updated (mock):", updatedProvider);
   };
 
   if (isLoading) {
-    return <UpdateProfileSkeleton />;
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto py-6">
+          <div className="mb-6">
+            <Skeleton className="h-10 w-32 mb-4" />
+          </div>
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-8 w-1/2 mb-2" />
+              <Skeleton className="h-4 w-3/4" />
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
-  if (!provider || !id) {
-    return <div className="text-center py-16">Provider not found.</div>;
+  if (!provider) {
+    return (
+      <div className="container mx-auto p-8 text-center">
+        <h1 className="text-2xl font-bold mb-4">Provider not found</h1>
+        <p className="text-muted-foreground mb-4">The provider you are looking for does not exist or an error occurred.</p>
+        <Button onClick={() => navigate("/admin")}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Admin
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        <UpdateProfileForm providerId={id} onUpdate={handleUpdate} />
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-6">
+        <div className="mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(`/provider/${provider.id}`)}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Profile
+          </Button>
+        </div>
+        
+        <UpdateProfileForm 
+          providerId={provider.id} 
+          onUpdate={handleUpdate}
+        />
       </div>
     </div>
   );
 };
-
-const UpdateProfileSkeleton = () => (
-  <div className="container mx-auto px-4 py-8">
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-4 w-full mt-2" />
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex flex-col items-center space-y-4">
-              <Skeleton className="h-24 w-24 rounded-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="flex-1 space-y-4">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-          </div>
-          <Skeleton className="h-24 w-full" />
-          <div className="flex justify-end">
-            <Skeleton className="h-10 w-32" />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  </div>
-);
 
 export default UpdateProfilePage;

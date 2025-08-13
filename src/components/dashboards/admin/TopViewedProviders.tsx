@@ -1,40 +1,45 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FullProviderProfile } from "@/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface TopViewedProvidersProps {
   providers: FullProviderProfile[];
 }
 
 const TopViewedProviders = ({ providers }: TopViewedProvidersProps) => {
-  // For demonstration, we'll just take the first few providers.
-  // In a real app, this would come from analytics data.
-  const topProviders = providers.slice(0, 5);
+  const navigate = useNavigate();
+  const topProviders = [...providers]
+    .sort((a, b) => (b.views || 0) - (a.views || 0))
+    .slice(0, 10);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Top Viewed Providers</CardTitle>
-        <CardDescription>Providers with the most profile views this month.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {topProviders.map((provider, index) => (
-            <div key={provider.id} className="flex items-center">
+    <div className="space-y-4">
+      <ul className="space-y-3">
+        {topProviders.map((provider) => (
+          <li 
+            key={provider.id} 
+            className="flex items-center justify-between p-2 rounded-md hover:bg-muted cursor-pointer"
+            onClick={() => navigate(`/provider/${provider.id}`)}
+          >
+            <div className="flex items-center gap-3">
               <Avatar className="h-9 w-9">
                 <AvatarImage src={provider.profileImage} alt={provider.name} />
-                <AvatarFallback>{provider.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                <AvatarFallback>{provider.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
               </Avatar>
-              <div className="ml-4 space-y-1">
-                <p className="text-sm font-medium leading-none">{provider.name}</p>
-                <p className="text-sm text-muted-foreground">{provider.email}</p>
+              <div>
+                <p className="text-sm font-medium">{provider.name}</p>
+                <p className="text-xs text-muted-foreground">{provider.specialty}</p>
               </div>
-              <div className="ml-auto font-medium">+{Math.floor(Math.random() * 1000)} views</div>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Eye className="h-4 w-4" />
+              <span>{provider.views?.toLocaleString() || 0}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
