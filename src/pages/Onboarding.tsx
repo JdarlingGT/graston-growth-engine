@@ -40,8 +40,15 @@ const Onboarding = () => {
                 <p className="mt-2 text-muted-foreground">
                   This guide will walk you through everything you need to know to create a compelling profile that attracts new patients.
                 </p>
-                <div className="mt-4 aspect-video bg-muted rounded-lg flex items-center justify-center">
-                  <p>Embedded Welcome Video Placeholder</p>
+                <div className="mt-4 aspect-video rounded-lg overflow-hidden">
+                  <iframe
+                    className="w-full h-full"
+                    src="https://www.youtube.com/embed/k7ZjfEPxrKM"
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               </div>
             </TabsContent>

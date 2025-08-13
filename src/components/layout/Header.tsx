@@ -1,13 +1,19 @@
 "use client";
 
 import { Link, NavLink } from "react-router-dom";
-import { Gem, Menu } from "lucide-react";
+import { Gem, Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import NotificationBell from "./NotificationBell";
 import CommandPaletteShortcut from "./CommandPaletteShortcut";
 
@@ -43,6 +49,28 @@ const Header = () => {
               {item.label}
             </NavLink>
           ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-primary focus:ring-0">
+                Admin
+                <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <Link to="/admin">Dashboard</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/admin/providers">Providers</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/admin/ai-assistant">AI Assistant</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/admin/analytics">Analytics</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button asChild>
             <Link to="/provider/1/dashboard">Dashboard</Link>
           </Button>
@@ -74,6 +102,11 @@ const Header = () => {
                     {item.label}
                   </Link>
                 ))}
+                <div className="text-foreground font-semibold">Admin</div>
+                <Link to="/admin" className="text-muted-foreground hover:text-foreground pl-4 text-base">Dashboard</Link>
+                <Link to="/admin/providers" className="text-muted-foreground hover:text-foreground pl-4 text-base">Providers</Link>
+                <Link to="/admin/ai-assistant" className="text-muted-foreground hover:text-foreground pl-4 text-base">AI Assistant</Link>
+                <Link to="/admin/analytics" className="text-muted-foreground hover:text-foreground pl-4 text-base">Analytics</Link>
                  <Button asChild>
                     <Link to="/provider/1/dashboard">Dashboard</Link>
                 </Button>
