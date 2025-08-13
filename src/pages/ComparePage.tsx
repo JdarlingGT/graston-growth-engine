@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { FullProviderProfile, Tier } from '@/types';
-import { mockProviders } from '@/lib/mockData';
+import { mockProviderData } from '@/lib/mockData';
 import smallProvidersRaw from '@/lib/smallProviderData.json';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -59,7 +59,7 @@ const ComparePage = () => {
       views: Math.floor(Math.random() * 1000),
       can_compare: p.provider_tier !== 'Basic',
     } as FullProviderProfile));
-    const base = [...mockProviders, ...external];
+    const base = [mockProviderData as unknown as FullProviderProfile, ...external];
     const list: FullProviderProfile[] = [];
     for (let i = 0; i < 100; i++) {
       const p = base[i % base.length];
@@ -76,7 +76,7 @@ const ComparePage = () => {
 
   useEffect(() => {
     const ids = searchParams.get('ids')?.split(',') || [];
-    const selected = allProviders.filter(p => ids.includes(p.id));
+    const selected = allProviders.filter(p => ids.includes(p.id.toString()));
     setProvidersToCompare(selected);
   }, [searchParams, allProviders]);
 

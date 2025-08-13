@@ -8,7 +8,8 @@ interface LocationCardProps {
 
 const LocationCard: React.FC<LocationCardProps> = ({ provider }) => {
   const { location_map } = provider.location;
-  const src = `https://www.google.com/maps?q=${encodeURIComponent(location_map.address)}&output=embed&z=${location_map.zoom}&ll=${location_map.lat},${location_map.lng}`;
+  const src = `https://maps.google.com/maps?q=${encodeURIComponent(location_map.address)}&output=embed&z=${location_map.zoom}&ll=${location_map.lat},${location_map.lng}`;
+  
   return (
     <Card>
       <CardHeader>
@@ -16,13 +17,13 @@ const LocationCard: React.FC<LocationCardProps> = ({ provider }) => {
       </CardHeader>
       <CardContent>
         <p className="mb-2">{location_map.address}</p>
-        <div className="w-full h-48">
+        <div className="w-full h-48 rounded-md overflow-hidden">
           <iframe
             title="clinic-location"
             src={src}
             width="100%"
             height="100%"
-            className="rounded"
+            loading="lazy"
           />
         </div>
       </CardContent>

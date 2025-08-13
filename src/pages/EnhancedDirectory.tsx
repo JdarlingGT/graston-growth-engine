@@ -34,10 +34,13 @@ import {
 import { useMediaQuery } from "@/hooks/use-mobile";
 import { showSuccess } from "@/utils/toast";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
-import { mockProviders, specialties } from "@/lib/mockData";
+import { mockProviderData } from "@/lib/mockData";
 import Fuse from 'fuse.js';
 import { useDebounce } from '@/hooks/useDebounce';
 import smallProvidersRaw from '@/lib/smallProviderData.json';
+
+// Placeholder for specialties until mockData is fixed
+const specialties: string[] = ["Physical Therapy", "Chiropractic", "Sports Medicine"];
 
 // Type definition for external raw providers JSON
 type RawProvider = {
@@ -103,7 +106,7 @@ const EnhancedDirectory: React.FC = () => {
       can_compare: p.provider_tier !== 'Basic',
     } as FullProviderProfile));
     
-    const base = [...mockProviders, ...external];
+    const base = [...mockProviderData, ...external];
     const list: FullProviderProfile[] = [];
     for (let i = 0; i < 100; i++) {
       const p = base[i % base.length];
