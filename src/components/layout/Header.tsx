@@ -8,8 +8,6 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import NotificationBell from "./NotificationBell";
-import CommandPaletteShortcut from "./CommandPaletteShortcut";
 
 const navItems = [
   { href: "/directory", label: "Find a Provider" },
@@ -46,7 +44,6 @@ const Header = () => {
           <Button asChild>
             <Link to="/provider/1">Dashboard</Link>
           </Button>
-          <NotificationBell />
         </nav>
         <div className="flex flex-1 items-center justify-end md:hidden">
           <Sheet>
@@ -81,7 +78,6 @@ const Header = () => {
             </SheetContent>
           </Sheet>
         </div>
-        <CommandPaletteShortcut />
       </div>
     </header>
   );
