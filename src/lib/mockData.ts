@@ -110,10 +110,10 @@ export const clinicianTypes = ["Physical Therapist", "Chiropractor", "Acupunctur
 export const languages = ["English", "Spanish"];
 export const radiusOptions = [5, 10, 25, 50];
 export const sortOptions = [
-    { value: "premier-first", label: "Premier First" },
-    { value: "top-rated", label: "Top Rated" },
-    { value: "most-reviewed", label: "Most Reviewed" },
+  { value: "premier-first", label: "Premier First" },
+  { value: "top-rated", label: "Top Rated" },
+  { value: "most-reviewed", label: "Most Reviewed" },
 ];
 export const conditions = ["Back Pain", "Sports Injuries", "Post-Surgical Rehab", "Headaches & Migraines", "Sciatica", "Neck Pain", "Athletic Injuries", "Joint Pain", "Mobility Issues", "Knee Replacement Rehab", "Shoulder Surgery Recovery", "Aquatic Therapy"];
 export const patientDemographics = ["Athletes", "Seniors", "Pediatric", "General"];
-export const specialties = ["Physical Therapy", "Chiropractic", "Acupuncturist"];
+export const specialties = ["Sports Rehabilitation", "Chronic Pain Management", "Spinal Adjustments", "Traditional Chinese Medicine", "Performance Chiropractic", "Post-Operative Rehabilitation", "Aquatic Therapy"];
