@@ -36,22 +36,15 @@ import {
   PatientDemographic
 } from "@/types";
 import { 
-  mockProviderData
+  states, 
+  clinicianTypes, 
+  languages, 
+  radiusOptions, 
+  sortOptions,
+  conditions,
+  patientDemographics
 } from "@/lib/mockData";
 import { MapPin, Filter, X } from "lucide-react";
-
-// Placeholders for mock data arrays
-const states: string[] = ["California", "New York", "Texas"];
-const clinicianTypes: string[] = ["Physical Therapist", "Chiropractor"];
-const languages: Language[] = ["English", "Spanish"];
-const radiusOptions: RadiusOption[] = [5, 10, 25, 50];
-const sortOptions = [
-  { value: 'premier-first', label: 'Premier First' },
-  { value: 'top-rated', label: 'Top Rated' },
-  { value: 'most-reviewed', label: 'Most Reviewed' },
-];
-const conditions: Condition[] = ["Back Pain", "Sports Injuries"];
-const patientDemographics: PatientDemographic[] = ["Athletes", "Seniors"];
 
 interface FilterPanelProps {
   filters: DirectoryFilters;

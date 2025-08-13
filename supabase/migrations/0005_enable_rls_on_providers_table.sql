@@ -1,1 +1,0 @@
-ALTER TABLE public.providers ENABLE ROW LEVEL SECURITY;

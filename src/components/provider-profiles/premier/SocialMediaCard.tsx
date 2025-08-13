@@ -29,7 +29,7 @@ const SocialMediaCard = ({ provider }: SocialMediaCardProps) => {
       <CardContent>
         <div className="flex gap-2">
           {Object.entries(provider.social_media).map(([platform, url]) => {
-            if (typeof url !== 'string' || !url) return null;
+            if (!url) return null;
             const Icon = getSocialIcon(platform);
             return (
               <Button key={platform} variant="outline" size="sm" asChild>

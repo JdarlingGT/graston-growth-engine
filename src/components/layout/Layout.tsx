@@ -1,11 +1,8 @@
-"use client";
-
-import Header from "./Header";
-import Footer from "./Footer";
-import { Outlet, useLocation } from "react-router-dom";
-import Breadcrumbs from "./Breadcrumbs";
-import { AnimatePresence, motion } from "framer-motion";
-import Container from "@/components/ui/Container";
+import Header from './Header';
+import Footer from './Footer';
+import { Outlet, useLocation } from 'react-router-dom';
+import Breadcrumbs from './Breadcrumbs';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Layout = () => {
   const location = useLocation();
@@ -19,12 +16,10 @@ const Layout = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
             <Breadcrumbs />
-            <Container>
-              <Outlet />
-            </Container>
+            <Outlet />
           </motion.div>
         </AnimatePresence>
       </main>

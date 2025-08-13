@@ -11,13 +11,38 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "@/components/admin/providers/columns";
-import { mockProviderData } from "@/lib/mockData";
+import { mockProviders } from "@/lib/mockData";
 import { Provider } from "@/types/index";
 
 const ProvidersPage = () => {
   // Convert FullProviderProfile to Provider for DataTable compatibility
-  const providers: Provider[] = [mockProviderData].map((provider: Provider) => ({
-    ...provider
+  const providers: Provider[] = mockProviders.map(provider => ({
+    id: provider.id,
+    name: provider.name,
+    specialty: provider.specialty,
+    profileImage: provider.profileImage,
+    location: provider.location,
+    clinicAddress: provider.clinicAddress,
+    coordinates: provider.coordinates,
+    tier: provider.tier,
+    clinicianType: provider.clinicianType,
+    languagesSpoken: provider.languagesSpoken,
+    email: provider.email,
+    phone: provider.phone,
+    website: provider.website,
+    bio: provider.bio,
+    trialStatus: provider.trialStatus,
+    activity: provider.activity,
+    churnRisk: provider.churnRisk,
+    rating: provider.rating,
+    reviewCount: provider.reviewCount,
+    isFavorite: provider.isFavorite,
+    engagementScore: provider.engagementScore,
+    views: provider.views,
+    can_compare: provider.can_compare,
+    linkedin: provider.linkedin,
+    twitter: provider.twitter,
+    instagram: provider.instagram
   }));
 
   return (

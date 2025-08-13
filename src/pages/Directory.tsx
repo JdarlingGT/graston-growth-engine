@@ -27,16 +27,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { mockProviderData } from "@/lib/mockData";
+import { mockProviders, specialties } from "@/lib/mockData";
 import Fuse from 'fuse.js';
 import { useDebounce } from '@/hooks/useDebounce';
 import smallProvidersRaw from '@/lib/smallProviderData.json';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import ComparisonBar from "@/components/directory/ComparisonBar";
 import { MapSidebarSkeleton } from "@/components/ui/skeleton-loader";
-
-// Placeholder for specialties until mockData is fixed
-const specialties: string[] = ["Physical Therapy", "Chiropractic", "Sports Medicine"];
 
 // Type definition for external raw providers JSON
 type RawProvider = {
@@ -100,7 +97,7 @@ const Directory: React.FC = () => {
       views: Math.floor(Math.random() * 1000),
       can_compare: p.provider_tier !== 'Basic',
     } as FullProviderProfile));
-    const base = [...mockProviderData, ...external];
+    const base = [...mockProviders, ...external];
     const list: FullProviderProfile[] = [];
     for (let i = 0; i < 100; i++) {
       const p = base[i % base.length];

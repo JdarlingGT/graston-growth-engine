@@ -10,7 +10,7 @@ interface ProviderTierChartProps {
   providers: FullProviderProfile[];
 }
 
-const COLORS: Record<string, string> = {
+const COLORS: Record<Tier, string> = {
   Premier: chartColors.secondary,
   Preferred: chartColors.primary,
   Free: chartColors.gray,
@@ -19,8 +19,7 @@ const COLORS: Record<string, string> = {
 const ProviderTierChart = ({ providers }: ProviderTierChartProps) => {
   const tierData = useMemo(() => {
     const counts = providers.reduce((acc, provider) => {
-      const tier = provider.tier as Tier;
-      acc[tier] = (acc[tier] || 0) + 1;
+      acc[provider.tier] = (acc[provider.tier] || 0) + 1;
       return acc;
     }, {} as Record<Tier, number>);
 

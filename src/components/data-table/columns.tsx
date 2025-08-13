@@ -128,7 +128,7 @@ export const columns: ColumnDef<FullProviderProfile>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(provider.id.toString())}
+              onClick={() => navigator.clipboard.writeText(provider.id)}
             >
               Copy provider ID
             </DropdownMenuItem>
