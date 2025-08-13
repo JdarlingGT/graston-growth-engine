@@ -20,6 +20,7 @@ import Onboarding from '@/pages/Onboarding';
 import BadgeShowcase from '@/pages/BadgeShowcase';
 import FaqPage from '@/pages/FaqPage';
 import ProviderProfileShowcase from '@/pages/ProviderProfileShowcase';
+import AboutPage from '@/pages/AboutPage';
 import NotFound from '@/pages/NotFound';
 import './App.css';
 
@@ -42,6 +43,7 @@ function App() {
           <Route path="profile-tiers" element={<ProviderProfileShowcase />} />
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="badges" element={<BadgeShowcase />} />
+          <Route path="about" element={<AboutPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         
