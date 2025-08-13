@@ -34,28 +34,10 @@ import {
 import { useMediaQuery } from "@/hooks/use-mobile";
 import { showSuccess } from "@/utils/toast";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
-import { mockProviders, specialties } from "@/lib/mockData";
+import { specialties } from "@/lib/mockData";
+import { getAllProviders } from "@/lib/providers";
 import Fuse from 'fuse.js';
 import { useDebounce } from '@/hooks/useDebounce';
-import smallProvidersRaw from '@/lib/smallProviderData.json';
-
-// Type definition for external raw providers JSON
-type RawProvider = {
-  provider_name: string;
-  clinic_name: string;
-  city: string;
-  state: string;
-  phone: string;
-  email: string;
-  website: string;
-  specialties: string[];
-  languages_spoken: string[];
-  clinician_type: string;
-  provider_tier: string;
-  latitude: number;
-  longitude: number;
-  bio?: string;
-};
 
 const EnhancedDirectory: React.FC = () => {
   const navigate = useNavigate();
@@ -70,53 +52,19 @@ const EnhancedDirectory: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'map'>('map');
   const [listViewMode, setListViewMode] = useState<'grid' | 'list'>('grid');
   const [compareList, setCompareList] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearchInput = useDebounce(searchInput, 300);
 
   // Generate enhanced provider data
-  const [localProviders, setLocalProviders] = useState<FullProviderProfile[]>(() => {
-    const external = (smallProvidersRaw as RawProvider[]).map((p: RawProvider, idx: number) => ({
-      ...p,
-      id: `ext-${idx}`,
-      name: p.provider_name,
-      specialty: p.specialties.join(', '),
-      profileImage: `https://i.pravatar.cc/150?u=ext-${idx}`,
-      location: `${p.city}, ${p.state}`,
-      clinicAddress: p.clinic_name,
-      coordinates: { lat: p.latitude, lng: p.longitude },
-      tier: (p.provider_tier === 'Basic' ? 'Free' : p.provider_tier) as Tier,
-      clinicianType: p.clinician_type as any,
-      languagesSpoken: p.languages_spoken as any[],
-      email: p.email,
-      phone: p.phone,
-      website: p.website,
-      bio: p.bio || '',
-      trialStatus: 'N/A',
-      activity: 0,
-      churnRisk: false,
-      rating: 4 + Math.random(),
-      reviewCount: Math.floor(Math.random() * 200) + 10,
-      isFavorite: false,
-      engagementScore: Math.floor(Math.random() * 100),
-      views: Math.floor(Math.random() * 1000),
-      can_compare: p.provider_tier !== 'Basic',
-    } as FullProviderProfile));
-    
-    const base = [...mockProviders, ...external];
-    const list: FullProviderProfile[] = [];
-    for (let i = 0; i < 100; i++) {
-      const p = base[i % base.length];
-      list.push({ 
-        ...p, 
-        id: `${p.id}-${i}`, 
-        can_compare: p.tier !== 'Free',
-        engagementScore: p.engagementScore || Math.floor(Math.random() * 100),
-        views: p.views || Math.floor(Math.random() * 1000)
-      });
-    }
-    return list;
-  });
+  const [localProviders, setLocalProviders] = useState<FullProviderProfile[]>([]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const providers = getAllProviders();
+    setLocalProviders(providers);
+    setIsLoading(false);
+  }, []);
 
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 });
   const [mapZoom, setMapZoom] = useState(4);
@@ -257,7 +205,7 @@ const EnhancedDirectory: React.FC = () => {
   const stats = useMemo(() => ({
     total: filteredAndSortedProviders.length,
     premier: filteredAndSortedProviders.filter(p => p.tier === 'Premier').length,
-    avgRating: filteredAndSortedProviders.reduce((acc, p) => acc + (p.rating || 0), 0) / filteredAndSortedProviders.length,
+    avgRating: filteredAndSortedProviders.length > 0 ? filteredAndSortedProviders.reduce((acc, p) => acc + (p.rating || 0), 0) / filteredAndSortedProviders.length : 0,
   }), [filteredAndSortedProviders]);
 
   return (

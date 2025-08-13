@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FullProviderProfile } from '@/types/index';
-import { mockProviders } from '@/lib/mockData';
+import { getProviderById } from '@/lib/providers';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Import the new component suite
@@ -27,7 +27,7 @@ const PublicProviderProfilePage = () => {
     setIsLoading(true);
     // Simulate API fetch
     setTimeout(() => {
-      const foundProvider = mockProviders.find(p => p.id === id) || null;
+      const foundProvider = getProviderById(id || '');
       setProvider(foundProvider);
       setIsLoading(false);
     }, 500);

@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { mockProviders } from "@/lib/mockData";
+import { getProviderById } from "@/lib/providers";
 import { useEffect, useState } from "react";
 
 const ProviderPage = () => {
@@ -19,7 +19,7 @@ const ProviderPage = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const foundProvider = mockProviders.find(p => p.id === id) || null;
+    const foundProvider = getProviderById(id || '');
     setProvider(foundProvider);
     setIsLoading(false);
   }, [id]);
