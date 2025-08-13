@@ -4,15 +4,16 @@ import { useMemo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FullProviderProfile, Tier } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import chartColors from '@/theme/chartColors';
 
 interface ProviderTierChartProps {
   providers: FullProviderProfile[];
 }
 
 const COLORS: Record<Tier, string> = {
-  Premier: '#8B5CF6', // purple-500
-  Preferred: '#3B82F6', // blue-500
-  Free: '#6B7280',    // gray-500
+  Premier: chartColors.secondary,
+  Preferred: chartColors.primary,
+  Free: chartColors.gray,
 };
 
 const ProviderTierChart = ({ providers }: ProviderTierChartProps) => {
@@ -43,7 +44,7 @@ const ProviderTierChart = ({ providers }: ProviderTierChartProps) => {
                 cy="50%"
                 labelLine={false}
                 outerRadius={80}
-                fill="#8884d8"
+                fill={chartColors.primary}
                 dataKey="value"
                 nameKey="name"
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -52,7 +53,10 @@ const ProviderTierChart = ({ providers }: ProviderTierChartProps) => {
                   <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name as Tier]} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => `${value} providers`} />
+              <Tooltip
+                contentStyle={{ background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb" }}
+                formatter={(value: any, name: any) => [`${value} providers`, name]}
+              />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
