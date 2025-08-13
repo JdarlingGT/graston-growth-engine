@@ -17,14 +17,21 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from "@/components/ui/pagination";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { specialties } from "@/lib/mockData";
+import { Label } from "@/components/ui/label";
+import { mockProviderData, specialties } from "@/lib/mockData";
 import Fuse from 'fuse.js';
 import { Filter, List, Map as MapIcon } from "lucide-react";
 import smallProvidersRaw from '@/lib/smallProviderData.json';
-import { mapMockToFullProfile } from "@/lib/dataMapping";
 
-const smallProviders: FullProviderProfile[] = (smallProvidersRaw as any[]).map(mapMockToFullProfile);
+const smallProviders: FullProviderProfile[] = smallProvidersRaw as FullProviderProfile[];
 
 const ITEMS_PER_PAGE = 9;
 
@@ -51,7 +58,7 @@ const Directory = () => {
       if (filters.state && filters.state !== 'all' && !p.location.includes(filters.state)) return false;
       if (filters.tier && filters.tier !== 'All' && p.tier !== filters.tier) return false;
       if (filters.specialty && filters.specialty !== 'All' && p.specialty !== filters.specialty) return false;
-      if (filters.favoritesOnly && !p.isFavorite) return false;
+      if (filters.favoritesOnly && !p.isFavorited) return false;
       return true;
     });
 
@@ -59,7 +66,7 @@ const Directory = () => {
     if (filters.sortBy === 'top-rated') {
       providers.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (filters.sortBy === 'most-reviewed') {
-      providers.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0));
+      providers.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
     } else { // premier-first (default)
       const tierOrder = { 'Premier': 1, 'Preferred': 2, 'Free': 3 };
       providers.sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
