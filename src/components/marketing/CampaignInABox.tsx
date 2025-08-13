@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { campaigns } from "@/data/marketingData";
 import { motion } from "framer-motion";
 import { Download, Rocket } from "lucide-react";
+import ImageWithFallback from "../ui/ImageWithFallback";
 
 const CampaignInABox = () => {
   return (
@@ -18,7 +19,7 @@ const CampaignInABox = () => {
               whileHover={{ y: -5, boxShadow: "0 10px 20px -5px rgb(0 0 0 / 0.1)" }}
               className="border rounded-lg overflow-hidden group"
             >
-              <img src={campaign.image} alt={campaign.title} className="h-48 w-full object-cover" />
+              <ImageWithFallback src={campaign.image} alt={campaign.title} className="h-48 w-full object-cover" />
               <div className="p-4">
                 <h3 className="font-bold text-lg">{campaign.title}</h3>
                 <p className="text-sm text-muted-foreground mt-1 mb-4">{campaign.description}</p>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { instruments } from '@/data/grastonPageData';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 const InstrumentsSection = () => {
   return (
@@ -26,7 +27,7 @@ const InstrumentsSection = () => {
                   <TooltipTrigger asChild>
                     <div className="group text-center cursor-pointer">
                       <div className="p-4 bg-white rounded-lg shadow-sm group-hover:shadow-lg transition-shadow mb-4">
-                        <img 
+                        <ImageWithFallback 
                           src={instrument.imageUrl} 
                           alt={instrument.name} 
                           className="h-40 mx-auto object-contain group-hover:scale-105 transition-transform"

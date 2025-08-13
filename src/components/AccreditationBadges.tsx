@@ -1,4 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import ImageWithFallback from './ui/ImageWithFallback';
 
 interface Accreditation {
   name: string;
@@ -18,7 +19,7 @@ const AccreditationBadges = () => {
         {accreditations.map((acc) => (
           <Tooltip key={acc.name}>
             <TooltipTrigger asChild>
-              <img
+              <ImageWithFallback
                 src={acc.logoUrl}
                 alt={acc.name}
                 className="h-16 object-contain grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"

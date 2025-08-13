@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { trustLogos } from '@/data/forProvidersPageData';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 const TrustSignals = () => {
   return (
@@ -18,7 +19,7 @@ const TrustSignals = () => {
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <img src={logo.logoUrl} alt={logo.name} className="h-12 grayscale opacity-60" />
+                <ImageWithFallback src={logo.logoUrl} alt={logo.name} className="h-12 grayscale opacity-60" />
               </motion.div>
             ))}
           </div>

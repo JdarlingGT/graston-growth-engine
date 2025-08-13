@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { MarketingResource } from '@/data/marketingResources';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 interface ResourceCardProps {
   resource: MarketingResource;
@@ -19,9 +20,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       whileHover={{ y: -5, boxShadow: "0 10px 20px -5px rgb(0 0 0 / 0.1)" }}
       className="h-full"
     >
-      <Card className="flex flex-col h-full overflow-hidden">
+      <Card className="flex flex-col h-full overflow-hidden shadow-subtle">
         <div className="aspect-video bg-muted flex items-center justify-center p-4 overflow-hidden">
-          <img 
+          <ImageWithFallback 
             src={resource.thumbnailUrl} 
             alt={resource.title} 
             className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"

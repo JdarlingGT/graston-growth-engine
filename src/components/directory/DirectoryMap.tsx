@@ -6,6 +6,7 @@ import { FullProviderProfile } from '@/types';
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import ImageWithFallback from '../ui/ImageWithFallback';
 
 const mapContainerStyle = {
   width: '100%',
@@ -151,7 +152,7 @@ const DirectoryMap: React.FC<DirectoryMapProps> = ({
         >
           <div className="p-2 max-w-xs">
             <div className="flex items-start gap-3 mb-3">
-              <img
+              <ImageWithFallback
                 src={selectedProvider.profileImage}
                 alt={selectedProvider.name}
                 className="w-12 h-12 rounded-full object-cover"

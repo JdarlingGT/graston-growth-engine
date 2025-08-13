@@ -1,11 +1,11 @@
 import React from 'react';
 import { Tier } from '@/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import ImageWithFallback from './ui/ImageWithFallback';
 
-// It's better to place these in the public directory
 const badgeImages: Record<Tier, string> = {
-  Premier: '/images/PremierBadge_01-04.png',
-  Preferred: '/images/PreferredBadge_01.webp',
+  Premier: 'https://grastontechnique.com/wp-content/uploads/2022/02/PremierBadge_01-04.png',
+  Preferred: 'https://grastontechnique.com/wp-content/uploads/2022/02/PreferredBadge_01.webp',
   Free: '', // No image for Free tier
 };
 
@@ -33,7 +33,7 @@ const TierBadge: React.FC<TierBadgeProps> = ({ tier, size = 'md' }) => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
-          <img
+          <ImageWithFallback
             src={badgeImages[tier]}
             alt={`${tier} Provider Badge`}
             className={`${sizeMap[size]} object-contain`}

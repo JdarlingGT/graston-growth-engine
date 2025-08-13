@@ -37,6 +37,7 @@ import { specialties } from "@/lib/mockData";
 import { getAllProviders } from "@/lib/providers";
 import Fuse from 'fuse.js';
 import { useDebounce } from '@/hooks/useDebounce';
+import ImageWithFallback from "@/components/ui/ImageWithFallback";
 
 const EnhancedDirectory: React.FC = () => {
   const navigate = useNavigate();
@@ -381,7 +382,7 @@ const EnhancedDirectory: React.FC = () => {
                                 onClick={() => navigate(`/directory/provider/${provider.id}`)}
                               >
                                 <div className="flex items-start gap-3">
-                                  <img
+                                  <ImageWithFallback
                                     src={provider.profileImage}
                                     alt={provider.name}
                                     className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm hover:scale-105 transition-transform"

@@ -5,6 +5,7 @@ import { Star, MapPin, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import ImageWithFallback from "../ui/ImageWithFallback";
 
 interface ProviderCardProps {
   provider: FullProviderProfile;
@@ -39,15 +40,11 @@ const ProviderCard = ({
     >
       <CardHeader className="p-4">
         <div className="flex items-start gap-4">
-          <img
+          <ImageWithFallback
             src={provider.profileImage}
             alt={provider.name}
             className="w-20 h-20 rounded-lg object-cover cursor-pointer"
             onClick={() => navigate(`/directory/provider/${provider.id}`)}
-            onError={(e) => {
-              e.currentTarget.src = '/images/placeholder.png';
-              e.currentTarget.onerror = null;
-            }}
           />
           <div className="flex-1">
             <div className="flex justify-between items-start">

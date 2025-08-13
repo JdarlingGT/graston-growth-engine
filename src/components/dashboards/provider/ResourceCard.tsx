@@ -6,6 +6,7 @@ import { MarketingResource, Tier } from "@/types";
 import { Download, Lock, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import ImageWithFallback from "@/components/ui/ImageWithFallback";
 
 interface ResourceCardProps {
   resource: MarketingResource;
@@ -60,7 +61,7 @@ const ResourceCard = ({ resource, userTier, providerId, status, onStatusChange }
   return (
     <Card className="flex flex-col">
       <CardHeader className="p-0 relative">
-        <img src={resource.image} alt={resource.title} className="rounded-t-lg object-cover aspect-video" />
+        <ImageWithFallback src={resource.image} alt={resource.title} className="rounded-t-lg object-cover aspect-video" />
         {status === 'downloaded' && (
             <div className="absolute top-2 right-2 bg-green-500 text-white p-1 rounded-full">
                 <CheckCircle className="h-4 w-4" />
