@@ -155,7 +155,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All States</SelectItem>
-                        {states.map(state => (
+                        {states.map((state: string) => (
                           <SelectItem key={state} value={state}>{state}</SelectItem>
                         ))}
                       </SelectContent>
@@ -184,7 +184,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Any Distance</SelectItem>
-                        {radiusOptions.map(radius => (
+                        {radiusOptions.map((radius: RadiusOption) => (
                           <SelectItem key={radius} value={radius.toString()}>{`${radius} miles`}</SelectItem>
                         ))}
                       </SelectContent>
@@ -213,7 +213,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="All">All Types</SelectItem>
-                      {clinicianTypes.map(type => (
+                      {clinicianTypes.map((type: ClinicianType) => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                       ))}
                     </SelectContent>
@@ -281,7 +281,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
             <AccordionTrigger className="text-sm font-medium">Conditions Treated</AccordionTrigger>
             <AccordionContent>
               <div className="grid grid-cols-2 gap-2 pt-2">
-                {conditions.map((condition) => (
+                {conditions.map((condition: Condition) => (
                   <div key={condition} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`condition-${condition}`} 
@@ -307,7 +307,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
             <AccordionTrigger className="text-sm font-medium">Patient Types</AccordionTrigger>
             <AccordionContent>
               <div className="grid grid-cols-2 gap-2 pt-2">
-                {patientDemographics.map((type) => (
+                {patientDemographics.map((type: PatientDemographic) => (
                   <div key={type} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`patient-type-${type}`} 
@@ -333,7 +333,7 @@ const FilterPanel = ({ filters, onFilterChange, specialties }: FilterPanelProps)
             <AccordionTrigger className="text-sm font-medium">Languages Spoken</AccordionTrigger>
             <AccordionContent>
               <div className="grid grid-cols-2 gap-2 pt-2">
-                {languages.map((language) => (
+                {languages.map((language: Language) => (
                   <div key={language} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`language-${language}`} 

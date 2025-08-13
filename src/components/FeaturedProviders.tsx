@@ -1,9 +1,9 @@
-import { mockProviders } from "@/lib/mockData";
+import { mockProviderData } from "@/lib/mockData";
 import FeaturedProviderCard from "./FeaturedProviderCard";
 
 const FeaturedProviders = () => {
   // Get the first 3 Premier providers as featured
-  const featured = mockProviders.filter(p => p.tier === 'Premier').slice(0, 3);
+  const featured = mockProviderData.filter((p: any) => p.membership_tier === 'Premier').slice(0, 3);
 
   return (
     <div className="w-full py-12 md:py-20">
@@ -15,7 +15,7 @@ const FeaturedProviders = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featured.map(provider => (
+          {featured.map((provider: any) => (
             <FeaturedProviderCard key={provider.id} provider={provider} />
           ))}
         </div>
