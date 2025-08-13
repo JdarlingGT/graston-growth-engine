@@ -71,9 +71,28 @@ const Header = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button asChild>
-            <Link to="/provider/1/dashboard">Dashboard</Link>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-primary focus:ring-0">
+                Provider
+                <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <Link to="/provider/1/dashboard">Dashboard</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/provider/1/toolkit">Marketing Toolkit</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/update-profile">Edit Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/directory/provider/1">View Public Profile</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <NotificationBell />
         </nav>
         <div className="flex flex-1 items-center justify-end md:hidden">
@@ -107,9 +126,11 @@ const Header = () => {
                 <Link to="/admin/providers" className="text-muted-foreground hover:text-foreground pl-4 text-base">Providers</Link>
                 <Link to="/admin/ai-assistant" className="text-muted-foreground hover:text-foreground pl-4 text-base">AI Assistant</Link>
                 <Link to="/admin/analytics" className="text-muted-foreground hover:text-foreground pl-4 text-base">Analytics</Link>
-                 <Button asChild>
-                    <Link to="/provider/1/dashboard">Dashboard</Link>
-                </Button>
+                <div className="text-foreground font-semibold">Provider</div>
+                <Link to="/provider/1/dashboard" className="text-muted-foreground hover:text-foreground pl-4 text-base">Dashboard</Link>
+                <Link to="/provider/1/toolkit" className="text-muted-foreground hover:text-foreground pl-4 text-base">Marketing Toolkit</Link>
+                <Link to="/update-profile" className="text-muted-foreground hover:text-foreground pl-4 text-base">Edit Profile</Link>
+                <Link to="/directory/provider/1" className="text-muted-foreground hover:text-foreground pl-4 text-base">View Public Profile</Link>
               </nav>
             </SheetContent>
           </Sheet>
