@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Wand2, Package, Rocket, Star, BookOpen, Zap, Calendar, HelpCircle } from "lucide-react";
+import { Wand2, Package, Rocket, Star, BookOpen, Zap, Calendar, HelpCircle, Mail } from "lucide-react";
 import { mockProviders } from "@/lib/mockData";
 import { Tier } from "@/types";
 
@@ -17,6 +17,7 @@ import UpgradeCard from "@/components/marketing/UpgradeCard";
 import AiMarketingCoach from "@/components/marketing/AiMarketingCoach";
 import ContentCalendar from "@/components/marketing/ContentCalendar";
 import MarketingTour from "@/components/marketing/MarketingTour";
+import EmailMarketing from "@/components/marketing/EmailMarketing";
 
 const MarketingToolkit = () => {
   const { id } = useParams<{ id: string }>();
@@ -68,13 +69,14 @@ const MarketingToolkit = () => {
       {isPremier && <AiMarketingCoach />}
 
       <Tabs defaultValue="assets" className="mt-6">
-        <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
           <TabsTrigger value="assets" id="tour-step-1-assets"><Package className="h-4 w-4 mr-2" />Brand Assets</TabsTrigger>
           <TabsTrigger value="content-ai" id="tour-step-2-content-ai"><Wand2 className="h-4 w-4 mr-2" />Content AI</TabsTrigger>
           <TabsTrigger value="campaigns" id="tour-step-3-campaigns"><Rocket className="h-4 w-4 mr-2" />Campaigns</TabsTrigger>
           <TabsTrigger value="reputation" id="tour-step-4-reputation"><Star className="h-4 w-4 mr-2" />Reputation</TabsTrigger>
           <TabsTrigger value="education"><BookOpen className="h-4 w-4 mr-2" />Patient Ed</TabsTrigger>
           <TabsTrigger value="calendar" id="tour-step-5-calendar"><Calendar className="h-4 w-4 mr-2" />Calendar</TabsTrigger>
+          <TabsTrigger value="email"><Mail className="h-4 w-4 mr-2" />Email</TabsTrigger>
         </TabsList>
 
         <TabsContent value="assets" className="mt-6">
@@ -94,6 +96,9 @@ const MarketingToolkit = () => {
         </TabsContent>
         <TabsContent value="calendar" className="mt-6">
           {isPremier ? <ContentCalendar /> : <UpgradeCard featureName="the Content Calendar" />}
+        </TabsContent>
+        <TabsContent value="email" className="mt-6">
+          {isPremier ? <EmailMarketing /> : <UpgradeCard featureName="Email Marketing Templates" />}
         </TabsContent>
       </Tabs>
     </div>

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Clock, X, Loader2 } from 'lucide-react';
 import { EnhancedInput } from './enhanced-input';
-import { useDebounce } from '@/hooks/useDebounce';
 
 interface SearchBarProps {
   onSearch: (value: string) => void;
@@ -128,11 +127,12 @@ const EnhancedSearchBar: React.FC<SearchBarProps> = ({
           onFocus={handleFocus}
           onBlur={handleBlur}
           icon={<Search className="h-5 w-5" />}
-          endIcon={
-            loading ? <Loader2 className="h-5 w-5 animate-spin" /> :
-            value ? <X className="h-5 w-5 cursor-pointer" onClick={() => setValue('')} /> : null
-          }
+          className="pr-10"
         />
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> :
+           value ? <X className="h-5 w-5 cursor-pointer" onClick={() => setValue('')} /> : null}
+        </div>
         
         {/* Suggestions dropdown */}
         <AnimatePresence>

@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { reputationTools } from "@/data/marketingData";
-import { Copy, Mail, MessageSquare } from "lucide-react";
+import { Copy, Mail, MessageSquare, Download } from "lucide-react";
 import { showSuccess } from "@/utils/toast";
+import { Separator } from "@/components/ui/separator";
 
 const ReputationManager = () => {
   const [method, setMethod] = useState('email');
@@ -87,6 +88,25 @@ Thank you,
             <Textarea value={generatedTemplate} readOnly rows={8} className="font-mono text-sm" />
           </div>
         )}
+        <Separator className="my-6" />
+        <div>
+            <h3 className="text-lg font-semibold mb-3">Downloadable Resources</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {reputationTools.downloadableResources.map(resource => (
+                    <a key={resource.id} href={resource.url} download className="block p-4 border rounded-lg hover:bg-muted">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-primary/10 rounded-md">
+                                <Download className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                                <p className="font-medium">{resource.title}</p>
+                                <p className="text-xs text-muted-foreground">Download {resource.type}</p>
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </div>
       </CardContent>
     </Card>
   );

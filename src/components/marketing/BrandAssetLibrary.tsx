@@ -41,6 +41,7 @@ const BrandAssetLibrary = () => {
             <TabsTrigger value="templates">Print Templates</TabsTrigger>
             <TabsTrigger value="stock-photos">Stock Photos</TabsTrigger>
             <TabsTrigger value="email-signatures">Email Signatures</TabsTrigger>
+            <TabsTrigger value="video">Video Assets</TabsTrigger>
           </TabsList>
           <TabsContent value="logos" className="pt-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -60,6 +61,11 @@ const BrandAssetLibrary = () => {
           <TabsContent value="email-signatures" className="pt-4">
              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {brandAssets.emailSignatures.map(asset => <AssetCard key={asset.id} asset={{...asset, url: '#'}} />)}
+            </div>
+          </TabsContent>
+          <TabsContent value="video" className="pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {brandAssets.videos.map(asset => <AssetCard key={asset.id} asset={asset} />)}
             </div>
           </TabsContent>
         </Tabs>

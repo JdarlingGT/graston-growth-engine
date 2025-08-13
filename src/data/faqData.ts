@@ -1,7 +1,6 @@
 import { 
   CreditCard,
   Settings, 
-  Zap,
   Star,
   BarChart2,
   LucideIcon

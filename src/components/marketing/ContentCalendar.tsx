@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { showSuccess } from '@/utils/toast';
 
@@ -44,7 +44,15 @@ const ContentCalendar = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Content Calendar</CardTitle>
+        <div className="flex justify-between items-center">
+            <CardTitle>Content Calendar</CardTitle>
+            <Button variant="outline" size="sm" asChild>
+                <a href="/resources/SocialMediaContentCalendar.xlsx" download>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Template
+                </a>
+            </Button>
+        </div>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
