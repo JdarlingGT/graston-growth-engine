@@ -23,10 +23,10 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./apps/frontend/src/*"]
+      "@/*": ["./src/*"]
     },
     "types": ["vite/client"]
   },
-  "include": ["apps/frontend/src"],
-  "references": [{ "path": "./apps/frontend/tsconfig.app.json" }]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
