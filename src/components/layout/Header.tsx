@@ -135,6 +135,9 @@ const Header = () => {
                   <ListItem href="/what-is-graston-technique" title="What is Graston Technique®?">
                     A comprehensive guide for patients new to GT.
                   </ListItem>
+                  <ListItem href="/events" title="Events & Training">
+                    Professional development workshops, certifications, and seminars.
+                  </ListItem>
                   <ListItem href="/faq" title="FAQ">
                     Find answers to common questions from patients and providers.
                   </ListItem>
@@ -226,6 +229,7 @@ const Header = () => {
                         <div className="grid gap-4 text-base">
                           <Link to="/about" className="text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
                           <Link to="/what-is-graston-technique" className="text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>What is GT®?</Link>
+                          <Link to="/events" className="text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>Events & Training</Link>
                           <Link to="/faq" className="text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>FAQ</Link>
                           <Link to="/onboarding" className="text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>Onboarding</Link>
                           <Link to="/support" className="text-muted-foreground hover:text-foreground" onClick={() => setIsMobileMenuOpen(false)}>Support</Link>
